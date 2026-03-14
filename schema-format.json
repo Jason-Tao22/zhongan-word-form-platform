@@ -1,0 +1,368 @@
+{
+  "_comment": "JSON Schema 格式规范 v1.0 — Word 表格 → Vue 表单 → PostgreSQL",
+
+  "schemaVersion": "1.0",
+  "templateId": "uuid-string",
+  "templateName": "工业管道年度检查报告",
+  "sourceFile": "80.02工业管道年度检查报告.docx",
+  "createdAt": "2026-03-02T00:00:00Z",
+
+  "_fieldTypes": {
+    "text":           "单行文本输入 → VARCHAR",
+    "number":         "数字输入    → NUMERIC",
+    "textarea":       "多行文本    → TEXT",
+    "date":           "日期选择器  → DATE",
+    "radio":          "单选（□选项格式）→ VARCHAR",
+    "select":         "下拉选择（A.xx;B.xx 格式）→ VARCHAR",
+    "checkbox_group": "多选        → JSONB",
+    "static":         "只读展示（签名区/说明）→ 不建 SQL 列"
+  },
+
+  "_layoutTypes": {
+    "key-value":     "标签-输入对，左列是标签，右列是输入框（Tables 1,2,12）",
+    "data-grid":     "带表头的数据录入网格，每行存一条 SQL 记录（Tables 3,6,9,10,11）",
+    "checklist":     "逐条检查项，每行有检查项目和结果字段（Tables 4,5,7）",
+    "section-group": "多个 section 块，每块有标题行和若干字段行（Table 8）"
+  },
+
+  "_recordTypes": {
+    "single": "每次表单提交对应 1 条 SQL 记录（key-value / checklist 类型）",
+    "multi":  "每次表单提交对应多条 SQL 记录，含 submission_id 外键（data-grid 类型）"
+  },
+
+  "subForms": [
+
+    {
+      "_example": "Table 1 — key-value 布局，single 记录",
+      "id": "cover_info",
+      "name": "封面信息",
+      "sqlTableName": "t_insp_cover_info",
+      "recordType": "single",
+      "layout": {
+        "type": "key-value",
+        "rows": [
+          [
+            { "kind": "label", "text": "装置名称" },
+            { "kind": "input", "fieldId": "device_name" }
+          ],
+          [
+            { "kind": "label", "text": "使用单位名称" },
+            { "kind": "input", "fieldId": "operator_name" }
+          ],
+          [
+            { "kind": "label", "text": "检验日期" },
+            { "kind": "input", "fieldId": "inspection_date" }
+          ]
+        ]
+      },
+      "fields": [
+        {
+          "id": "device_name",
+          "label": "装置名称",
+          "type": "text",
+          "sqlColumn": "device_name",
+          "sqlType": "VARCHAR(200)",
+          "required": false
+        },
+        {
+          "id": "operator_name",
+          "label": "使用单位名称",
+          "type": "text",
+          "sqlColumn": "operator_name",
+          "sqlType": "VARCHAR(200)",
+          "required": false
+        },
+        {
+          "id": "inspection_date",
+          "label": "检验日期",
+          "type": "date",
+          "sqlColumn": "inspection_date",
+          "sqlType": "DATE",
+          "required": false
+        }
+      ]
+    },
+
+    {
+      "_example": "Table 2 — key-value 布局，有合并单元格，使用 colspan",
+      "id": "operator_info",
+      "name": "使用单位基本信息",
+      "sqlTableName": "t_insp_operator_info",
+      "recordType": "single",
+      "layout": {
+        "type": "key-value",
+        "rows": [
+          [
+            { "kind": "label", "text": "使用单位名称" },
+            { "kind": "input", "fieldId": "operator_name", "colspan": 1 },
+            { "kind": "label", "text": "使用登记证编号" },
+            { "kind": "input", "fieldId": "registration_no", "colspan": 1 }
+          ],
+          [
+            { "kind": "label", "text": "使用单位地址" },
+            { "kind": "input", "fieldId": "address", "colspan": 3 }
+          ],
+          [
+            { "kind": "label", "text": "使用单位统一社会信用代码" },
+            { "kind": "input", "fieldId": "credit_code", "colspan": 3 }
+          ],
+          [
+            { "kind": "label", "text": "安全管理人员" },
+            { "kind": "input", "fieldId": "safety_manager" },
+            { "kind": "label", "text": "联系电话" },
+            { "kind": "input", "fieldId": "phone" }
+          ],
+          [
+            { "kind": "label", "text": "下次年度检查日期" },
+            { "kind": "input", "fieldId": "next_inspection_date", "colspan": 3 }
+          ],
+          [
+            { "kind": "label", "text": "检查依据" },
+            { "kind": "static", "text": "《工业管道安全技术规程》TSG 31-2025", "colspan": 3 }
+          ],
+          [
+            { "kind": "label", "text": "检查结论" },
+            { "kind": "input", "fieldId": "overall_conclusion", "colspan": 3 }
+          ],
+          [
+            { "kind": "static", "text": "检查：", "colspan": 2 },
+            { "kind": "static", "text": "检验机构检验专用章", "colspan": 2 }
+          ]
+        ]
+      },
+      "fields": [
+        { "id": "operator_name",       "label": "使用单位名称",         "type": "text",   "sqlColumn": "operator_name",       "sqlType": "VARCHAR(200)" },
+        { "id": "registration_no",     "label": "使用登记证编号",        "type": "text",   "sqlColumn": "registration_no",     "sqlType": "VARCHAR(100)" },
+        { "id": "address",             "label": "使用单位地址",          "type": "text",   "sqlColumn": "address",             "sqlType": "VARCHAR(500)" },
+        { "id": "credit_code",         "label": "统一社会信用代码",      "type": "text",   "sqlColumn": "credit_code",         "sqlType": "VARCHAR(50)"  },
+        { "id": "safety_manager",      "label": "安全管理人员",          "type": "text",   "sqlColumn": "safety_manager",      "sqlType": "VARCHAR(100)" },
+        { "id": "phone",               "label": "联系电话",              "type": "text",   "sqlColumn": "phone",               "sqlType": "VARCHAR(50)"  },
+        { "id": "next_inspection_date","label": "下次年度检查日期",      "type": "date",   "sqlColumn": "next_inspection_date","sqlType": "DATE"         },
+        { "id": "overall_conclusion",  "label": "检查结论",              "type": "textarea","sqlColumn": "overall_conclusion",  "sqlType": "TEXT"         }
+      ]
+    },
+
+    {
+      "_example": "Table 3 — data-grid 布局，multi 记录，含 radio 字段和多级表头",
+      "id": "conclusion_list",
+      "name": "检查结论报告附页",
+      "sqlTableName": "t_insp_conclusion_list",
+      "recordType": "multi",
+      "layout": {
+        "type": "data-grid",
+        "headers": [
+          [
+            { "text": "序号",              "rowspan": 2, "colspan": 1 },
+            { "text": "管道编号",          "rowspan": 2, "colspan": 1 },
+            { "text": "管道名称",          "rowspan": 2, "colspan": 1 },
+            { "text": "检查结论",          "rowspan": 2, "colspan": 1 },
+            { "text": "允许（监控）工作条件","rowspan": 1, "colspan": 3 },
+            { "text": "问题及其处理",      "rowspan": 2, "colspan": 1 },
+            { "text": "备注",              "rowspan": 2, "colspan": 1 }
+          ],
+          [
+            { "text": "压力MPa" },
+            { "text": "温度℃"  },
+            { "text": "介质"    }
+          ]
+        ],
+        "dataColumns": ["seq","pipeline_no","pipeline_name","conclusion","allowed_pressure","allowed_temp","medium","issues","remarks"],
+        "defaultRowCount": 12
+      },
+      "fields": [
+        { "id": "seq",              "label": "序号",         "type": "text",   "sqlColumn": "seq",              "sqlType": "VARCHAR(20)"   },
+        { "id": "pipeline_no",      "label": "管道编号",     "type": "text",   "sqlColumn": "pipeline_no",      "sqlType": "VARCHAR(100)"  },
+        { "id": "pipeline_name",    "label": "管道名称",     "type": "text",   "sqlColumn": "pipeline_name",    "sqlType": "VARCHAR(200)"  },
+        {
+          "id": "conclusion",
+          "label": "检查结论",
+          "type": "radio",
+          "options": ["符合要求", "基本符合要求", "不符合要求"],
+          "sqlColumn": "conclusion",
+          "sqlType": "VARCHAR(20)"
+        },
+        { "id": "allowed_pressure", "label": "允许压力(MPa)","type": "number", "sqlColumn": "allowed_pressure", "sqlType": "NUMERIC(10,2)" },
+        { "id": "allowed_temp",     "label": "允许温度(℃)", "type": "number", "sqlColumn": "allowed_temp",     "sqlType": "NUMERIC(10,2)" },
+        { "id": "medium",           "label": "介质",         "type": "text",   "sqlColumn": "medium",           "sqlType": "VARCHAR(100)"  },
+        { "id": "issues",           "label": "问题及其处理", "type": "textarea","sqlColumn": "issues",           "sqlType": "TEXT"          },
+        { "id": "remarks",          "label": "备注",         "type": "text",   "sqlColumn": "remarks",          "sqlType": "VARCHAR(500)"  }
+      ]
+    },
+
+    {
+      "_example": "Table 4 — checklist 布局，含分组子项",
+      "id": "general_checklist",
+      "name": "年度检查记录",
+      "sqlTableName": "t_insp_general_checklist",
+      "recordType": "single",
+      "layout": {
+        "type": "checklist",
+        "columns": ["序号", "检查项目", "检查结果", "备注"],
+        "items": [
+          { "seq": "1", "label": "安全管理情况",                              "fieldId": "safety_mgmt",       "remarkFieldId": "safety_mgmt_remark" },
+          { "seq": "2", "label": "管道本体及运行情况",                        "fieldId": "pipeline_body",     "remarkFieldId": "pipeline_body_remark" },
+          {
+            "seq": "3",
+            "label": "安全附件、阻火器、机械安全联锁装置及仪表检查情况",
+            "subItems": [
+              { "label": "安全阀",          "fieldId": "safety_valve",      "remarkFieldId": "safety_valve_remark" },
+              { "label": "爆破片装置",      "fieldId": "rupture_disc",      "remarkFieldId": "rupture_disc_remark" },
+              { "label": "阻火器装置",      "fieldId": "flame_arrester",    "remarkFieldId": "flame_arrester_remark" },
+              { "label": "紧急切断阀",      "fieldId": "emergency_valve",   "remarkFieldId": "emergency_valve_remark" },
+              { "label": "压力表",          "fieldId": "pressure_gauge",    "remarkFieldId": "pressure_gauge_remark" },
+              { "label": "测温仪表",        "fieldId": "temp_instrument",   "remarkFieldId": "temp_instrument_remark" },
+              { "label": "机械安全联锁装置","fieldId": "mech_interlock",    "remarkFieldId": "mech_interlock_remark" }
+            ]
+          },
+          { "seq": "4", "label": "电阻值测量", "fieldId": "resistance",     "remarkFieldId": "resistance_remark" },
+          { "seq": "5", "label": "壁厚测定",   "fieldId": "wall_thickness", "remarkFieldId": "wall_thickness_remark" }
+        ]
+      },
+      "fields": [
+        { "id": "safety_mgmt",           "label": "安全管理情况",   "type": "text", "sqlColumn": "safety_mgmt",           "sqlType": "VARCHAR(200)" },
+        { "id": "safety_mgmt_remark",    "label": "备注",           "type": "text", "sqlColumn": "safety_mgmt_remark",    "sqlType": "VARCHAR(500)" },
+        { "id": "pipeline_body",         "label": "管道本体及运行", "type": "text", "sqlColumn": "pipeline_body",         "sqlType": "VARCHAR(200)" },
+        { "id": "pipeline_body_remark",  "label": "备注",           "type": "text", "sqlColumn": "pipeline_body_remark",  "sqlType": "VARCHAR(500)" },
+        { "id": "safety_valve",          "label": "安全阀",         "type": "text", "sqlColumn": "safety_valve",          "sqlType": "VARCHAR(200)" },
+        { "id": "safety_valve_remark",   "label": "备注",           "type": "text", "sqlColumn": "safety_valve_remark",   "sqlType": "VARCHAR(500)" },
+        { "id": "rupture_disc",          "label": "爆破片装置",     "type": "text", "sqlColumn": "rupture_disc",          "sqlType": "VARCHAR(200)" },
+        { "id": "rupture_disc_remark",   "label": "备注",           "type": "text", "sqlColumn": "rupture_disc_remark",   "sqlType": "VARCHAR(500)" },
+        { "id": "flame_arrester",        "label": "阻火器",         "type": "text", "sqlColumn": "flame_arrester",        "sqlType": "VARCHAR(200)" },
+        { "id": "flame_arrester_remark", "label": "备注",           "type": "text", "sqlColumn": "flame_arrester_remark", "sqlType": "VARCHAR(500)" },
+        { "id": "emergency_valve",       "label": "紧急切断阀",     "type": "text", "sqlColumn": "emergency_valve",       "sqlType": "VARCHAR(200)" },
+        { "id": "emergency_valve_remark","label": "备注",           "type": "text", "sqlColumn": "emergency_valve_remark","sqlType": "VARCHAR(500)" },
+        { "id": "pressure_gauge",        "label": "压力表",         "type": "text", "sqlColumn": "pressure_gauge",        "sqlType": "VARCHAR(200)" },
+        { "id": "pressure_gauge_remark", "label": "备注",           "type": "text", "sqlColumn": "pressure_gauge_remark", "sqlType": "VARCHAR(500)" },
+        { "id": "temp_instrument",       "label": "测温仪表",       "type": "text", "sqlColumn": "temp_instrument",       "sqlType": "VARCHAR(200)" },
+        { "id": "temp_instrument_remark","label": "备注",           "type": "text", "sqlColumn": "temp_instrument_remark","sqlType": "VARCHAR(500)" },
+        { "id": "mech_interlock",        "label": "机械安全联锁",   "type": "text", "sqlColumn": "mech_interlock",        "sqlType": "VARCHAR(200)" },
+        { "id": "mech_interlock_remark", "label": "备注",           "type": "text", "sqlColumn": "mech_interlock_remark", "sqlType": "VARCHAR(500)" },
+        { "id": "resistance",            "label": "电阻值测量",     "type": "text", "sqlColumn": "resistance",            "sqlType": "VARCHAR(200)" },
+        { "id": "resistance_remark",     "label": "备注",           "type": "text", "sqlColumn": "resistance_remark",     "sqlType": "VARCHAR(500)" },
+        { "id": "wall_thickness",        "label": "壁厚测定",       "type": "text", "sqlColumn": "wall_thickness",        "sqlType": "VARCHAR(200)" },
+        { "id": "wall_thickness_remark", "label": "备注",           "type": "text", "sqlColumn": "wall_thickness_remark", "sqlType": "VARCHAR(500)" }
+      ]
+    },
+
+    {
+      "_example": "Table 7 — checklist 布局，select 字段（A/B/C 选项格式）",
+      "id": "visual_inspection",
+      "name": "管道本体及运行情况检查",
+      "sqlTableName": "t_insp_visual",
+      "recordType": "single",
+      "layout": {
+        "type": "checklist",
+        "columns": ["检查项目", "子项", "检查结果（选择合适的选项）", "管道编号..."],
+        "items": [
+          {
+            "label": "外观检验",
+            "subItems": [
+              { "label": "漆色、标志",  "fieldId": "paint_label" },
+              { "label": "组成件及其焊接接头", "fieldId": "weld_joint" },
+              { "label": "外表面",      "fieldId": "outer_surface" },
+              { "label": "布置",        "fieldId": "layout" },
+              { "label": "隔热层",      "fieldId": "insulation" },
+              { "label": "支吊架",      "fieldId": "support" },
+              { "label": "阀门",        "fieldId": "valve" },
+              { "label": "排放装置",    "fieldId": "drain" },
+              { "label": "法兰",        "fieldId": "flange" },
+              { "label": "膨胀节",      "fieldId": "expansion_joint" },
+              { "label": "防腐层",      "fieldId": "anticorrosion" },
+              { "label": "阴极保护装置","fieldId": "cathodic_protection" },
+              { "label": "埋地管道",    "fieldId": "buried_pipe" }
+            ]
+          }
+        ]
+      },
+      "fields": [
+        {
+          "id": "paint_label",
+          "label": "漆色、标志",
+          "type": "select",
+          "options": ["A.符合相关规定", "B.不符合相关规定"],
+          "sqlColumn": "paint_label",
+          "sqlType": "VARCHAR(50)"
+        },
+        {
+          "id": "weld_joint",
+          "label": "组成件及其焊接接头",
+          "type": "select",
+          "options": ["A.完好", "B.裂纹", "C.过热", "D.变形", "E.泄漏", "F.损伤"],
+          "sqlColumn": "weld_joint",
+          "sqlType": "VARCHAR(50)"
+        },
+        {
+          "id": "outer_surface",
+          "label": "外表面",
+          "type": "select",
+          "options": ["A.完好", "B.腐蚀", "C.异常结霜", "D.异常结露"],
+          "sqlColumn": "outer_surface",
+          "sqlType": "VARCHAR(50)"
+        },
+        {
+          "id": "support",
+          "label": "支吊架",
+          "type": "select",
+          "options": ["A.完好", "B.脱落", "C.变形", "D.失载", "E.过载", "F.腐蚀", "G.损坏", "H.焊接接头开裂"],
+          "sqlColumn": "support",
+          "sqlType": "VARCHAR(50)"
+        }
+      ]
+    },
+
+    {
+      "_example": "Table 10 — data-grid 布局，壁厚测定，大型网格（18 数据列）",
+      "id": "wall_thickness_measurement",
+      "name": "壁厚测定记录",
+      "sqlTableName": "t_insp_wall_thickness",
+      "recordType": "multi",
+      "layout": {
+        "type": "data-grid",
+        "prefixFields": ["pipeline_name", "pipeline_no", "instrument_no", "instrument_precision", "surface_condition", "measurement_ratio", "min_thickness", "measurement_count"],
+        "headers": [
+          [
+            { "text": "序号",   "rowspan": 2, "colspan": 1 },
+            { "text": "位置",   "rowspan": 2, "colspan": 1 },
+            { "text": "测点厚度 mm", "rowspan": 1, "colspan": 16 }
+          ],
+          [
+            { "text": "1" },{ "text": "2" },{ "text": "3" },{ "text": "4" },
+            { "text": "5" },{ "text": "6" },{ "text": "7" },{ "text": "8" },
+            { "text": "9" },{ "text": "10"},{ "text": "11"},{ "text": "12"},
+            { "text": "13"},{ "text": "14"},{ "text": "15"},{ "text": "16"}
+          ]
+        ],
+        "dataColumns": ["seq","location","p1","p2","p3","p4","p5","p6","p7","p8","p9","p10","p11","p12","p13","p14","p15","p16"],
+        "defaultRowCount": 25
+      },
+      "fields": [
+        { "id": "pipeline_name",       "label": "管道名称",          "type": "text",   "sqlColumn": "pipeline_name",       "sqlType": "VARCHAR(200)",  "isPrefix": true },
+        { "id": "pipeline_no",         "label": "管道编号",          "type": "text",   "sqlColumn": "pipeline_no",         "sqlType": "VARCHAR(100)",  "isPrefix": true },
+        { "id": "instrument_no",       "label": "测量仪器编号",      "type": "text",   "sqlColumn": "instrument_no",       "sqlType": "VARCHAR(100)",  "isPrefix": true },
+        { "id": "instrument_precision","label": "仪器精度(mm)",      "type": "number", "sqlColumn": "instrument_precision","sqlType": "NUMERIC(10,3)", "isPrefix": true },
+        { "id": "surface_condition",   "label": "表面状况",          "type": "text",   "sqlColumn": "surface_condition",   "sqlType": "VARCHAR(200)",  "isPrefix": true },
+        { "id": "measurement_ratio",   "label": "测量比例",          "type": "text",   "sqlColumn": "measurement_ratio",   "sqlType": "VARCHAR(50)",   "isPrefix": true },
+        { "id": "min_thickness",       "label": "实测最小壁厚(mm)",  "type": "number", "sqlColumn": "min_thickness",       "sqlType": "NUMERIC(10,2)", "isPrefix": true },
+        { "id": "measurement_count",   "label": "实测点数",          "type": "number", "sqlColumn": "measurement_count",   "sqlType": "INTEGER",       "isPrefix": true },
+        { "id": "seq",      "label": "序号", "type": "text",   "sqlColumn": "seq",      "sqlType": "VARCHAR(20)"   },
+        { "id": "location", "label": "位置", "type": "text",   "sqlColumn": "location", "sqlType": "VARCHAR(200)"  },
+        { "id": "p1",  "label": "测点1",  "type": "number", "sqlColumn": "p1",  "sqlType": "NUMERIC(10,2)" },
+        { "id": "p2",  "label": "测点2",  "type": "number", "sqlColumn": "p2",  "sqlType": "NUMERIC(10,2)" },
+        { "id": "p3",  "label": "测点3",  "type": "number", "sqlColumn": "p3",  "sqlType": "NUMERIC(10,2)" },
+        { "id": "p4",  "label": "测点4",  "type": "number", "sqlColumn": "p4",  "sqlType": "NUMERIC(10,2)" },
+        { "id": "p5",  "label": "测点5",  "type": "number", "sqlColumn": "p5",  "sqlType": "NUMERIC(10,2)" },
+        { "id": "p6",  "label": "测点6",  "type": "number", "sqlColumn": "p6",  "sqlType": "NUMERIC(10,2)" },
+        { "id": "p7",  "label": "测点7",  "type": "number", "sqlColumn": "p7",  "sqlType": "NUMERIC(10,2)" },
+        { "id": "p8",  "label": "测点8",  "type": "number", "sqlColumn": "p8",  "sqlType": "NUMERIC(10,2)" },
+        { "id": "p9",  "label": "测点9",  "type": "number", "sqlColumn": "p9",  "sqlType": "NUMERIC(10,2)" },
+        { "id": "p10", "label": "测点10", "type": "number", "sqlColumn": "p10", "sqlType": "NUMERIC(10,2)" },
+        { "id": "p11", "label": "测点11", "type": "number", "sqlColumn": "p11", "sqlType": "NUMERIC(10,2)" },
+        { "id": "p12", "label": "测点12", "type": "number", "sqlColumn": "p12", "sqlType": "NUMERIC(10,2)" },
+        { "id": "p13", "label": "测点13", "type": "number", "sqlColumn": "p13", "sqlType": "NUMERIC(10,2)" },
+        { "id": "p14", "label": "测点14", "type": "number", "sqlColumn": "p14", "sqlType": "NUMERIC(10,2)" },
+        { "id": "p15", "label": "测点15", "type": "number", "sqlColumn": "p15", "sqlType": "NUMERIC(10,2)" },
+        { "id": "p16", "label": "测点16", "type": "number", "sqlColumn": "p16", "sqlType": "NUMERIC(10,2)" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3450 @@
+[
+  {
+    "id": "cover_info",
+    "name": "封面信息",
+    "sqlTableName": "t_insp_cover_info",
+    "recordType": "single",
+    "layout": {
+      "type": "key-value",
+      "rows": [
+        [
+          {
+            "kind": "label",
+            "text": "装 置 名 称",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "label",
+            "text": "：",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "device_name",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "使用单位名称",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "label",
+            "text": "：",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "use_unit_name",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "检 验 日 期",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "label",
+            "text": "：",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "inspection_date",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ]
+      ]
+    },
+    "fields": [
+      {
+        "id": "device_name",
+        "label": "装置名称",
+        "type": "text",
+        "sqlColumn": "device_name",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "use_unit_name",
+        "label": "使用单位名称",
+        "type": "text",
+        "sqlColumn": "use_unit_name",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "inspection_date",
+        "label": "检验日期",
+        "type": "date",
+        "sqlColumn": "inspection_date",
+        "sqlType": "DATE"
+      }
+    ]
+  },
+  {
+    "id": "annual_inspection_report",
+    "name": "年度检查报告",
+    "sqlTableName": "t_insp_annual_inspection_report",
+    "recordType": "single",
+    "layout": {
+      "type": "key-value",
+      "rows": [
+        [
+          {
+            "kind": "label",
+            "text": "使用单位名称",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "use_unit_name",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "label",
+            "text": "使用登记证编号",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "use_registration_cert_no",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "使用单位地址",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "use_unit_address",
+            "colspan": 4,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "使用单位统一社会信用代码",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "unified_social_credit_code",
+            "colspan": 4,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "安全管理人员",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "safety_manager",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "label",
+            "text": "联系电话",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "contact_phone",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "下次年度检查日期",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "next_annual_inspection_date",
+            "colspan": 4,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "检查依据",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "label",
+            "text": "《工业管道安全技术规程》TSG 31-2025",
+            "colspan": 5,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "问题及其处理",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "label",
+            "text": "见《年度检查结论报告附页》",
+            "colspan": 5,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "检查结论",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "label",
+            "text": "见《年度检查结论报告附页》",
+            "colspan": 5,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "说明",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "description",
+            "colspan": 5,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "检查人员：",
+            "colspan": 6,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "static",
+            "text": "检查：                  日期：",
+            "colspan": 3,
+            "rowspan": 1
+          },
+          {
+            "kind": "static",
+            "text": "检验机构核准证号：   (检验机构检验专用章)    年  月  日",
+            "colspan": 3,
+            "rowspan": 2
+          }
+        ],
+        [
+          {
+            "kind": "static",
+            "text": "审核：                  日期：",
+            "colspan": 3,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "static",
+            "text": "批准：                  日期：",
+            "colspan": 3,
+            "rowspan": 1
+          }
+        ]
+      ]
+    },
+    "fields": [
+      {
+        "id": "use_unit_name",
+        "label": "使用单位名称",
+        "type": "text",
+        "sqlColumn": "use_unit_name",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "use_registration_cert_no",
+        "label": "使用登记证编号",
+        "type": "text",
+        "sqlColumn": "use_registration_cert_no",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "use_unit_address",
+        "label": "使用单位地址",
+        "type": "text",
+        "sqlColumn": "use_unit_address",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "unified_social_credit_code",
+        "label": "使用单位统一社会信用代码",
+        "type": "text",
+        "sqlColumn": "unified_social_credit_code",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "safety_manager",
+        "label": "安全管理人员",
+        "type": "text",
+        "sqlColumn": "safety_manager",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "contact_phone",
+        "label": "联系电话",
+        "type": "text",
+        "sqlColumn": "contact_phone",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "next_annual_inspection_date",
+        "label": "下次年度检查日期",
+        "type": "date",
+        "sqlColumn": "next_annual_inspection_date",
+        "sqlType": "DATE"
+      },
+      {
+        "id": "inspection_basis",
+        "label": "检查依据",
+        "type": "static",
+        "defaultValue": "《工业管道安全技术规程》TSG 31-2025",
+        "sqlType": null
+      },
+      {
+        "id": "problems_and_handling",
+        "label": "问题及其处理",
+        "type": "static",
+        "defaultValue": "见《年度检查结论报告附页》",
+        "sqlType": null
+      },
+      {
+        "id": "inspection_conclusion",
+        "label": "检查结论",
+        "type": "static",
+        "defaultValue": "见《年度检查结论报告附页》",
+        "sqlType": null
+      },
+      {
+        "id": "description",
+        "label": "说明",
+        "type": "textarea",
+        "sqlColumn": "description",
+        "sqlType": "TEXT"
+      }
+    ]
+  },
+  {
+    "id": "conclusion_report_appendix",
+    "name": "年度检查结论报告附页",
+    "sqlTableName": "t_insp_conclusion_report_appendix",
+    "recordType": "multi",
+    "layout": {
+      "type": "data-grid",
+      "headers": [
+        [
+          {
+            "text": "序号",
+            "colspan": 1,
+            "rowspan": 2
+          },
+          {
+            "text": "管道编号",
+            "colspan": 1,
+            "rowspan": 2
+          },
+          {
+            "text": "管道名称",
+            "colspan": 1,
+            "rowspan": 2
+          },
+          {
+            "text": "检查结论",
+            "colspan": 1,
+            "rowspan": 2
+          },
+          {
+            "text": "允许（监控）工作条件",
+            "colspan": 3,
+            "rowspan": 1
+          },
+          {
+            "text": "问题及其处理",
+            "colspan": 1,
+            "rowspan": 2
+          },
+          {
+            "text": "备注",
+            "colspan": 1,
+            "rowspan": 2
+          }
+        ],
+        [
+          {
+            "text": "压力MPa",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "温度℃",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "介质",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "□符合要求 □基本符合要求 □不符合要求",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "□符合要求 □基本符合要求 □不符合要求",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ]
+      ],
+      "dataColumns": [
+        "seq_no",
+        "pipe_code",
+        "pipe_name",
+        "inspection_conclusion",
+        "pressure",
+        "temperature",
+        "medium",
+        "problems_and_handling",
+        "remark"
+      ],
+      "prefixFields": [],
+      "defaultRowCount": 9
+    },
+    "fields": [
+      {
+        "id": "seq_no",
+        "label": "序号",
+        "type": "number",
+        "sqlColumn": "seq_no",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "pipe_code",
+        "label": "管道编号",
+        "type": "text",
+        "sqlColumn": "pipe_code",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "pipe_name",
+        "label": "管道名称",
+        "type": "text",
+        "sqlColumn": "pipe_name",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "inspection_conclusion",
+        "label": "检查结论",
+        "type": "radio",
+        "options": [
+          "符合要求",
+          "基本符合要求",
+          "不符合要求"
+        ],
+        "sqlColumn": "inspection_conclusion",
+        "sqlType": "VARCHAR(50)"
+      },
+      {
+        "id": "pressure",
+        "label": "压力MPa",
+        "type": "number",
+        "unit": "MPa",
+        "sqlColumn": "pressure",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "temperature",
+        "label": "温度℃",
+        "type": "number",
+        "unit": "℃",
+        "sqlColumn": "temperature",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "medium",
+        "label": "介质",
+        "type": "text",
+        "sqlColumn": "medium",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "problems_and_handling",
+        "label": "问题及其处理",
+        "type": "textarea",
+        "sqlColumn": "problems_and_handling",
+        "sqlType": "TEXT"
+      },
+      {
+        "id": "remark",
+        "label": "备注",
+        "type": "textarea",
+        "sqlColumn": "remark",
+        "sqlType": "TEXT"
+      }
+    ]
+  },
+  {
+    "id": "inspection_checklist",
+    "name": "年度检查记录表",
+    "sqlTableName": "t_insp_inspection_checklist",
+    "recordType": "multi",
+    "layout": {
+      "type": "checklist",
+      "columns": [
+        "序号",
+        "检查项目",
+        "检查子项",
+        "检查结果",
+        "备注"
+      ],
+      "items": [
+        {
+          "seq": "序号",
+          "label": "检查项目",
+          "fieldId": "seq_no",
+          "remarkFieldId": "inspection_item"
+        },
+        {
+          "seq": "1",
+          "label": "安全管理情况",
+          "fieldId": "inspection_sub_item",
+          "remarkFieldId": "inspection_result"
+        },
+        {
+          "seq": "2",
+          "label": "管道本体及运行情况",
+          "fieldId": "remark"
+        },
+        {
+          "seq": "3",
+          "label": "安全附件、阻火器、机械安全联锁装置及仪表检查情况",
+          "subItems": [
+            {
+              "label": "安全阀"
+            },
+            {
+              "label": "爆破片装置"
+            },
+            {
+              "label": "阻火器装置"
+            },
+            {
+              "label": "紧急切断阀"
+            },
+            {
+              "label": "压力表"
+            },
+            {
+              "label": "测温仪表"
+            },
+            {
+              "label": "机械安全联锁装置"
+            }
+          ]
+        },
+        {
+          "seq": "4",
+          "label": "电阻值测量"
+        },
+        {
+          "seq": "5",
+          "label": "壁厚测定"
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        }
+      ]
+    },
+    "fields": [
+      {
+        "id": "seq_no",
+        "label": "序号",
+        "type": "text",
+        "sqlColumn": "seq_no",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "inspection_item",
+        "label": "检查项目",
+        "type": "text",
+        "sqlColumn": "inspection_item",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "inspection_sub_item",
+        "label": "检查子项",
+        "type": "text",
+        "sqlColumn": "inspection_sub_item",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "inspection_result",
+        "label": "检查结果",
+        "type": "textarea",
+        "sqlColumn": "inspection_result",
+        "sqlType": "TEXT"
+      },
+      {
+        "id": "remark",
+        "label": "备注",
+        "type": "textarea",
+        "sqlColumn": "remark",
+        "sqlType": "TEXT"
+      }
+    ]
+  },
+  {
+    "id": "design_installation_info",
+    "name": "设计安装信息",
+    "sqlTableName": "t_insp_design_installation_info",
+    "recordType": "single",
+    "layout": {
+      "type": "key-value",
+      "rows": [
+        [
+          {
+            "kind": "label",
+            "text": "设  计  单  位",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "design_unit",
+            "colspan": 3,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "设  计  日  期",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "design_date",
+            "colspan": 3,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "设  计  规  范",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "design_standard",
+            "colspan": 3,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "安  装  单  位",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "installation_unit",
+            "colspan": 3,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "安装与验收标准",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "installation_acceptance_standard",
+            "colspan": 3,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "投入运行日期",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "operation_start_date",
+            "colspan": 3,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "敷 设 方 式",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "laying_method",
+            "colspan": 3,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "安全管理情况检查",
+            "colspan": 1,
+            "rowspan": 10
+          },
+          {
+            "kind": "label",
+            "text": "检查项目",
+            "colspan": 3,
+            "rowspan": 1
+          },
+          {
+            "kind": "label",
+            "text": "检查结果",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "1、安全管理制度和操作规程是否齐全有效",
+            "colspan": 3,
+            "rowspan": 1
+          },
+          {
+            "kind": "static",
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "2、相关安全技术规范规定的设计文件、安装竣工图、质量证明文件、监督检验证书、以及安装、改造、修理等资料是否完整",
+            "colspan": 3,
+            "rowspan": 1
+          },
+          {
+            "kind": "static",
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "3、安全管理人员资格证书是否有效，作业人员培训考核记录是否齐全",
+            "colspan": 3,
+            "rowspan": 1
+          },
+          {
+            "kind": "static",
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "4、经常性维护保养、 运行记录、定期安全检查记录是否符合TSG 31、相关安全技术规范以及管理制度的要求",
+            "colspan": 3,
+            "rowspan": 1
+          },
+          {
+            "kind": "static",
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "5、年度检查、定期检验报告是否齐全，检查、检验报告中所提出的问题是否得到解决",
+            "colspan": 3,
+            "rowspan": 1
+          },
+          {
+            "kind": "static",
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "6、安全附件、阻火器、机械安全联锁装置与仪表校验(检定) 、修理和更换记录是否齐全",
+            "colspan": 3,
+            "rowspan": 1
+          },
+          {
+            "kind": "static",
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "7、专项应急预案和演练记录是否符合相关安全技术规范以及管理制度的要求",
+            "colspan": 3,
+            "rowspan": 1
+          },
+          {
+            "kind": "static",
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "8、日常检查、月度检查中发现的危及管道安全运行的问题是否完成整改",
+            "colspan": 3,
+            "rowspan": 1
+          },
+          {
+            "kind": "static",
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "label",
+            "text": "9、是否对事故、故障以及处理情况进行了记录",
+            "colspan": 3,
+            "rowspan": 1
+          },
+          {
+            "kind": "static",
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "static",
+            "text": "检查：                年  月  日",
+            "colspan": 3,
+            "rowspan": 1
+          },
+          {
+            "kind": "static",
+            "text": "审核：                  年  月  日",
+            "colspan": 2,
+            "rowspan": 1
+          }
+        ]
+      ]
+    },
+    "fields": [
+      {
+        "id": "design_unit",
+        "name": "设计单位",
+        "type": "text",
+        "sqlColumn": "design_unit",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "design_date",
+        "name": "设计日期",
+        "type": "date",
+        "sqlColumn": "design_date",
+        "sqlType": "DATE"
+      },
+      {
+        "id": "design_standard",
+        "name": "设计规范",
+        "type": "text",
+        "sqlColumn": "design_standard",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "installation_unit",
+        "name": "安装单位",
+        "type": "text",
+        "sqlColumn": "installation_unit",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "installation_acceptance_standard",
+        "name": "安装与验收标准",
+        "type": "text",
+        "sqlColumn": "installation_acceptance_standard",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "operation_start_date",
+        "name": "投入运行日期",
+        "type": "date",
+        "sqlColumn": "operation_start_date",
+        "sqlType": "DATE"
+      },
+      {
+        "id": "laying_method",
+        "name": "敷设方式",
+        "type": "text",
+        "sqlColumn": "laying_method",
+        "sqlType": "VARCHAR(200)"
+      }
+    ]
+  },
+  {
+    "id": "safety_management_check",
+    "name": "安全管理情况检查",
+    "sqlTableName": "t_insp_safety_management_check",
+    "recordType": "single",
+    "layout": {
+      "type": "checklist",
+      "items": [
+        {
+          "seq": "序号",
+          "label": "管道名称",
+          "subItems": [
+            {
+              "label": "管道编号",
+              "fieldId": "safety_rules_complete",
+              "remarkFieldId": "design_docs_complete"
+            },
+            {
+              "label": "公称直径",
+              "fieldId": "personnel_qualification",
+              "remarkFieldId": "maintenance_records"
+            },
+            {
+              "label": "(mm)",
+              "fieldId": "inspection_reports_complete",
+              "remarkFieldId": "safety_accessories_records"
+            }
+          ]
+        },
+        {
+          "seq": "",
+          "label": "",
+          "fieldId": "emergency_plan_records",
+          "remarkFieldId": "rectification_completed"
+        },
+        {
+          "seq": "",
+          "label": "",
+          "fieldId": "accident_records"
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": ""
+        }
+      ],
+      "columns": [
+        "序号",
+        "检查项目",
+        "检查结果",
+        "备注"
+      ]
+    },
+    "fields": [
+      {
+        "id": "safety_rules_complete",
+        "name": "安全管理制度和操作规程是否齐全有效",
+        "type": "text",
+        "sqlColumn": "safety_rules_complete",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "design_docs_complete",
+        "name": "相关安全技术规范规定的设计文件、安装竣工图、质量证明文件、监督检验证书、以及安装、改造、修理等资料是否完整",
+        "type": "text",
+        "sqlColumn": "design_docs_complete",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "personnel_qualification",
+        "name": "安全管理人员资格证书是否有效，作业人员培训考核记录是否齐全",
+        "type": "text",
+        "sqlColumn": "personnel_qualification",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "maintenance_records",
+        "name": "经常性维护保养、运行记录、定期安全检查记录是否符合TSG 31、相关安全技术规范以及管理制度的要求",
+        "type": "text",
+        "sqlColumn": "maintenance_records",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "inspection_reports_complete",
+        "name": "年度检查、定期检验报告是否齐全，检查、检验报告中所提出的问题是否得到解决",
+        "type": "text",
+        "sqlColumn": "inspection_reports_complete",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "safety_accessories_records",
+        "name": "安全附件、阻火器、机械安全联锁装置与仪表校验(检定)、修理和更换记录是否齐全",
+        "type": "text",
+        "sqlColumn": "safety_accessories_records",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "emergency_plan_records",
+        "name": "专项应急预案和演练记录是否符合相关安全技术规范以及管理制度的要求",
+        "type": "text",
+        "sqlColumn": "emergency_plan_records",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "rectification_completed",
+        "name": "日常检查、月度检查中发现的危及管道安全运行的问题是否完成整改",
+        "type": "text",
+        "sqlColumn": "rectification_completed",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "accident_records",
+        "name": "是否对事故、故障以及处理情况进行了记录",
+        "type": "text",
+        "sqlColumn": "accident_records",
+        "sqlType": "VARCHAR(200)"
+      }
+    ]
+  },
+  {
+    "id": "pipeline_basic_info",
+    "name": "管道基本信息",
+    "sqlTableName": "t_insp_pipeline_basic_info",
+    "recordType": "multi",
+    "layout": {
+      "type": "data-grid",
+      "headers": [
+        [
+          {
+            "text": "检查项目",
+            "colspan": 2,
+            "rowspan": 2
+          },
+          {
+            "text": "检查结果（选择合适的选项）",
+            "colspan": 1,
+            "rowspan": 2
+          },
+          {
+            "text": "管道编号",
+            "colspan": 5,
+            "rowspan": 1
+          }
+        ]
+      ],
+      "dataColumns": [
+        "serial_no",
+        "pipeline_name",
+        "pipeline_number",
+        "pipeline_level",
+        "material",
+        "medium",
+        "nominal_diameter",
+        "nominal_wall_thickness",
+        "pipeline_length",
+        "start_point",
+        "end_point",
+        "design_temperature",
+        "design_pressure",
+        "working_temperature",
+        "working_pressure",
+        "anticorrosion_material",
+        "insulation_material",
+        "insulation_thickness"
+      ],
+      "prefixFields": [],
+      "defaultRowCount": 16
+    },
+    "fields": [
+      {
+        "id": "serial_no",
+        "name": "序号",
+        "type": "number",
+        "sqlColumn": "serial_no",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "pipeline_name",
+        "name": "管道名称",
+        "type": "text",
+        "sqlColumn": "pipeline_name",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "pipeline_number",
+        "name": "管道编号",
+        "type": "text",
+        "sqlColumn": "pipeline_number",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "pipeline_level",
+        "name": "管道级别",
+        "type": "text",
+        "sqlColumn": "pipeline_level",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "material",
+        "name": "材质",
+        "type": "text",
+        "sqlColumn": "material",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "medium",
+        "name": "介质",
+        "type": "text",
+        "sqlColumn": "medium",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "nominal_diameter",
+        "name": "公称直径(mm)",
+        "type": "number",
+        "sqlColumn": "nominal_diameter",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "nominal_wall_thickness",
+        "name": "公称壁厚(mm)",
+        "type": "number",
+        "sqlColumn": "nominal_wall_thickness",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "pipeline_length",
+        "name": "管道长度(m)",
+        "type": "number",
+        "sqlColumn": "pipeline_length",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "start_point",
+        "name": "起点",
+        "type": "text",
+        "sqlColumn": "start_point",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "end_point",
+        "name": "终点",
+        "type": "text",
+        "sqlColumn": "end_point",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "design_temperature",
+        "name": "设计温度(℃)",
+        "type": "number",
+        "sqlColumn": "design_temperature",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "design_pressure",
+        "name": "设计压力(MPa)",
+        "type": "number",
+        "sqlColumn": "design_pressure",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "working_temperature",
+        "name": "工作温度(℃)",
+        "type": "number",
+        "sqlColumn": "working_temperature",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "working_pressure",
+        "name": "工作压力(MPa)",
+        "type": "number",
+        "sqlColumn": "working_pressure",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "anticorrosion_material",
+        "name": "防腐层材料",
+        "type": "text",
+        "sqlColumn": "anticorrosion_material",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "insulation_material",
+        "name": "绝热层材料",
+        "type": "text",
+        "sqlColumn": "insulation_material",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "insulation_thickness",
+        "name": "绝热层厚度mm",
+        "type": "number",
+        "sqlColumn": "insulation_thickness",
+        "sqlType": "NUMERIC(10,2)"
+      }
+    ]
+  },
+  {
+    "id": "appearance_inspection",
+    "name": "外观检验",
+    "sqlTableName": "t_insp_appearance_inspection",
+    "recordType": "multi",
+    "layout": {
+      "type": "checklist",
+      "items": [
+        {
+          "seq": "",
+          "label": "安全阀检查",
+          "fieldId": "pipeline_number",
+          "remarkFieldId": "paint_color_marking"
+        },
+        {
+          "seq": "型号是否符合设计要求",
+          "label": "",
+          "fieldId": "components_welding_joints",
+          "remarkFieldId": "outer_surface"
+        },
+        {
+          "seq": "整定压力",
+          "label": "MPa",
+          "fieldId": "layout_check",
+          "remarkFieldId": "insulation_layer"
+        },
+        {
+          "seq": "安全阀和排放口之间是否设置截断阀",
+          "label": "",
+          "fieldId": "support_hanger",
+          "remarkFieldId": "valve"
+        },
+        {
+          "seq": "防雨帽是否完好",
+          "label": "",
+          "fieldId": "discharge_device",
+          "remarkFieldId": "flange"
+        },
+        {
+          "seq": "",
+          "label": "爆破片装置检查",
+          "fieldId": "expansion_joint",
+          "remarkFieldId": "anticorrosion_layer"
+        },
+        {
+          "seq": "是否超期使用",
+          "label": "",
+          "fieldId": "cathodic_protection",
+          "remarkFieldId": "buried_pipeline"
+        },
+        {
+          "seq": "是否有泄漏",
+          "label": "",
+          "fieldId": "apron_fueling_pipeline",
+          "remarkFieldId": "other"
+        },
+        {
+          "seq": "放空管内是否有存水或结冰",
+          "label": ""
+        },
+        {
+          "seq": "截断阀是否处于全开位置，铅封是否完好",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": "紧急切断装置检查"
+        },
+        {
+          "seq": "铭牌是否符合要求",
+          "label": ""
+        },
+        {
+          "seq": "是否有泄漏",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": "阻火器检查"
+        },
+        {
+          "seq": "安装方向是否正确",
+          "label": ""
+        },
+        {
+          "seq": "是否有泄漏",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": "压力表检查"
+        },
+        {
+          "seq": "选型是否符合要求",
+          "label": ""
+        },
+        {
+          "seq": "铅封是否完好",
+          "label": ""
+        },
+        {
+          "seq": "外观、精确度等级、 量程、表盘直径是否符合要求",
+          "label": ""
+        },
+        {
+          "seq": "同一系统上各压力表的读数是否合理",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": "机械安全联锁装置检查"
+        },
+        {
+          "seq": "结构是否完好",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": "测温仪表检查"
+        },
+        {
+          "seq": "定期校验和检修是否符合要求",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": "机械安全联锁装置检查"
+        },
+        {
+          "seq": "结构是否完好",
+          "label": ""
+        },
+        {
+          "seq": "",
+          "label": "结论："
+        }
+      ],
+      "columns": [
+        "序号",
+        "检查项目",
+        "检查结果",
+        "备注"
+      ]
+    },
+    "fields": [
+      {
+        "id": "pipeline_number",
+        "name": "管道编号",
+        "type": "text",
+        "sqlColumn": "pipeline_number",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "paint_color_marking",
+        "name": "漆色、标志",
+        "type": "select",
+        "options": [
+          "A.符合相关规定",
+          "B.不符合相关规定"
+        ],
+        "sqlColumn": "paint_color_marking",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "components_welding_joints",
+        "name": "组成件及其焊接接头",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.裂纹",
+          "C.过热",
+          "D.变形",
+          "E.泄漏",
+          "F.损伤"
+        ],
+        "sqlColumn": "components_welding_joints",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "outer_surface",
+        "name": "外表面",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.腐蚀",
+          "C.异常结霜",
+          "D.异常结露"
+        ],
+        "sqlColumn": "outer_surface",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "layout_check",
+        "name": "布置",
+        "type": "select",
+        "options": [
+          "A.正常",
+          "B.振动",
+          "C.碰撞",
+          "D.摩擦"
+        ],
+        "sqlColumn": "layout_check",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "insulation_layer",
+        "name": "隔热层",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.破损",
+          "C.脱落",
+          "D.跑冷",
+          "E.防腐层破损",
+          "W.无此项"
+        ],
+        "sqlColumn": "insulation_layer",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "support_hanger",
+        "name": "支吊架",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.脱落",
+          "C.变形",
+          "D.失载",
+          "E.过载",
+          "F.腐蚀",
+          "G.损坏",
+          "H.焊接接头开裂",
+          "I.弹簧支吊架状态异常",
+          "J.导向支架间隙异常",
+          "K.阻尼器位移异常",
+          "L.减振器位移异常",
+          "M.液压阻尼器泄漏",
+          "W.无此项"
+        ],
+        "sqlColumn": "support_hanger",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "valve",
+        "name": "阀门",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.腐蚀",
+          "C.阀体表面裂纹",
+          "D.缩孔",
+          "E.连接螺栓松动",
+          "F.开闭状态异常",
+          "G.阀门开启不灵活",
+          "W.无此项"
+        ],
+        "sqlColumn": "valve",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "discharge_device",
+        "name": "排放装置",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.异常集气",
+          "C.积液",
+          "W.无此项"
+        ],
+        "sqlColumn": "discharge_device",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "flange",
+        "name": "法兰",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.偏口",
+          "C.异常翘曲",
+          "D.变形",
+          "E.泄漏",
+          "F.紧固件不齐全",
+          "G.紧固件松动",
+          "H.腐蚀",
+          "W.无此项"
+        ],
+        "sqlColumn": "flange",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "expansion_joint",
+        "name": "膨胀节",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.波纹管膨胀节表面划痕",
+          "C.波纹管膨胀节凹痕",
+          "D.波纹管膨胀节腐蚀穿孔",
+          "E.波纹管膨胀节开裂",
+          "F.波纹管波间距不符合要求",
+          "G.波纹管膨胀节失稳",
+          "H.铰链型膨胀节的铰链、销轴变形",
+          "I.铰链型膨胀节的铰链、销轴脱落",
+          "J.铰链型膨胀节的铰链、销轴损坏",
+          "K.拉杆式膨胀节的拉杆、螺栓、连接支座不符合要求",
+          "L.膨胀节位移指示醒目不明确",
+          "W.无此项"
+        ],
+        "sqlColumn": "expansion_joint",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "anticorrosion_layer",
+        "name": "防腐层",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.鼓包",
+          "C.变色",
+          "W.无此项"
+        ],
+        "sqlColumn": "anticorrosion_layer",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "cathodic_protection",
+        "name": "阴极保护装置",
+        "type": "select",
+        "options": [
+          "A.完好有效",
+          "B.缺失",
+          "C.失效",
+          "W.无此项"
+        ],
+        "sqlColumn": "cathodic_protection",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "buried_pipeline",
+        "name": "埋地管道",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.异常",
+          "C.标识桩牌破坏",
+          "D.覆土沉降",
+          "E.介质泄漏迹象",
+          "W.无此项"
+        ],
+        "sqlColumn": "buried_pipeline",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "apron_fueling_pipeline",
+        "name": "机坪加油管道",
+        "type": "select",
+        "options": [
+          "A.正常",
+          "B.高点排气装置不正常",
+          "C.低点排水装置不正常",
+          "D.测漏系统功能不正常",
+          "E.耐压试验不合格",
+          "W.无此项"
+        ],
+        "sqlColumn": "apron_fueling_pipeline",
+        "sqlType": "VARCHAR(100)"
+      },
+      {
+        "id": "other",
+        "name": "其它",
+        "type": "textarea",
+        "sqlColumn": "other",
+        "sqlType": "TEXT"
+      }
+    ]
+  },
+  {
+    "id": "safety_accessories_check",
+    "name": "安全附件检查",
+    "sqlTableName": "t_insp_safety_accessories_check",
+    "recordType": "single",
+    "layout": {
+      "type": "section-group",
+      "sections": [
+        {
+          "title": "",
+          "rows": [
+            [
+              {
+                "label": "管道名称",
+                "fieldId": "sv_model_meets_design",
+                "colspan": 2,
+                "labelColspan": 2
+              },
+              {
+                "label": "管道编号",
+                "fieldId": "sv_installation_position",
+                "colspan": 2,
+                "labelColspan": 3
+              }
+            ],
+            [
+              {
+                "label": "介质",
+                "fieldId": "sv_calibration_validity",
+                "colspan": 2,
+                "labelColspan": 2
+              },
+              {
+                "label": "管道规格(外径mm×壁厚mm)",
+                "fieldId": "sv_set_pressure",
+                "colspan": 2,
+                "labelColspan": 3
+              }
+            ],
+            [
+              {
+                "label": "检测项目",
+                "fieldId": "sv_seal_intact",
+                "colspan": 7,
+                "labelColspan": 2
+              }
+            ],
+            [
+              {
+                "label": "仪器名称",
+                "fieldId": "sv_leakage",
+                "colspan": 2,
+                "labelColspan": 2
+              },
+              {
+                "label": "仪器型号",
+                "fieldId": "sv_shutoff_valve",
+                "colspan": 2,
+                "labelColspan": 3
+              }
+            ],
+            [
+              {
+                "label": "仪器编号",
+                "fieldId": "sv_shutoff_valve_open_seal",
+                "colspan": 2,
+                "labelColspan": 2
+              },
+              {
+                "label": "仪器精度",
+                "fieldId": "sv_vent_pipe",
+                "colspan": 2,
+                "labelColspan": 3
+              }
+            ],
+            [
+              {
+                "label": "序号",
+                "fieldId": "sv_rain_cap",
+                "colspan": 8,
+                "labelColspan": 1
+              }
+            ],
+            [
+              {
+                "label": "1",
+                "fieldId": "sv_other_abnormality",
+                "colspan": 1,
+                "labelColspan": 2
+              },
+              {
+                "label": "3",
+                "fieldId": "rd_overdue",
+                "colspan": 2,
+                "labelColspan": 2
+              },
+              {
+                "label": "5",
+                "fieldId": "rd_installation_direction",
+                "colspan": 1,
+                "labelColspan": 1
+              }
+            ],
+            [
+              {
+                "label": "1",
+                "fieldId": "rd_temp_pressure_meets",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "rd_leakage",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "rd_burst_abnormality",
+                "colspan": 1,
+                "labelColspan": 2
+              }
+            ],
+            [
+              {
+                "label": "2",
+                "fieldId": "rd_vent_pipe",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "rd_water_or_ice",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "rd_waterproof_cap",
+                "colspan": 1,
+                "labelColspan": 2
+              }
+            ],
+            [
+              {
+                "label": "3",
+                "fieldId": "rd_shutoff_valve",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "rd_shutoff_valve_open_seal",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "rd_series_with_sv",
+                "colspan": 1,
+                "labelColspan": 2
+              }
+            ],
+            [
+              {
+                "label": "4",
+                "fieldId": "rd_other_abnormality",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "esv_nameplate",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "esv_overflow_protection",
+                "colspan": 1,
+                "labelColspan": 2
+              }
+            ],
+            [
+              {
+                "label": "5",
+                "fieldId": "esv_leakage",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "esv_other_abnormality",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "fa_installation_direction",
+                "colspan": 1,
+                "labelColspan": 2
+              }
+            ],
+            [
+              {
+                "label": "6",
+                "fieldId": "fa_spec_meets_requirement",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "fa_leakage",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "fa_other_abnormality",
+                "colspan": 1,
+                "labelColspan": 2
+              }
+            ],
+            [
+              {
+                "label": "检测项目",
+                "fieldId": "pg_selection_meets",
+                "colspan": 7,
+                "labelColspan": 2
+              }
+            ],
+            [
+              {
+                "label": "仪器名称",
+                "fieldId": "pg_maintenance_system",
+                "colspan": 2,
+                "labelColspan": 2
+              },
+              {
+                "label": "仪器型号",
+                "fieldId": "pg_calibration_validity",
+                "colspan": 2,
+                "labelColspan": 3
+              }
+            ],
+            [
+              {
+                "label": "仪器编号",
+                "fieldId": "pg_seal_intact",
+                "colspan": 2,
+                "labelColspan": 2
+              },
+              {
+                "label": "仪器精度",
+                "fieldId": "pg_three_way_valve",
+                "colspan": 2,
+                "labelColspan": 3
+              }
+            ],
+            [
+              {
+                "label": "序륵",
+                "fieldId": "pg_appearance_accuracy",
+                "colspan": 8,
+                "labelColspan": 1
+              }
+            ],
+            [
+              {
+                "label": "1",
+                "fieldId": "pg_readings_reasonable",
+                "colspan": 1,
+                "labelColspan": 2
+              },
+              {
+                "label": "3",
+                "fieldId": "mil_structure_intact",
+                "colspan": 2,
+                "labelColspan": 2
+              },
+              {
+                "label": "5",
+                "fieldId": "mil_function_meets",
+                "colspan": 1,
+                "labelColspan": 1
+              }
+            ],
+            [
+              {
+                "label": "1",
+                "fieldId": "ti_calibration_maintenance",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "ti_range_matching",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "ti_appearance_meets",
+                "colspan": 1,
+                "labelColspan": 2
+              }
+            ],
+            [
+              {
+                "label": "2",
+                "fieldId": "mil2_structure_intact",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "mil2_function_meets",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "conclusion",
+                "colspan": 1,
+                "labelColspan": 2
+              }
+            ],
+            [
+              {
+                "label": "3",
+                "fieldId": "_field_0",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "_field_2",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "_field_4",
+                "colspan": 1,
+                "labelColspan": 2
+              }
+            ],
+            [
+              {
+                "label": "4",
+                "fieldId": "_field_0",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "_field_2",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "_field_4",
+                "colspan": 1,
+                "labelColspan": 2
+              }
+            ],
+            [
+              {
+                "label": "5",
+                "fieldId": "_field_0",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "_field_2",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "_field_4",
+                "colspan": 1,
+                "labelColspan": 2
+              }
+            ],
+            [
+              {
+                "label": "6",
+                "fieldId": "_field_0",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "_field_2",
+                "colspan": 2,
+                "labelColspan": 1
+              },
+              {
+                "label": "",
+                "fieldId": "_field_4",
+                "colspan": 1,
+                "labelColspan": 2
+              }
+            ]
+          ]
+        },
+        {
+          "title": "备注：",
+          "rows": [
+            [
+              {
+                "label": "检查:               日期：",
+                "fieldId": "_field_0",
+                "colspan": 4,
+                "labelColspan": 5
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "fields": [
+      {
+        "id": "sv_model_meets_design",
+        "name": "安全阀型号是否符合设计要求",
+        "type": "text",
+        "sqlColumn": "sv_model_meets_design",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "sv_installation_position",
+        "name": "安全阀安装位置是否正确",
+        "type": "text",
+        "sqlColumn": "sv_installation_position",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "sv_calibration_validity",
+        "name": "安全阀校验有效期",
+        "type": "text",
+        "sqlColumn": "sv_calibration_validity",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "sv_set_pressure",
+        "name": "安全阀整定压力(MPa)",
+        "type": "number",
+        "sqlColumn": "sv_set_pressure",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "sv_seal_intact",
+        "name": "安全阀铅封是否完好",
+        "type": "text",
+        "sqlColumn": "sv_seal_intact",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "sv_leakage",
+        "name": "安全阀是否有泄漏",
+        "type": "text",
+        "sqlColumn": "sv_leakage",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "sv_shutoff_valve",
+        "name": "安全阀和排放口之间是否设置截断阀",
+        "type": "text",
+        "sqlColumn": "sv_shutoff_valve",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "sv_shutoff_valve_open_seal",
+        "name": "截断阀是否处于全开位置，铅封是否完好",
+        "type": "text",
+        "sqlColumn": "sv_shutoff_valve_open_seal",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "sv_vent_pipe",
+        "name": "放空管是否畅通",
+        "type": "text",
+        "sqlColumn": "sv_vent_pipe",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "sv_rain_cap",
+        "name": "防雨帽是否完好",
+        "type": "text",
+        "sqlColumn": "sv_rain_cap",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "sv_other_abnormality",
+        "name": "安全阀其他异常情况",
+        "type": "textarea",
+        "sqlColumn": "sv_other_abnormality",
+        "sqlType": "TEXT"
+      },
+      {
+        "id": "rd_overdue",
+        "name": "爆破片是否超期使用",
+        "type": "text",
+        "sqlColumn": "rd_overdue",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "rd_installation_direction",
+        "name": "爆破片安装方向是否正确",
+        "type": "text",
+        "sqlColumn": "rd_installation_direction",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "rd_temp_pressure_meets",
+        "name": "爆破片温度、压力是否符合运行要求",
+        "type": "text",
+        "sqlColumn": "rd_temp_pressure_meets",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "rd_leakage",
+        "name": "爆破片是否有泄漏",
+        "type": "text",
+        "sqlColumn": "rd_leakage",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "rd_burst_abnormality",
+        "name": "是否存在未超压爆破或者超压未爆破的情况",
+        "type": "text",
+        "sqlColumn": "rd_burst_abnormality",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "rd_vent_pipe",
+        "name": "爆破片放空管是否通畅",
+        "type": "text",
+        "sqlColumn": "rd_vent_pipe",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "rd_water_or_ice",
+        "name": "放空管内是否有存水或结冰",
+        "type": "text",
+        "sqlColumn": "rd_water_or_ice",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "rd_waterproof_cap",
+        "name": "防水帽、防雨片是否完好",
+        "type": "text",
+        "sqlColumn": "rd_waterproof_cap",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "rd_shutoff_valve",
+        "name": "爆破片和排放口之间是否设置了截断阀",
+        "type": "text",
+        "sqlColumn": "rd_shutoff_valve",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "rd_shutoff_valve_open_seal",
+        "name": "爆破片截断阀是否处于全开位置，铅封是否完好",
+        "type": "text",
+        "sqlColumn": "rd_shutoff_valve_open_seal",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "rd_series_with_sv",
+        "name": "爆破片装置和安全阀串联使用时，是否符合要求",
+        "type": "text",
+        "sqlColumn": "rd_series_with_sv",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "rd_other_abnormality",
+        "name": "爆破片其他异常情况",
+        "type": "textarea",
+        "sqlColumn": "rd_other_abnormality",
+        "sqlType": "TEXT"
+      },
+      {
+        "id": "esv_nameplate",
+        "name": "紧急切断装置铭牌是否符合要求",
+        "type": "text",
+        "sqlColumn": "esv_nameplate",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "esv_overflow_protection",
+        "name": "紧急切断阀的过流保护装置动作符合要求",
+        "type": "text",
+        "sqlColumn": "esv_overflow_protection",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "esv_leakage",
+        "name": "紧急切断装置是否有泄漏",
+        "type": "text",
+        "sqlColumn": "esv_leakage",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "esv_other_abnormality",
+        "name": "紧急切断装置其他异常情况",
+        "type": "textarea",
+        "sqlColumn": "esv_other_abnormality",
+        "sqlType": "TEXT"
+      },
+      {
+        "id": "fa_installation_direction",
+        "name": "阻火器安装方向是否正确",
+        "type": "text",
+        "sqlColumn": "fa_installation_direction",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "fa_spec_meets_requirement",
+        "name": "阻火器标定的公称压力适用介质和温度符合运行要求",
+        "type": "text",
+        "sqlColumn": "fa_spec_meets_requirement",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "fa_leakage",
+        "name": "阻火器是否有泄漏",
+        "type": "text",
+        "sqlColumn": "fa_leakage",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "fa_other_abnormality",
+        "name": "阻火器其他异常情况",
+        "type": "textarea",
+        "sqlColumn": "fa_other_abnormality",
+        "sqlType": "TEXT"
+      },
+      {
+        "id": "pg_selection_meets",
+        "name": "压力表选型是否符合要求",
+        "type": "text",
+        "sqlColumn": "pg_selection_meets",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "pg_maintenance_system",
+        "name": "压力表定期检修维护制度是否符合要求",
+        "type": "text",
+        "sqlColumn": "pg_maintenance_system",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "pg_calibration_validity",
+        "name": "压力表检定有效期",
+        "type": "text",
+        "sqlColumn": "pg_calibration_validity",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "pg_seal_intact",
+        "name": "压力表铅封是否完好",
+        "type": "text",
+        "sqlColumn": "pg_seal_intact",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "pg_three_way_valve",
+        "name": "在压力表和管道之间设置三通旋塞或者针形阀的位置、开启标记及其锁紧装置符合要求",
+        "type": "text",
+        "sqlColumn": "pg_three_way_valve",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "pg_appearance_accuracy",
+        "name": "外观、精确度等级、量程、表盘直径是否符合要求",
+        "type": "text",
+        "sqlColumn": "pg_appearance_accuracy",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "pg_readings_reasonable",
+        "name": "同一系统上各压力表的读数是否合理",
+        "type": "text",
+        "sqlColumn": "pg_readings_reasonable",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "mil_structure_intact",
+        "name": "机械安全联锁装置结构是否完好",
+        "type": "text",
+        "sqlColumn": "mil_structure_intact",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "mil_function_meets",
+        "name": "机械安全联锁装置功能是否符合要求",
+        "type": "text",
+        "sqlColumn": "mil_function_meets",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "ti_calibration_maintenance",
+        "name": "测温仪表定期校验和检修是否符合要求",
+        "type": "text",
+        "sqlColumn": "ti_calibration_maintenance",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "ti_range_matching",
+        "name": "测温仪表量程与其检测的温度范围是否匹配",
+        "type": "text",
+        "sqlColumn": "ti_range_matching",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "ti_appearance_meets",
+        "name": "测温仪表及其二次仪表的外观符合要求",
+        "type": "text",
+        "sqlColumn": "ti_appearance_meets",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "mil2_structure_intact",
+        "name": "机械安全联锁装置结构是否完好(复查)",
+        "type": "text",
+        "sqlColumn": "mil2_structure_intact",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "mil2_function_meets",
+        "name": "机械安全联锁装置功能是否符合要求(复查)",
+        "type": "text",
+        "sqlColumn": "mil2_function_meets",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "conclusion",
+        "name": "结论",
+        "type": "textarea",
+        "sqlColumn": "conclusion",
+        "sqlType": "TEXT"
+      }
+    ]
+  },
+  {
+    "id": "resistance_test",
+    "name": "电阻检测记录",
+    "sqlTableName": "t_insp_resistance_test",
+    "recordType": "single",
+    "layout": {
+      "type": "section-group",
+      "sections": [
+        {
+          "title": "基本信息",
+          "fieldIds": [
+            "pipe_name",
+            "pipe_number",
+            "medium",
+            "pipe_spec"
+          ]
+        },
+        {
+          "title": "法兰间接触电阻检测",
+          "fieldIds": [
+            "flange_instrument_name",
+            "flange_instrument_model",
+            "flange_instrument_number",
+            "flange_instrument_accuracy"
+          ]
+        },
+        {
+          "title": "法兰间接触电阻数据",
+          "fieldIds": [
+            "flange_resistance_data"
+          ]
+        },
+        {
+          "title": "对地电阻检测",
+          "fieldIds": [
+            "ground_instrument_name",
+            "ground_instrument_model",
+            "ground_instrument_number",
+            "ground_instrument_accuracy"
+          ]
+        },
+        {
+          "title": "对地电阻数据",
+          "fieldIds": [
+            "ground_resistance_data"
+          ]
+        },
+        {
+          "title": "备注",
+          "fieldIds": [
+            "remark"
+          ]
+        }
+      ]
+    },
+    "fields": [
+      {
+        "id": "pipe_name",
+        "label": "管道名称",
+        "type": "text",
+        "sqlColumn": "pipe_name",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "pipe_number",
+        "label": "管道编号",
+        "type": "text",
+        "sqlColumn": "pipe_number",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "medium",
+        "label": "介质",
+        "type": "text",
+        "sqlColumn": "medium",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "pipe_spec",
+        "label": "管道规格(外径mm×壁厚mm)",
+        "type": "text",
+        "sqlColumn": "pipe_spec",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "flange_instrument_name",
+        "label": "仪器名称（法兰间接触电阻）",
+        "type": "text",
+        "sqlColumn": "flange_instrument_name",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "flange_instrument_model",
+        "label": "仪器型号（法兰间接触电阻）",
+        "type": "text",
+        "sqlColumn": "flange_instrument_model",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "flange_instrument_number",
+        "label": "仪器编号（法兰间接触电阻）",
+        "type": "text",
+        "sqlColumn": "flange_instrument_number",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "flange_instrument_accuracy",
+        "label": "仪器精度（法兰间接触电阻）",
+        "type": "text",
+        "sqlColumn": "flange_instrument_accuracy",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "flange_resistance_data",
+        "label": "法兰间接触电阻测量数据",
+        "type": "data-grid",
+        "columns": [
+          {
+            "id": "seq",
+            "label": "序号",
+            "type": "number"
+          },
+          {
+            "id": "point_1",
+            "label": "测点1",
+            "type": "number"
+          },
+          {
+            "id": "point_2",
+            "label": "测点2",
+            "type": "number"
+          },
+          {
+            "id": "point_3",
+            "label": "测点3",
+            "type": "number"
+          },
+          {
+            "id": "point_4",
+            "label": "测点4",
+            "type": "number"
+          },
+          {
+            "id": "point_5",
+            "label": "测点5",
+            "type": "number"
+          }
+        ],
+        "sqlColumn": "flange_resistance_data",
+        "sqlType": null
+      },
+      {
+        "id": "ground_instrument_name",
+        "label": "仪器名称（对地电阻）",
+        "type": "text",
+        "sqlColumn": "ground_instrument_name",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "ground_instrument_model",
+        "label": "仪器型号（对地电阻）",
+        "type": "text",
+        "sqlColumn": "ground_instrument_model",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "ground_instrument_number",
+        "label": "仪器编号（对地电阻）",
+        "type": "text",
+        "sqlColumn": "ground_instrument_number",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "ground_instrument_accuracy",
+        "label": "仪器精度（对地电阻）",
+        "type": "text",
+        "sqlColumn": "ground_instrument_accuracy",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "ground_resistance_data",
+        "label": "对地电阻测量数据",
+        "type": "data-grid",
+        "columns": [
+          {
+            "id": "seq",
+            "label": "序号",
+            "type": "number"
+          },
+          {
+            "id": "point_1",
+            "label": "测点1",
+            "type": "number"
+          },
+          {
+            "id": "point_2",
+            "label": "测点2",
+            "type": "number"
+          },
+          {
+            "id": "point_3",
+            "label": "测点3",
+            "type": "number"
+          },
+          {
+            "id": "point_4",
+            "label": "测点4",
+            "type": "number"
+          },
+          {
+            "id": "point_5",
+            "label": "测点5",
+            "type": "number"
+          }
+        ],
+        "sqlColumn": "ground_resistance_data",
+        "sqlType": null
+      },
+      {
+        "id": "remark",
+        "label": "备注",
+        "type": "textarea",
+        "sqlColumn": "remark",
+        "sqlType": "TEXT"
+      }
+    ]
+  },
+  {
+    "id": "wall_thickness_measurement",
+    "name": "壁厚测量记录",
+    "sqlTableName": "t_insp_wall_thickness_measurement",
+    "recordType": "single",
+    "layout": {
+      "type": "section-group",
+      "sections": [
+        {
+          "title": "基本信息",
+          "fieldIds": [
+            "pipe_name",
+            "pipe_number",
+            "instrument_number",
+            "instrument_accuracy",
+            "surface_condition",
+            "measurement_ratio",
+            "min_wall_thickness",
+            "measured_points_count"
+          ]
+        },
+        {
+          "title": "测厚点部位图说明",
+          "fieldIds": [
+            "thickness_point_note"
+          ]
+        },
+        {
+          "title": "测厚数据",
+          "fieldIds": [
+            "thickness_data"
+          ]
+        },
+        {
+          "title": "结论",
+          "fieldIds": [
+            "conclusion"
+          ]
+        }
+      ]
+    },
+    "fields": [
+      {
+        "id": "pipe_name",
+        "label": "管道名称",
+        "type": "text",
+        "sqlColumn": "pipe_name",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "pipe_number",
+        "label": "管道编号",
+        "type": "text",
+        "sqlColumn": "pipe_number",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "instrument_number",
+        "label": "测量仪器编号",
+        "type": "text",
+        "sqlColumn": "instrument_number",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "instrument_accuracy",
+        "label": "测量仪器精度（mm）",
+        "type": "number",
+        "sqlColumn": "instrument_accuracy",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "surface_condition",
+        "label": "表面状况",
+        "type": "text",
+        "sqlColumn": "surface_condition",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "measurement_ratio",
+        "label": "测量比例",
+        "type": "text",
+        "sqlColumn": "measurement_ratio",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "min_wall_thickness",
+        "label": "实测最小壁厚（mm）",
+        "type": "number",
+        "sqlColumn": "min_wall_thickness",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "measured_points_count",
+        "label": "实测点数",
+        "type": "number",
+        "sqlColumn": "measured_points_count",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "thickness_point_note",
+        "label": "测厚点部位图",
+        "type": "static",
+        "value": "见管道单线图、测厚点部位示意图",
+        "sqlType": null
+      },
+      {
+        "id": "thickness_data",
+        "label": "测点厚度数据",
+        "type": "data-grid",
+        "columns": [
+          {
+            "id": "seq",
+            "label": "序号",
+            "type": "number"
+          },
+          {
+            "id": "location",
+            "label": "位置",
+            "type": "text"
+          },
+          {
+            "id": "point_1",
+            "label": "测点1",
+            "type": "number"
+          },
+          {
+            "id": "point_2",
+            "label": "测点2",
+            "type": "number"
+          },
+          {
+            "id": "point_3",
+            "label": "测点3",
+            "type": "number"
+          },
+          {
+            "id": "point_4",
+            "label": "测点4",
+            "type": "number"
+          },
+          {
+            "id": "point_5",
+            "label": "测点5",
+            "type": "number"
+          },
+          {
+            "id": "point_6",
+            "label": "测点6",
+            "type": "number"
+          },
+          {
+            "id": "point_7",
+            "label": "测点7",
+            "type": "number"
+          },
+          {
+            "id": "point_8",
+            "label": "测点8",
+            "type": "number"
+          },
+          {
+            "id": "point_9",
+            "label": "测点9",
+            "type": "number"
+          },
+          {
+            "id": "point_10",
+            "label": "测点10",
+            "type": "number"
+          },
+          {
+            "id": "point_11",
+            "label": "测点11",
+            "type": "number"
+          },
+          {
+            "id": "point_12",
+            "label": "测点12",
+            "type": "number"
+          },
+          {
+            "id": "point_13",
+            "label": "测点13",
+            "type": "number"
+          },
+          {
+            "id": "point_14",
+            "label": "测点14",
+            "type": "number"
+          },
+          {
+            "id": "point_15",
+            "label": "测点15",
+            "type": "number"
+          },
+          {
+            "id": "point_16",
+            "label": "测点16",
+            "type": "number"
+          }
+        ],
+        "sqlColumn": "thickness_data",
+        "sqlType": null
+      },
+      {
+        "id": "conclusion",
+        "label": "结论",
+        "type": "textarea",
+        "sqlColumn": "conclusion",
+        "sqlType": "TEXT"
+      }
+    ]
+  },
+  {
+    "id": "wall_thickness_measurement_cont",
+    "name": "壁厚测量记录（续页）",
+    "sqlTableName": "t_insp_wall_thickness_cont",
+    "recordType": "multi",
+    "layout": {
+      "type": "data-grid",
+      "headers": [
+        [
+          {
+            "text": "管道编号/装置名称",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 4,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "text": "试验介质",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "text": "试验压力",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "text": "介质温度",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "text": "环境温度",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "text": "保压时间",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 2,
+            "rowspan": 1
+          },
+          {
+            "text": "试验标准",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "text": "",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ]
+      ],
+      "dataColumns": [
+        "seq",
+        "location_number",
+        "point_1",
+        "point_2",
+        "point_3",
+        "point_4",
+        "point_5",
+        "point_6",
+        "point_7",
+        "point_8",
+        "point_9",
+        "point_10",
+        "point_11",
+        "point_12",
+        "point_13",
+        "point_14",
+        "point_15",
+        "point_16",
+        "conclusion"
+      ],
+      "prefixFields": [],
+      "defaultRowCount": 5
+    },
+    "fields": [
+      {
+        "id": "seq",
+        "label": "序号",
+        "type": "number",
+        "sqlColumn": "seq",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "location_number",
+        "label": "位置编号",
+        "type": "text",
+        "sqlColumn": "location_number",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "point_1",
+        "label": "测点1",
+        "type": "number",
+        "sqlColumn": "point_1",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_2",
+        "label": "测点2",
+        "type": "number",
+        "sqlColumn": "point_2",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_3",
+        "label": "测点3",
+        "type": "number",
+        "sqlColumn": "point_3",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_4",
+        "label": "测点4",
+        "type": "number",
+        "sqlColumn": "point_4",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_5",
+        "label": "测点5",
+        "type": "number",
+        "sqlColumn": "point_5",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_6",
+        "label": "测点6",
+        "type": "number",
+        "sqlColumn": "point_6",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_7",
+        "label": "测点7",
+        "type": "number",
+        "sqlColumn": "point_7",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_8",
+        "label": "测点8",
+        "type": "number",
+        "sqlColumn": "point_8",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_9",
+        "label": "测点9",
+        "type": "number",
+        "sqlColumn": "point_9",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_10",
+        "label": "测点10",
+        "type": "number",
+        "sqlColumn": "point_10",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_11",
+        "label": "测点11",
+        "type": "number",
+        "sqlColumn": "point_11",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_12",
+        "label": "测点12",
+        "type": "number",
+        "sqlColumn": "point_12",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_13",
+        "label": "测点13",
+        "type": "number",
+        "sqlColumn": "point_13",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_14",
+        "label": "测点14",
+        "type": "number",
+        "sqlColumn": "point_14",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_15",
+        "label": "测点15",
+        "type": "number",
+        "sqlColumn": "point_15",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "point_16",
+        "label": "测点16",
+        "type": "number",
+        "sqlColumn": "point_16",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "conclusion",
+        "label": "结论",
+        "type": "textarea",
+        "sqlColumn": "conclusion",
+        "sqlType": "TEXT"
+      }
+    ]
+  },
+  {
+    "id": "pressure_test",
+    "name": "耐压试验记录",
+    "sqlTableName": "t_insp_pressure_test",
+    "recordType": "single",
+    "layout": {
+      "type": "key-value",
+      "rows": [
+        [
+          {
+            "kind": "label",
+            "text": "管道名称",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "pipe_number_device",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "label",
+            "text": "管道编号",
+            "colspan": 1,
+            "rowspan": 1
+          },
+          {
+            "kind": "input",
+            "fieldId": "test_medium",
+            "colspan": 1,
+            "rowspan": 1
+          }
+        ],
+        [
+          {
+            "kind": "input",
+            "fieldId": "test_pressure",
+            "colspan": 4,
+            "rowspan": 1
+          }
+        ]
+      ]
+    },
+    "fields": [
+      {
+        "id": "pipe_number_device",
+        "label": "管道编号/装置名称",
+        "type": "text",
+        "sqlColumn": "pipe_number_device",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "test_medium",
+        "label": "试验介质",
+        "type": "text",
+        "sqlColumn": "test_medium",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "test_pressure",
+        "label": "试验压力",
+        "type": "number",
+        "sqlColumn": "test_pressure",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "medium_temperature",
+        "label": "介质温度",
+        "type": "number",
+        "sqlColumn": "medium_temperature",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "ambient_temperature",
+        "label": "环境温度",
+        "type": "number",
+        "sqlColumn": "ambient_temperature",
+        "sqlType": "NUMERIC(10,2)"
+      },
+      {
+        "id": "holding_time",
+        "label": "保压时间",
+        "type": "text",
+        "sqlColumn": "holding_time",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "test_standard",
+        "label": "试验标准",
+        "type": "text",
+        "sqlColumn": "test_standard",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "test_process",
+        "label": "试验过程",
+        "type": "textarea",
+        "sqlColumn": "test_process",
+        "sqlType": "TEXT"
+      },
+      {
+        "id": "conclusion",
+        "label": "结论",
+        "type": "textarea",
+        "sqlColumn": "conclusion",
+        "sqlType": "TEXT"
+      }
+    ]
+  },
+  {
+    "id": "pipe_thickness_measurement_sketch",
+    "name": "管道测厚测点布置图",
+    "sqlTableName": "t_insp_pipe_thickness_sketch",
+    "recordType": "single",
+    "layout": {
+      "type": "section-group",
+      "sections": [
+        {
+          "title": "",
+          "rows": [
+            [
+              {
+                "label": "弯头测点布置图：管径＜200mm",
+                "fieldId": "pipe_name",
+                "colspan": 1,
+                "labelColspan": 1
+              }
+            ],
+            [
+              {
+                "label": "异径管测点布置图:同心",
+                "fieldId": "pipe_number",
+                "colspan": 1,
+                "labelColspan": 1
+              }
+            ],
+            [
+              {
+                "label": "异径管测点布置图:同心",
+                "fieldId": "_field_0",
+                "colspan": 1,
+                "labelColspan": 1
+              }
+            ],
+            [
+              {
+                "label": "三通测点布置图",
+                "fieldId": "_field_0",
+                "colspan": 1,
+                "labelColspan": 1
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "fields": [
+      {
+        "id": "pipe_name",
+        "label": "管道名称",
+        "type": "text",
+        "required": true,
+        "sqlColumn": "pipe_name",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "pipe_number",
+        "label": "管道编号",
+        "type": "text",
+        "required": true,
+        "sqlColumn": "pipe_number",
+        "sqlType": "VARCHAR(200)"
+      },
+      {
+        "id": "elbow_sketch_small",
+        "label": "弯头测点布置图：管径＜200mm",
+        "type": "static",
+        "sqlType": null
+      },
+      {
+        "id": "elbow_sketch_large",
+        "label": "弯头测点布置图：管径≥200mm",
+        "type": "static",
+        "sqlType": null
+      },
+      {
+        "id": "reducer_sketch_concentric_1",
+        "label": "异径管测点布置图:同心",
+        "type": "static",
+        "sqlType": null
+      },
+      {
+        "id": "reducer_sketch_eccentric_1",
+        "label": "异径管测点布置图:偏心",
+        "type": "static",
+        "sqlType": null
+      },
+      {
+        "id": "reducer_sketch_concentric_2",
+        "label": "异径管测点布置图:同心",
+        "type": "static",
+        "sqlType": null
+      },
+      {
+        "id": "reducer_sketch_eccentric_2",
+        "label": "异径管测点布置图:偏心",
+        "type": "static",
+        "sqlType": null
+      },
+      {
+        "id": "tee_sketch",
+        "label": "三通测点布置图",
+        "type": "static",
+        "sqlType": null
+      },
+      {
+        "id": "straight_pipe_sketch",
+        "label": "直管测点布置图",
+        "type": "static",
+        "sqlType": null
+      }
+    ]
+  }
+]

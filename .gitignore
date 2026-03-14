@@ -1,0 +1,17 @@
+.DS_Store
+.env
+.claude/
+*.pyc
+__pycache__/
+
+vue-app/node_modules/
+vue-app/dist/
+vue-app/output/
+
+spring-boot-app/target/
+spring-boot-app/data/
+
+word-parser-service/data/parse-cache/
+word-parser-service/output/
+
+release/

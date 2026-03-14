@@ -1,0 +1,1482 @@
+[
+  {
+    "id": "cover_info",
+    "name": "封面信息",
+    "sqlTableName": "t_insp_cover_info",
+    "recordType": "single",
+    "layout": {
+      "type": "key-value"
+    },
+    "fields": [
+      {
+        "id": "device_name",
+        "label": "装置名称",
+        "type": "text"
+      },
+      {
+        "id": "use_unit_name",
+        "label": "使用单位名称",
+        "type": "text"
+      },
+      {
+        "id": "inspection_date",
+        "label": "检验日期",
+        "type": "date"
+      }
+    ]
+  },
+  {
+    "id": "annual_inspection_report",
+    "name": "年度检查报告",
+    "sqlTableName": "t_insp_annual_inspection_report",
+    "recordType": "single",
+    "layout": {
+      "type": "key-value"
+    },
+    "fields": [
+      {
+        "id": "use_unit_name",
+        "label": "使用单位名称",
+        "type": "text"
+      },
+      {
+        "id": "use_registration_cert_no",
+        "label": "使用登记证编号",
+        "type": "text"
+      },
+      {
+        "id": "use_unit_address",
+        "label": "使用单位地址",
+        "type": "text"
+      },
+      {
+        "id": "unified_social_credit_code",
+        "label": "使用单位统一社会信用代码",
+        "type": "text"
+      },
+      {
+        "id": "safety_manager",
+        "label": "安全管理人员",
+        "type": "text"
+      },
+      {
+        "id": "contact_phone",
+        "label": "联系电话",
+        "type": "text"
+      },
+      {
+        "id": "next_annual_inspection_date",
+        "label": "下次年度检查日期",
+        "type": "date"
+      },
+      {
+        "id": "inspection_basis",
+        "label": "检查依据",
+        "type": "static",
+        "defaultValue": "《工业管道安全技术规程》TSG 31-2025"
+      },
+      {
+        "id": "problems_and_handling",
+        "label": "问题及其处理",
+        "type": "static",
+        "defaultValue": "见《年度检查结论报告附页》"
+      },
+      {
+        "id": "inspection_conclusion",
+        "label": "检查结论",
+        "type": "static",
+        "defaultValue": "见《年度检查结论报告附页》"
+      },
+      {
+        "id": "description",
+        "label": "说明",
+        "type": "textarea"
+      }
+    ]
+  },
+  {
+    "id": "conclusion_report_appendix",
+    "name": "年度检查结论报告附页",
+    "sqlTableName": "t_insp_conclusion_report_appendix",
+    "recordType": "multi",
+    "layout": {
+      "type": "data-grid",
+      "columns": [
+        "序号",
+        "管道编号",
+        "管道名称",
+        "检查结论",
+        "压力MPa",
+        "温度℃",
+        "介质",
+        "问题及其处理",
+        "备注"
+      ]
+    },
+    "fields": [
+      {
+        "id": "seq_no",
+        "label": "序号",
+        "type": "number"
+      },
+      {
+        "id": "pipe_code",
+        "label": "管道编号",
+        "type": "text"
+      },
+      {
+        "id": "pipe_name",
+        "label": "管道名称",
+        "type": "text"
+      },
+      {
+        "id": "inspection_conclusion",
+        "label": "检查结论",
+        "type": "radio",
+        "options": [
+          "符合要求",
+          "基本符合要求",
+          "不符合要求"
+        ]
+      },
+      {
+        "id": "pressure",
+        "label": "压力MPa",
+        "type": "number",
+        "unit": "MPa"
+      },
+      {
+        "id": "temperature",
+        "label": "温度℃",
+        "type": "number",
+        "unit": "℃"
+      },
+      {
+        "id": "medium",
+        "label": "介质",
+        "type": "text"
+      },
+      {
+        "id": "problems_and_handling",
+        "label": "问题及其处理",
+        "type": "textarea"
+      },
+      {
+        "id": "remark",
+        "label": "备注",
+        "type": "textarea"
+      }
+    ]
+  },
+  {
+    "id": "inspection_checklist",
+    "name": "年度检查记录表",
+    "sqlTableName": "t_insp_inspection_checklist",
+    "recordType": "multi",
+    "layout": {
+      "type": "checklist",
+      "columns": [
+        "序号",
+        "检查项目",
+        "检查子项",
+        "检查结果",
+        "备注"
+      ]
+    },
+    "fields": [
+      {
+        "id": "seq_no",
+        "label": "序号",
+        "type": "text"
+      },
+      {
+        "id": "inspection_item",
+        "label": "检查项目",
+        "type": "text"
+      },
+      {
+        "id": "inspection_sub_item",
+        "label": "检查子项",
+        "type": "text"
+      },
+      {
+        "id": "inspection_result",
+        "label": "检查结果",
+        "type": "textarea"
+      },
+      {
+        "id": "remark",
+        "label": "备注",
+        "type": "textarea"
+      }
+    ]
+  },
+  {
+    "id": "design_installation_info",
+    "name": "设计安装信息",
+    "sqlTableName": "t_insp_design_installation_info",
+    "recordType": "single",
+    "layout": {
+      "type": "key-value"
+    },
+    "fields": [
+      {
+        "id": "design_unit",
+        "name": "设计单位",
+        "type": "text"
+      },
+      {
+        "id": "design_date",
+        "name": "设计日期",
+        "type": "date"
+      },
+      {
+        "id": "design_standard",
+        "name": "设计规范",
+        "type": "text"
+      },
+      {
+        "id": "installation_unit",
+        "name": "安装单位",
+        "type": "text"
+      },
+      {
+        "id": "installation_acceptance_standard",
+        "name": "安装与验收标准",
+        "type": "text"
+      },
+      {
+        "id": "operation_start_date",
+        "name": "投入运行日期",
+        "type": "date"
+      },
+      {
+        "id": "laying_method",
+        "name": "敷设方式",
+        "type": "text"
+      }
+    ]
+  },
+  {
+    "id": "safety_management_check",
+    "name": "安全管理情况检查",
+    "sqlTableName": "t_insp_safety_management_check",
+    "recordType": "single",
+    "layout": {
+      "type": "checklist"
+    },
+    "fields": [
+      {
+        "id": "safety_rules_complete",
+        "name": "安全管理制度和操作规程是否齐全有效",
+        "type": "text"
+      },
+      {
+        "id": "design_docs_complete",
+        "name": "相关安全技术规范规定的设计文件、安装竣工图、质量证明文件、监督检验证书、以及安装、改造、修理等资料是否完整",
+        "type": "text"
+      },
+      {
+        "id": "personnel_qualification",
+        "name": "安全管理人员资格证书是否有效，作业人员培训考核记录是否齐全",
+        "type": "text"
+      },
+      {
+        "id": "maintenance_records",
+        "name": "经常性维护保养、运行记录、定期安全检查记录是否符合TSG 31、相关安全技术规范以及管理制度的要求",
+        "type": "text"
+      },
+      {
+        "id": "inspection_reports_complete",
+        "name": "年度检查、定期检验报告是否齐全，检查、检验报告中所提出的问题是否得到解决",
+        "type": "text"
+      },
+      {
+        "id": "safety_accessories_records",
+        "name": "安全附件、阻火器、机械安全联锁装置与仪表校验(检定)、修理和更换记录是否齐全",
+        "type": "text"
+      },
+      {
+        "id": "emergency_plan_records",
+        "name": "专项应急预案和演练记录是否符合相关安全技术规范以及管理制度的要求",
+        "type": "text"
+      },
+      {
+        "id": "rectification_completed",
+        "name": "日常检查、月度检查中发现的危及管道安全运行的问题是否完成整改",
+        "type": "text"
+      },
+      {
+        "id": "accident_records",
+        "name": "是否对事故、故障以及处理情况进行了记录",
+        "type": "text"
+      }
+    ]
+  },
+  {
+    "id": "pipeline_basic_info",
+    "name": "管道基本信息",
+    "sqlTableName": "t_insp_pipeline_basic_info",
+    "recordType": "multi",
+    "layout": {
+      "type": "data-grid"
+    },
+    "fields": [
+      {
+        "id": "serial_no",
+        "name": "序号",
+        "type": "number"
+      },
+      {
+        "id": "pipeline_name",
+        "name": "管道名称",
+        "type": "text"
+      },
+      {
+        "id": "pipeline_number",
+        "name": "管道编号",
+        "type": "text"
+      },
+      {
+        "id": "pipeline_level",
+        "name": "管道级别",
+        "type": "text"
+      },
+      {
+        "id": "material",
+        "name": "材质",
+        "type": "text"
+      },
+      {
+        "id": "medium",
+        "name": "介质",
+        "type": "text"
+      },
+      {
+        "id": "nominal_diameter",
+        "name": "公称直径(mm)",
+        "type": "number"
+      },
+      {
+        "id": "nominal_wall_thickness",
+        "name": "公称壁厚(mm)",
+        "type": "number"
+      },
+      {
+        "id": "pipeline_length",
+        "name": "管道长度(m)",
+        "type": "number"
+      },
+      {
+        "id": "start_point",
+        "name": "起点",
+        "type": "text"
+      },
+      {
+        "id": "end_point",
+        "name": "终点",
+        "type": "text"
+      },
+      {
+        "id": "design_temperature",
+        "name": "设计温度(℃)",
+        "type": "number"
+      },
+      {
+        "id": "design_pressure",
+        "name": "设计压力(MPa)",
+        "type": "number"
+      },
+      {
+        "id": "working_temperature",
+        "name": "工作温度(℃)",
+        "type": "number"
+      },
+      {
+        "id": "working_pressure",
+        "name": "工作压力(MPa)",
+        "type": "number"
+      },
+      {
+        "id": "anticorrosion_material",
+        "name": "防腐层材料",
+        "type": "text"
+      },
+      {
+        "id": "insulation_material",
+        "name": "绝热层材料",
+        "type": "text"
+      },
+      {
+        "id": "insulation_thickness",
+        "name": "绝热层厚度mm",
+        "type": "number"
+      }
+    ]
+  },
+  {
+    "id": "appearance_inspection",
+    "name": "外观检验",
+    "sqlTableName": "t_insp_appearance_inspection",
+    "recordType": "multi",
+    "layout": {
+      "type": "checklist"
+    },
+    "fields": [
+      {
+        "id": "pipeline_number",
+        "name": "管道编号",
+        "type": "text"
+      },
+      {
+        "id": "paint_color_marking",
+        "name": "漆色、标志",
+        "type": "select",
+        "options": [
+          "A.符合相关规定",
+          "B.不符合相关规定"
+        ]
+      },
+      {
+        "id": "components_welding_joints",
+        "name": "组成件及其焊接接头",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.裂纹",
+          "C.过热",
+          "D.变形",
+          "E.泄漏",
+          "F.损伤"
+        ]
+      },
+      {
+        "id": "outer_surface",
+        "name": "外表面",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.腐蚀",
+          "C.异常结霜",
+          "D.异常结露"
+        ]
+      },
+      {
+        "id": "layout_check",
+        "name": "布置",
+        "type": "select",
+        "options": [
+          "A.正常",
+          "B.振动",
+          "C.碰撞",
+          "D.摩擦"
+        ]
+      },
+      {
+        "id": "insulation_layer",
+        "name": "隔热层",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.破损",
+          "C.脱落",
+          "D.跑冷",
+          "E.防腐层破损",
+          "W.无此项"
+        ]
+      },
+      {
+        "id": "support_hanger",
+        "name": "支吊架",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.脱落",
+          "C.变形",
+          "D.失载",
+          "E.过载",
+          "F.腐蚀",
+          "G.损坏",
+          "H.焊接接头开裂",
+          "I.弹簧支吊架状态异常",
+          "J.导向支架间隙异常",
+          "K.阻尼器位移异常",
+          "L.减振器位移异常",
+          "M.液压阻尼器泄漏",
+          "W.无此项"
+        ]
+      },
+      {
+        "id": "valve",
+        "name": "阀门",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.腐蚀",
+          "C.阀体表面裂纹",
+          "D.缩孔",
+          "E.连接螺栓松动",
+          "F.开闭状态异常",
+          "G.阀门开启不灵活",
+          "W.无此项"
+        ]
+      },
+      {
+        "id": "discharge_device",
+        "name": "排放装置",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.异常集气",
+          "C.积液",
+          "W.无此项"
+        ]
+      },
+      {
+        "id": "flange",
+        "name": "法兰",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.偏口",
+          "C.异常翘曲",
+          "D.变形",
+          "E.泄漏",
+          "F.紧固件不齐全",
+          "G.紧固件松动",
+          "H.腐蚀",
+          "W.无此项"
+        ]
+      },
+      {
+        "id": "expansion_joint",
+        "name": "膨胀节",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.波纹管膨胀节表面划痕",
+          "C.波纹管膨胀节凹痕",
+          "D.波纹管膨胀节腐蚀穿孔",
+          "E.波纹管膨胀节开裂",
+          "F.波纹管波间距不符合要求",
+          "G.波纹管膨胀节失稳",
+          "H.铰链型膨胀节的铰链、销轴变形",
+          "I.铰链型膨胀节的铰链、销轴脱落",
+          "J.铰链型膨胀节的铰链、销轴损坏",
+          "K.拉杆式膨胀节的拉杆、螺栓、连接支座不符合要求",
+          "L.膨胀节位移指示醒目不明确",
+          "W.无此项"
+        ]
+      },
+      {
+        "id": "anticorrosion_layer",
+        "name": "防腐层",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.鼓包",
+          "C.变色",
+          "W.无此项"
+        ]
+      },
+      {
+        "id": "cathodic_protection",
+        "name": "阴极保护装置",
+        "type": "select",
+        "options": [
+          "A.完好有效",
+          "B.缺失",
+          "C.失效",
+          "W.无此项"
+        ]
+      },
+      {
+        "id": "buried_pipeline",
+        "name": "埋地管道",
+        "type": "select",
+        "options": [
+          "A.完好",
+          "B.异常",
+          "C.标识桩牌破坏",
+          "D.覆土沉降",
+          "E.介质泄漏迹象",
+          "W.无此项"
+        ]
+      },
+      {
+        "id": "apron_fueling_pipeline",
+        "name": "机坪加油管道",
+        "type": "select",
+        "options": [
+          "A.正常",
+          "B.高点排气装置不正常",
+          "C.低点排水装置不正常",
+          "D.测漏系统功能不正常",
+          "E.耐压试验不合格",
+          "W.无此项"
+        ]
+      },
+      {
+        "id": "other",
+        "name": "其它",
+        "type": "textarea"
+      }
+    ]
+  },
+  {
+    "id": "safety_accessories_check",
+    "name": "安全附件检查",
+    "sqlTableName": "t_insp_safety_accessories_check",
+    "recordType": "single",
+    "layout": {
+      "type": "section-group"
+    },
+    "fields": [
+      {
+        "id": "sv_model_meets_design",
+        "name": "安全阀型号是否符合设计要求",
+        "type": "text"
+      },
+      {
+        "id": "sv_installation_position",
+        "name": "安全阀安装位置是否正确",
+        "type": "text"
+      },
+      {
+        "id": "sv_calibration_validity",
+        "name": "安全阀校验有效期",
+        "type": "text"
+      },
+      {
+        "id": "sv_set_pressure",
+        "name": "安全阀整定压力(MPa)",
+        "type": "number"
+      },
+      {
+        "id": "sv_seal_intact",
+        "name": "安全阀铅封是否完好",
+        "type": "text"
+      },
+      {
+        "id": "sv_leakage",
+        "name": "安全阀是否有泄漏",
+        "type": "text"
+      },
+      {
+        "id": "sv_shutoff_valve",
+        "name": "安全阀和排放口之间是否设置截断阀",
+        "type": "text"
+      },
+      {
+        "id": "sv_shutoff_valve_open_seal",
+        "name": "截断阀是否处于全开位置，铅封是否完好",
+        "type": "text"
+      },
+      {
+        "id": "sv_vent_pipe",
+        "name": "放空管是否畅通",
+        "type": "text"
+      },
+      {
+        "id": "sv_rain_cap",
+        "name": "防雨帽是否完好",
+        "type": "text"
+      },
+      {
+        "id": "sv_other_abnormality",
+        "name": "安全阀其他异常情况",
+        "type": "textarea"
+      },
+      {
+        "id": "rd_overdue",
+        "name": "爆破片是否超期使用",
+        "type": "text"
+      },
+      {
+        "id": "rd_installation_direction",
+        "name": "爆破片安装方向是否正确",
+        "type": "text"
+      },
+      {
+        "id": "rd_temp_pressure_meets",
+        "name": "爆破片温度、压力是否符合运行要求",
+        "type": "text"
+      },
+      {
+        "id": "rd_leakage",
+        "name": "爆破片是否有泄漏",
+        "type": "text"
+      },
+      {
+        "id": "rd_burst_abnormality",
+        "name": "是否存在未超压爆破或者超压未爆破的情况",
+        "type": "text"
+      },
+      {
+        "id": "rd_vent_pipe",
+        "name": "爆破片放空管是否通畅",
+        "type": "text"
+      },
+      {
+        "id": "rd_water_or_ice",
+        "name": "放空管内是否有存水或结冰",
+        "type": "text"
+      },
+      {
+        "id": "rd_waterproof_cap",
+        "name": "防水帽、防雨片是否完好",
+        "type": "text"
+      },
+      {
+        "id": "rd_shutoff_valve",
+        "name": "爆破片和排放口之间是否设置了截断阀",
+        "type": "text"
+      },
+      {
+        "id": "rd_shutoff_valve_open_seal",
+        "name": "爆破片截断阀是否处于全开位置，铅封是否完好",
+        "type": "text"
+      },
+      {
+        "id": "rd_series_with_sv",
+        "name": "爆破片装置和安全阀串联使用时，是否符合要求",
+        "type": "text"
+      },
+      {
+        "id": "rd_other_abnormality",
+        "name": "爆破片其他异常情况",
+        "type": "textarea"
+      },
+      {
+        "id": "esv_nameplate",
+        "name": "紧急切断装置铭牌是否符合要求",
+        "type": "text"
+      },
+      {
+        "id": "esv_overflow_protection",
+        "name": "紧急切断阀的过流保护装置动作符合要求",
+        "type": "text"
+      },
+      {
+        "id": "esv_leakage",
+        "name": "紧急切断装置是否有泄漏",
+        "type": "text"
+      },
+      {
+        "id": "esv_other_abnormality",
+        "name": "紧急切断装置其他异常情况",
+        "type": "textarea"
+      },
+      {
+        "id": "fa_installation_direction",
+        "name": "阻火器安装方向是否正确",
+        "type": "text"
+      },
+      {
+        "id": "fa_spec_meets_requirement",
+        "name": "阻火器标定的公称压力适用介质和温度符合运行要求",
+        "type": "text"
+      },
+      {
+        "id": "fa_leakage",
+        "name": "阻火器是否有泄漏",
+        "type": "text"
+      },
+      {
+        "id": "fa_other_abnormality",
+        "name": "阻火器其他异常情况",
+        "type": "textarea"
+      },
+      {
+        "id": "pg_selection_meets",
+        "name": "压力表选型是否符合要求",
+        "type": "text"
+      },
+      {
+        "id": "pg_maintenance_system",
+        "name": "压力表定期检修维护制度是否符合要求",
+        "type": "text"
+      },
+      {
+        "id": "pg_calibration_validity",
+        "name": "压力表检定有效期",
+        "type": "text"
+      },
+      {
+        "id": "pg_seal_intact",
+        "name": "压力表铅封是否完好",
+        "type": "text"
+      },
+      {
+        "id": "pg_three_way_valve",
+        "name": "在压力表和管道之间设置三通旋塞或者针形阀的位置、开启标记及其锁紧装置符合要求",
+        "type": "text"
+      },
+      {
+        "id": "pg_appearance_accuracy",
+        "name": "外观、精确度等级、量程、表盘直径是否符合要求",
+        "type": "text"
+      },
+      {
+        "id": "pg_readings_reasonable",
+        "name": "同一系统上各压力表的读数是否合理",
+        "type": "text"
+      },
+      {
+        "id": "mil_structure_intact",
+        "name": "机械安全联锁装置结构是否完好",
+        "type": "text"
+      },
+      {
+        "id": "mil_function_meets",
+        "name": "机械安全联锁装置功能是否符合要求",
+        "type": "text"
+      },
+      {
+        "id": "ti_calibration_maintenance",
+        "name": "测温仪表定期校验和检修是否符合要求",
+        "type": "text"
+      },
+      {
+        "id": "ti_range_matching",
+        "name": "测温仪表量程与其检测的温度范围是否匹配",
+        "type": "text"
+      },
+      {
+        "id": "ti_appearance_meets",
+        "name": "测温仪表及其二次仪表的外观符合要求",
+        "type": "text"
+      },
+      {
+        "id": "mil2_structure_intact",
+        "name": "机械安全联锁装置结构是否完好(复查)",
+        "type": "text"
+      },
+      {
+        "id": "mil2_function_meets",
+        "name": "机械安全联锁装置功能是否符合要求(复查)",
+        "type": "text"
+      },
+      {
+        "id": "conclusion",
+        "name": "结论",
+        "type": "textarea"
+      }
+    ]
+  },
+  {
+    "id": "resistance_test",
+    "name": "电阻检测记录",
+    "sqlTableName": "t_insp_resistance_test",
+    "recordType": "single",
+    "layout": {
+      "type": "section-group",
+      "sections": [
+        {
+          "title": "基本信息",
+          "fieldIds": [
+            "pipe_name",
+            "pipe_number",
+            "medium",
+            "pipe_spec"
+          ]
+        },
+        {
+          "title": "法兰间接触电阻检测",
+          "fieldIds": [
+            "flange_instrument_name",
+            "flange_instrument_model",
+            "flange_instrument_number",
+            "flange_instrument_accuracy"
+          ]
+        },
+        {
+          "title": "法兰间接触电阻数据",
+          "fieldIds": [
+            "flange_resistance_data"
+          ]
+        },
+        {
+          "title": "对地电阻检测",
+          "fieldIds": [
+            "ground_instrument_name",
+            "ground_instrument_model",
+            "ground_instrument_number",
+            "ground_instrument_accuracy"
+          ]
+        },
+        {
+          "title": "对地电阻数据",
+          "fieldIds": [
+            "ground_resistance_data"
+          ]
+        },
+        {
+          "title": "备注",
+          "fieldIds": [
+            "remark"
+          ]
+        }
+      ]
+    },
+    "fields": [
+      {
+        "id": "pipe_name",
+        "label": "管道名称",
+        "type": "text"
+      },
+      {
+        "id": "pipe_number",
+        "label": "管道编号",
+        "type": "text"
+      },
+      {
+        "id": "medium",
+        "label": "介质",
+        "type": "text"
+      },
+      {
+        "id": "pipe_spec",
+        "label": "管道规格(外径mm×壁厚mm)",
+        "type": "text"
+      },
+      {
+        "id": "flange_instrument_name",
+        "label": "仪器名称（法兰间接触电阻）",
+        "type": "text"
+      },
+      {
+        "id": "flange_instrument_model",
+        "label": "仪器型号（法兰间接触电阻）",
+        "type": "text"
+      },
+      {
+        "id": "flange_instrument_number",
+        "label": "仪器编号（法兰间接触电阻）",
+        "type": "text"
+      },
+      {
+        "id": "flange_instrument_accuracy",
+        "label": "仪器精度（法兰间接触电阻）",
+        "type": "text"
+      },
+      {
+        "id": "flange_resistance_data",
+        "label": "法兰间接触电阻测量数据",
+        "type": "data-grid",
+        "columns": [
+          {
+            "id": "seq",
+            "label": "序号",
+            "type": "number"
+          },
+          {
+            "id": "point_1",
+            "label": "测点1",
+            "type": "number"
+          },
+          {
+            "id": "point_2",
+            "label": "测点2",
+            "type": "number"
+          },
+          {
+            "id": "point_3",
+            "label": "测点3",
+            "type": "number"
+          },
+          {
+            "id": "point_4",
+            "label": "测点4",
+            "type": "number"
+          },
+          {
+            "id": "point_5",
+            "label": "测点5",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "id": "ground_instrument_name",
+        "label": "仪器名称（对地电阻）",
+        "type": "text"
+      },
+      {
+        "id": "ground_instrument_model",
+        "label": "仪器型号（对地电阻）",
+        "type": "text"
+      },
+      {
+        "id": "ground_instrument_number",
+        "label": "仪器编号（对地电阻）",
+        "type": "text"
+      },
+      {
+        "id": "ground_instrument_accuracy",
+        "label": "仪器精度（对地电阻）",
+        "type": "text"
+      },
+      {
+        "id": "ground_resistance_data",
+        "label": "对地电阻测量数据",
+        "type": "data-grid",
+        "columns": [
+          {
+            "id": "seq",
+            "label": "序号",
+            "type": "number"
+          },
+          {
+            "id": "point_1",
+            "label": "测点1",
+            "type": "number"
+          },
+          {
+            "id": "point_2",
+            "label": "测点2",
+            "type": "number"
+          },
+          {
+            "id": "point_3",
+            "label": "测点3",
+            "type": "number"
+          },
+          {
+            "id": "point_4",
+            "label": "测点4",
+            "type": "number"
+          },
+          {
+            "id": "point_5",
+            "label": "测点5",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "id": "remark",
+        "label": "备注",
+        "type": "textarea"
+      }
+    ]
+  },
+  {
+    "id": "wall_thickness_measurement",
+    "name": "壁厚测量记录",
+    "sqlTableName": "t_insp_wall_thickness_measurement",
+    "recordType": "single",
+    "layout": {
+      "type": "section-group",
+      "sections": [
+        {
+          "title": "基本信息",
+          "fieldIds": [
+            "pipe_name",
+            "pipe_number",
+            "instrument_number",
+            "instrument_accuracy",
+            "surface_condition",
+            "measurement_ratio",
+            "min_wall_thickness",
+            "measured_points_count"
+          ]
+        },
+        {
+          "title": "测厚点部位图说明",
+          "fieldIds": [
+            "thickness_point_note"
+          ]
+        },
+        {
+          "title": "测厚数据",
+          "fieldIds": [
+            "thickness_data"
+          ]
+        },
+        {
+          "title": "结论",
+          "fieldIds": [
+            "conclusion"
+          ]
+        }
+      ]
+    },
+    "fields": [
+      {
+        "id": "pipe_name",
+        "label": "管道名称",
+        "type": "text"
+      },
+      {
+        "id": "pipe_number",
+        "label": "管道编号",
+        "type": "text"
+      },
+      {
+        "id": "instrument_number",
+        "label": "测量仪器编号",
+        "type": "text"
+      },
+      {
+        "id": "instrument_accuracy",
+        "label": "测量仪器精度（mm）",
+        "type": "number"
+      },
+      {
+        "id": "surface_condition",
+        "label": "表面状况",
+        "type": "text"
+      },
+      {
+        "id": "measurement_ratio",
+        "label": "测量比例",
+        "type": "text"
+      },
+      {
+        "id": "min_wall_thickness",
+        "label": "实测最小壁厚（mm）",
+        "type": "number"
+      },
+      {
+        "id": "measured_points_count",
+        "label": "实测点数",
+        "type": "number"
+      },
+      {
+        "id": "thickness_point_note",
+        "label": "测厚点部位图",
+        "type": "static",
+        "value": "见管道单线图、测厚点部位示意图"
+      },
+      {
+        "id": "thickness_data",
+        "label": "测点厚度数据",
+        "type": "data-grid",
+        "columns": [
+          {
+            "id": "seq",
+            "label": "序号",
+            "type": "number"
+          },
+          {
+            "id": "location",
+            "label": "位置",
+            "type": "text"
+          },
+          {
+            "id": "point_1",
+            "label": "测点1",
+            "type": "number"
+          },
+          {
+            "id": "point_2",
+            "label": "测点2",
+            "type": "number"
+          },
+          {
+            "id": "point_3",
+            "label": "测点3",
+            "type": "number"
+          },
+          {
+            "id": "point_4",
+            "label": "测点4",
+            "type": "number"
+          },
+          {
+            "id": "point_5",
+            "label": "测点5",
+            "type": "number"
+          },
+          {
+            "id": "point_6",
+            "label": "测点6",
+            "type": "number"
+          },
+          {
+            "id": "point_7",
+            "label": "测点7",
+            "type": "number"
+          },
+          {
+            "id": "point_8",
+            "label": "测点8",
+            "type": "number"
+          },
+          {
+            "id": "point_9",
+            "label": "测点9",
+            "type": "number"
+          },
+          {
+            "id": "point_10",
+            "label": "测点10",
+            "type": "number"
+          },
+          {
+            "id": "point_11",
+            "label": "测点11",
+            "type": "number"
+          },
+          {
+            "id": "point_12",
+            "label": "测点12",
+            "type": "number"
+          },
+          {
+            "id": "point_13",
+            "label": "测点13",
+            "type": "number"
+          },
+          {
+            "id": "point_14",
+            "label": "测点14",
+            "type": "number"
+          },
+          {
+            "id": "point_15",
+            "label": "测点15",
+            "type": "number"
+          },
+          {
+            "id": "point_16",
+            "label": "测点16",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "id": "conclusion",
+        "label": "结论",
+        "type": "textarea"
+      }
+    ]
+  },
+  {
+    "id": "wall_thickness_measurement_cont",
+    "name": "壁厚测量记录（续页）",
+    "sqlTableName": "t_insp_wall_thickness_cont",
+    "recordType": "multi",
+    "layout": {
+      "type": "data-grid",
+      "columns": 18
+    },
+    "fields": [
+      {
+        "id": "seq",
+        "label": "序号",
+        "type": "number"
+      },
+      {
+        "id": "location_number",
+        "label": "位置编号",
+        "type": "text"
+      },
+      {
+        "id": "point_1",
+        "label": "测点1",
+        "type": "number"
+      },
+      {
+        "id": "point_2",
+        "label": "测点2",
+        "type": "number"
+      },
+      {
+        "id": "point_3",
+        "label": "测点3",
+        "type": "number"
+      },
+      {
+        "id": "point_4",
+        "label": "测点4",
+        "type": "number"
+      },
+      {
+        "id": "point_5",
+        "label": "测点5",
+        "type": "number"
+      },
+      {
+        "id": "point_6",
+        "label": "测点6",
+        "type": "number"
+      },
+      {
+        "id": "point_7",
+        "label": "测点7",
+        "type": "number"
+      },
+      {
+        "id": "point_8",
+        "label": "测点8",
+        "type": "number"
+      },
+      {
+        "id": "point_9",
+        "label": "测点9",
+        "type": "number"
+      },
+      {
+        "id": "point_10",
+        "label": "测点10",
+        "type": "number"
+      },
+      {
+        "id": "point_11",
+        "label": "测点11",
+        "type": "number"
+      },
+      {
+        "id": "point_12",
+        "label": "测点12",
+        "type": "number"
+      },
+      {
+        "id": "point_13",
+        "label": "测点13",
+        "type": "number"
+      },
+      {
+        "id": "point_14",
+        "label": "测点14",
+        "type": "number"
+      },
+      {
+        "id": "point_15",
+        "label": "测点15",
+        "type": "number"
+      },
+      {
+        "id": "point_16",
+        "label": "测点16",
+        "type": "number"
+      },
+      {
+        "id": "conclusion",
+        "label": "结论",
+        "type": "textarea"
+      }
+    ]
+  },
+  {
+    "id": "pressure_test",
+    "name": "耐压试验记录",
+    "sqlTableName": "t_insp_pressure_test",
+    "recordType": "single",
+    "layout": {
+      "type": "key-value"
+    },
+    "fields": [
+      {
+        "id": "pipe_number_device",
+        "label": "管道编号/装置名称",
+        "type": "text"
+      },
+      {
+        "id": "test_medium",
+        "label": "试验介质",
+        "type": "text"
+      },
+      {
+        "id": "test_pressure",
+        "label": "试验压力",
+        "type": "number"
+      },
+      {
+        "id": "medium_temperature",
+        "label": "介质温度",
+        "type": "number"
+      },
+      {
+        "id": "ambient_temperature",
+        "label": "环境温度",
+        "type": "number"
+      },
+      {
+        "id": "holding_time",
+        "label": "保压时间",
+        "type": "text"
+      },
+      {
+        "id": "test_standard",
+        "label": "试验标准",
+        "type": "text"
+      },
+      {
+        "id": "test_process",
+        "label": "试验过程",
+        "type": "textarea"
+      },
+      {
+        "id": "conclusion",
+        "label": "结论",
+        "type": "textarea"
+      }
+    ]
+  },
+  {
+    "id": "pipe_thickness_measurement_sketch",
+    "name": "管道测厚测点布置图",
+    "sqlTableName": "t_insp_pipe_thickness_sketch",
+    "recordType": "single",
+    "layout": {
+      "type": "section-group"
+    },
+    "fields": [
+      {
+        "id": "pipe_name",
+        "label": "管道名称",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "pipe_number",
+        "label": "管道编号",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "elbow_sketch_small",
+        "label": "弯头测点布置图：管径＜200mm",
+        "type": "static"
+      },
+      {
+        "id": "elbow_sketch_large",
+        "label": "弯头测点布置图：管径≥200mm",
+        "type": "static"
+      },
+      {
+        "id": "reducer_sketch_concentric_1",
+        "label": "异径管测点布置图:同心",
+        "type": "static"
+      },
+      {
+        "id": "reducer_sketch_eccentric_1",
+        "label": "异径管测点布置图:偏心",
+        "type": "static"
+      },
+      {
+        "id": "reducer_sketch_concentric_2",
+        "label": "异径管测点布置图:同心",
+        "type": "static"
+      },
+      {
+        "id": "reducer_sketch_eccentric_2",
+        "label": "异径管测点布置图:偏心",
+        "type": "static"
+      },
+      {
+        "id": "tee_sketch",
+        "label": "三通测点布置图",
+        "type": "static"
+      },
+      {
+        "id": "straight_pipe_sketch",
+        "label": "直管测点布置图",
+        "type": "static"
+      }
+    ]
+  }
+]
