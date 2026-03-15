@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from io import BytesIO
 from pathlib import Path
 from unittest.mock import patch
 
+from docx import Document
 from fastapi.testclient import TestClient
 
 import main as main_module
@@ -12,10 +14,14 @@ from openai_analyzer import _parse_raw
 from post_processor import post_process
 
 
-SAMPLE_DOCX = (
-    "/Users/yifantao/Documents/ZhongAn/03报告/2 压力容器/"
-    "20.05压力容器特种设备定期检验意见通知书（1）.docx"
-)
+def build_sample_docx_bytes() -> bytes:
+    document = Document()
+    document.add_heading("公开演示模板", level=1)
+    document.add_paragraph("使用单位：")
+    document.add_paragraph("问题和意见：")
+    buffer = BytesIO()
+    document.save(buffer)
+    return buffer.getvalue()
 
 
 class OpenAIModeTest(unittest.TestCase):
@@ -34,12 +40,12 @@ class OpenAIModeTest(unittest.TestCase):
 
     def test_parse_endpoint_requires_openai_key_when_fallback_disabled(self) -> None:
         client = TestClient(main_module.app)
-        with open(SAMPLE_DOCX, "rb") as file_handle:
-            with patch.object(main_module, "OPENAI_API_KEY", ""), patch.object(main_module, "ALLOW_HEURISTIC_FALLBACK", False):
-                response = client.post(
-                    "/parse-word",
-                    files={"file": ("20.05.docx", file_handle, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
-                )
+        payload = build_sample_docx_bytes()
+        with patch.object(main_module, "OPENAI_API_KEY", ""), patch.object(main_module, "ALLOW_HEURISTIC_FALLBACK", False):
+            response = client.post(
+                "/parse-word",
+                files={"file": ("public-demo.docx", payload, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
+            )
 
         self.assertEqual(response.status_code, 503)
         self.assertIn("OPENAI_API_KEY", response.json()["detail"])
@@ -65,22 +71,20 @@ class OpenAIModeTest(unittest.TestCase):
             "layout": {"type": "key-value", "rows": []},
             "fields": [{"label": "使用单位", "type": "text"}],
         }]
+        payload = build_sample_docx_bytes()
 
         with tempfile.TemporaryDirectory() as tmp_dir:
-            with open(SAMPLE_DOCX, "rb") as file_handle:
-                payload = file_handle.read()
-
             with patch.object(main_module, "OPENAI_API_KEY", "test-key"), \
                 patch.object(main_module, "CACHE_DIR", Path(tmp_dir)), \
                 patch.object(main_module, "analyze_tables_with_openai", return_value=raw_sub_forms) as analyze_mock, \
                 patch.object(main_module, "analyze_block_hints_with_openai", return_value={"paragraphs": {}, "cells": {}}):
                 response_1 = client.post(
                     "/parse-word",
-                    files={"file": ("20.05.docx", payload, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
+                    files={"file": ("public-demo.docx", payload, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
                 )
                 response_2 = client.post(
                     "/parse-word",
-                    files={"file": ("20.05.docx", payload, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
+                    files={"file": ("public-demo.docx", payload, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
                 )
 
         self.assertEqual(response_1.status_code, 200)

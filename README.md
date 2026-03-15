@@ -1,67 +1,81 @@
 # ZhongAn Word Form Platform
 
-当前项目已经收敛成 3 个主服务和 1 组测试样本：
+一个面向 ERP 的 Word 模板平台：
 
-- `word-parser-service/`
+- 用户上传 `.docx/.doc`
+- Python 解析文档结构并调用 OpenAI 判断控件语义
+- Spring Boot 保存模板、审核结果和发布后的动态表结构
+- Vue 提供审核页和正式录入页
+
+## 公开仓库说明
+
+这个公开仓库不再包含客户私有样本目录 `03报告/`。
+
+仓库中保留了一个可公开分发的演示样本：
+
+- [`samples/public-demo-template.docx`](samples/public-demo-template.docx)
+
+如果你要验证旧版 `.doc` 兼容能力，请使用你自己的 `.doc` 文件上传测试。
+
+## 仓库结构
+
+- [`word-parser-service/`](word-parser-service/)
   - Word 解析、OpenAI 语义分析、schema/documentBlocks/DDL 生成
-- `spring-boot-app/`
+- [`spring-boot-app/`](spring-boot-app/)
   - 模板上传、审核保存、发布建表、表单提交
-- `vue-app/`
+- [`vue-app/`](vue-app/)
   - 模板上传页、审核页、正式表单页
-- `03报告/`
-  - 真实 `.docx/.doc` 模板样本
+- [`samples/`](samples/)
+  - 公开演示样本和说明
+- [`DELIVERY_STATUS.md`](DELIVERY_STATUS.md)
+  - 当前验证结果与已知边界
+- [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md)
+  - 当前架构、交付背景、排查入口
+- [`DEMO_GUIDE.md`](DEMO_GUIDE.md)
+  - Demo 录制顺序和讲解提纲
+- [`spring-boot-api-docs.md`](spring-boot-api-docs.md)
+  - 接口说明
+- [`schema-format.json`](schema-format.json)
+  - schema 参考格式
 
-## 当前工作流
+## 工作流
 
-1. 用户在前端上传 Word
+1. 用户上传 Word
 2. Spring Boot 异步转发到 Python parser
-3. parser 解析文档结构，并调用 OpenAI 补控件语义
-4. Spring Boot 保存 `schema / prototype / ddl / qualityWarning`
-5. 审核页人工纠错
+3. parser 提取表格、段落、合并单元格等确定性结构
+4. OpenAI 判断歧义块更像输入框、文本域、单选还是复选
+5. Spring Boot 保存 `schema / prototype / ddl / qualityWarning`
+6. 审核页人工纠错
    - 改已有控件类型
    - 给漏识别区域手工补控件
-6. 审核通过后发布模板
-7. 正式表单页录入并提交
-
-## 当前项目结构
-
-- `/Users/yifantao/Documents/ZhongAn/README.md`
-  - 交付入口
-- `/Users/yifantao/Documents/ZhongAn/DELIVERY_STATUS.md`
-  - 当前验证结果、剩余边界
-- `/Users/yifantao/Documents/ZhongAn/PROJECT_CONTEXT.md`
-  - 历史上下文，保留给后续 AI / 排查参考
-- `/Users/yifantao/Documents/ZhongAn/DEMO_GUIDE.md`
-  - Demo 录制脚本、讲解提纲、演示顺序
-- `/Users/yifantao/Documents/ZhongAn/spring-boot-api-docs.md`
-  - 接口文档
-- `/Users/yifantao/Documents/ZhongAn/schema-format.json`
-  - schema 参考格式
+7. 审核通过后发布模板
+8. 正式表单页录入并提交
 
 ## 快速启动
 
 先启动 parser：
 
 ```bash
-cd /Users/yifantao/Documents/ZhongAn/word-parser-service
+cd word-parser-service
+pip3 install -r requirements.txt
 cp .env.example .env
 # 填写 OPENAI_API_KEY
 python3 -m uvicorn main:app --host 127.0.0.1 --port 8001
 ```
 
-再启动后端，交付目标优先用 PostgreSQL：
+再启动后端，推荐直接用 PostgreSQL：
 
 ```bash
-cd /Users/yifantao/Documents/ZhongAn/spring-boot-app
+cd spring-boot-app
 ./scripts/run_with_postgres.sh
 ```
 
 最后启动前端：
 
 ```bash
-cd /Users/yifantao/Documents/ZhongAn/vue-app
+cd vue-app
 npm install
-npm run dev
+npm run dev -- --host 127.0.0.1
 ```
 
 默认地址：
@@ -70,57 +84,47 @@ npm run dev
 - 后端：`http://127.0.0.1:8080`
 - parser：`http://127.0.0.1:8001/config-status`
 
-## 当前建议验证
+## 建议验证
 
 后端 / parser：
 
 ```bash
-cd /Users/yifantao/Documents/ZhongAn/word-parser-service
+cd word-parser-service
 python3 run_tests.py
 ```
 
 ```bash
-cd /Users/yifantao/Documents/ZhongAn/spring-boot-app
+cd spring-boot-app
 mvn test -q
 ```
 
 前端：
 
 ```bash
-cd /Users/yifantao/Documents/ZhongAn/vue-app
+cd vue-app
 npm run build
 ```
 
 浏览器冒烟：
 
 ```bash
-cd /Users/yifantao/Documents/ZhongAn/vue-app
+cd vue-app
 node ./scripts/smoke_upload_publish.mjs \
   http://127.0.0.1:5173/ \
-  '/Users/yifantao/Documents/ZhongAn/03报告/2 压力容器/20.05压力容器特种设备定期检验意见通知书（1）.docx' \
+  ../samples/public-demo-template.docx \
   http://127.0.0.1:8080
 ```
 
 ```bash
-cd /Users/yifantao/Documents/ZhongAn/vue-app
+cd vue-app
 node ./scripts/smoke_review_manual_add.mjs \
   http://127.0.0.1:5173/ \
-  '/Users/yifantao/Documents/ZhongAn/03报告/4 电梯/03重庆电梯检测报告/30.03-CQ杂物电梯自行检测报告.docx'
+  ../samples/public-demo-template.docx
 ```
 
-## 已清理的旧内容
+## 交付边界
 
-以下历史产物已从主路径移除：
-
-- 旧的 `vue-components/` 散文件组件
-- 旧的 `latest-delivery/` 样品交付目录
-- 根目录临时预览 HTML
-- 前端 `dist/`、后端 `target/`、旧 H2 数据文件
-- parser 的旧缓存和旧样品输出
-
-当前保留的是：
-
-- 运行源码
-- 真实样本
-- 必要文档
-- 当前 live 审计报告
+- 生产主链路是 `OpenAI-only`，默认不再静默回退到启发式兜底
+- `.docx` 保真度高于 `.doc`
+- `.doc` 兼容已接入 `textutil -> HTML -> 结构恢复`，但仍建议审核页人工确认
+- 审核页支持手工补控件，所以系统定位是“半自动模板工坊”，不是“零审核魔法转换器”

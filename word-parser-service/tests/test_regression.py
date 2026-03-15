@@ -5,48 +5,38 @@ import unittest
 from pathlib import Path
 
 from ddl_generator import generate_ddl
-from doc_converter import normalize_word_bytes
-from legacy_doc_html import extract_legacy_doc_html, parse_legacy_doc_html_blocks
-from legacy_doc_fallback import build_pseudo_tables_from_legacy_text, extract_legacy_doc_text
+from legacy_doc_html import parse_legacy_doc_html_blocks
+from legacy_doc_fallback import build_pseudo_tables_from_legacy_text
 from legacy_field_codes import strip_legacy_field_codes
 from models import FormSchema
-from post_processor import post_process
 from openai_block_hints import _collect_candidates
+from post_processor import fill_field_sql, normalize_sub_form, post_process
 from prototype_builder import (
     InlineFieldBindingState,
+    _build_auto_control_payload,
     _build_inline_fill_tokens,
     build_document_blocks,
     build_prototype_html,
 )
-from post_processor import fill_field_sql, normalize_sub_form
+from quality_assessor import assess_quality
 from storage_plan import apply_storage_plan, count_storage_tables
 from legacy_strategy import choose_legacy_representation
-from quality_assessor import assess_quality
-from word_parser import ParsedCell, ParsedTable, parse_docx, parse_docx_blocks, tables_to_prompt_text
+from word_parser import ParsedCell, ParsedTable, tables_to_prompt_text
 
 
 WORKSPACE_ROOT = Path(__file__).resolve().parents[2]
-SERVICE_ROOT = WORKSPACE_ROOT / "word-parser-service"
-SAMPLE_DOCX = WORKSPACE_ROOT / "03报告" / "3压力管道" / "80.02工业管道年度检查报告.docx"
 RAW_OUTPUT_JSON = WORKSPACE_ROOT / "test_output.json"
-SECOND_SAMPLE_DOCX = (
-    WORKSPACE_ROOT / "03报告" / "2 压力容器" / "20.05压力容器特种设备定期检验意见通知书（1）.docx"
-)
-LEGACY_SAMPLE_DOC = (
-    WORKSPACE_ROOT / "03报告" / "3压力管道" / "80.03公用管道年度检查报告.doc"
-)
 
 
 class RegressionPipelineTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.tables = parse_docx(SAMPLE_DOCX.read_bytes())
         raw_payload = json.loads(RAW_OUTPUT_JSON.read_text(encoding="utf-8"))
-        cls.processed = apply_storage_plan(SAMPLE_DOCX.stem, post_process(raw_payload, cls.tables))
+        cls.processed = apply_storage_plan("80.02工业管道年度检查报告", post_process(raw_payload, []))
         cls.schema = FormSchema(
             templateId="test-template",
-            templateName=SAMPLE_DOCX.stem,
-            sourceFile=SAMPLE_DOCX.name,
+            templateName="80.02工业管道年度检查报告",
+            sourceFile="public-demo-template.docx",
             createdAt="2026-03-08T00:00:00Z",
             subForms=cls.processed,
         )
@@ -56,13 +46,31 @@ class RegressionPipelineTest(unittest.TestCase):
         self.assertEqual(len(self.schema.subForms), 14)
         self.assertEqual(self.schema.subForms[0].layout.type, "key-value")
 
-    def test_styles_are_carried_into_schema(self) -> None:
-        first_cell = self.schema_dict["subForms"][0]["layout"]["rows"][0][0]
-        header_cell = self.schema_dict["subForms"][2]["layout"]["headers"][0][0]
-        self.assertIn("style", first_cell)
-        self.assertIn("widthPx", first_cell["style"])
-        self.assertIn("style", header_cell)
-        self.assertIn("textAlign", header_cell["style"])
+    def test_document_blocks_carry_width_align_and_emphasis_styles(self) -> None:
+        table = ParsedTable(
+            index=0,
+            rows=[
+                [
+                    ParsedCell(
+                        text="标题",
+                        row=0,
+                        col=0,
+                        width_twips=3600,
+                        align="center",
+                        shading="D9D9D9",
+                        is_bold=True,
+                        paragraphs=["标题"],
+                    )
+                ]
+            ],
+        )
+        document_blocks = build_document_blocks([table], [], blocks=[{"kind": "table", "table": table}])
+        cell = document_blocks[0]["rows"][0][0]
+        self.assertIn("style", cell)
+        self.assertGreater(cell["style"]["widthPx"], 0)
+        self.assertEqual(cell["style"]["textAlign"], "center")
+        self.assertEqual(cell["style"]["backgroundColor"], "#D9D9D9")
+        self.assertTrue(cell["isEmphasis"])
 
     def test_section_group_fallback_layout_exists(self) -> None:
         sketch_form = next(
@@ -80,12 +88,23 @@ class RegressionPipelineTest(unittest.TestCase):
         self.assertIn("CREATE TABLE IF NOT EXISTS t_insp_pipeline_basic_info", ddl)
 
     def test_interactive_html_contains_controls(self) -> None:
-        html = build_prototype_html(
-            SAMPLE_DOCX.stem,
-            SAMPLE_DOCX.name,
-            self.tables,
-            self.schema_dict["subForms"],
+        table = ParsedTable(
+            index=0,
+            rows=[
+                [
+                    ParsedCell(
+                        text="问题和意见：",
+                        row=0,
+                        col=0,
+                        colspan=3,
+                        width_twips=7600,
+                        paragraphs=["问题和意见：", "", "", ""],
+                    )
+                ]
+            ],
         )
+
+        html = build_prototype_html("公开演示模板", "public-demo-template.docx", [table], [])
         self.assertIn("saveDraft()", html)
         self.assertIn("data-key=", html)
         self.assertIn("prototype-textarea", html)
@@ -282,12 +301,24 @@ class RegressionPipelineTest(unittest.TestCase):
         self.assertEqual(choice_tokens[0]["choiceType"], "radio")
 
     def test_large_statement_cell_gets_tall_textarea(self) -> None:
-        blocks = parse_docx_blocks(SECOND_SAMPLE_DOCX.read_bytes())
-        tables = [block["table"] for block in blocks if block["kind"] == "table"]
-        document_blocks = build_document_blocks(tables, [], blocks=blocks)
-        statement_cell = document_blocks[5]["rows"][12][0]
-        self.assertEqual(statement_cell["control"]["fieldType"], "textarea")
-        self.assertGreaterEqual(statement_cell["control"]["minHeightPx"], 160)
+        table = ParsedTable(
+            index=5,
+            rows=[
+                [
+                    ParsedCell(
+                        text="问题和意见：",
+                        row=12,
+                        col=0,
+                        colspan=3,
+                        width_twips=7600,
+                        paragraphs=["问题和意见：", "", "", ""],
+                    )
+                ]
+            ],
+        )
+        control = _build_auto_control_payload(table, 12, 0, table.rows[0][0], table.rows[0][0].paragraphs)
+        self.assertEqual(control["fieldType"], "textarea")
+        self.assertGreaterEqual(control["minHeightPx"], 160)
 
     def test_ai_hint_can_override_choice_type(self) -> None:
         hint = {
@@ -301,15 +332,14 @@ class RegressionPipelineTest(unittest.TestCase):
         self.assertEqual(count, 1)
         self.assertEqual(choice_tokens[0]["choiceType"], "checkbox_group")
 
-    def test_legacy_doc_uses_pseudo_tables_when_xml_tables_missing(self) -> None:
-        normalized_name, file_bytes = normalize_word_bytes(LEGACY_SAMPLE_DOC.name, LEGACY_SAMPLE_DOC.read_bytes())
-        self.assertTrue(normalized_name.endswith(".docx"))
-        blocks = parse_docx_blocks(file_bytes)
-        tables = [block["table"] for block in blocks if block["kind"] == "table"]
-        self.assertEqual(tables, [])
-
-        legacy_html = extract_legacy_doc_html(LEGACY_SAMPLE_DOC.name, LEGACY_SAMPLE_DOC.read_bytes())
-        legacy_blocks = parse_legacy_doc_html_blocks(legacy_html)
+    def test_parse_legacy_doc_html_blocks_builds_tables_from_synthetic_html(self) -> None:
+        html_text = (
+            "<html><body>"
+            "<p style='text-align:center'>公开演示模板</p>"
+            "<table><tr><td style='width:120px'>字段</td><td>值</td></tr><tr><td>问题和意见</td><td></td></tr></table>"
+            "</body></html>"
+        )
+        legacy_blocks = parse_legacy_doc_html_blocks(html_text)
         legacy_html_tables = [block["table"] for block in legacy_blocks if block["kind"] == "table"]
         self.assertTrue(legacy_html_tables)
         self.assertTrue(any(block["kind"] == "paragraph" for block in legacy_blocks))
@@ -317,8 +347,16 @@ class RegressionPipelineTest(unittest.TestCase):
         first_table_block = next(block for block in legacy_document_blocks if block["kind"] == "table")
         first_table_cell_style = first_table_block["rows"][0][0]["style"]
         self.assertIn("widthPx", first_table_cell_style)
+        self.assertGreater(first_table_cell_style["widthPx"], 0)
 
-        legacy_text = extract_legacy_doc_text(LEGACY_SAMPLE_DOC.name, LEGACY_SAMPLE_DOC.read_bytes())
+    def test_build_pseudo_tables_from_legacy_text(self) -> None:
+        legacy_text = (
+            "公开演示报告\n"
+            "整改方式： DOCVARIABLE zgfs \\\\* MERGEFORMAT\n"
+            "说明信息\n"
+            "使用单位代表\n"
+            "张三\n"
+        )
         pseudo_tables = build_pseudo_tables_from_legacy_text(legacy_text)
         document_blocks = build_document_blocks(pseudo_tables, [], blocks=None)
 

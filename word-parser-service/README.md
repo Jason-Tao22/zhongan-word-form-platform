@@ -10,24 +10,21 @@
 
 ## 本地启动
 
-先安装依赖：
+安装依赖：
 
 ```bash
-cd /Users/yifantao/Documents/ZhongAn/word-parser-service
 pip3 install -r requirements.txt
 ```
 
 复制环境变量模板：
 
 ```bash
-cd /Users/yifantao/Documents/ZhongAn/word-parser-service
 cp .env.example .env
 ```
 
-把 `.env` 里的 `OPENAI_API_KEY` 改成你的真实 Key，然后启动：
+填写 `.env` 里的 `OPENAI_API_KEY` 后启动：
 
 ```bash
-cd /Users/yifantao/Documents/ZhongAn/word-parser-service
 python3 -m uvicorn main:app --host 127.0.0.1 --port 8001
 ```
 
@@ -43,7 +40,7 @@ python3 -m uvicorn main:app --host 127.0.0.1 --port 8001
 - `GET /config-status`
 - `POST /parse-word?include_prototype=true`
 
-## 当前解析策略
+## 解析策略
 
 - `.docx`：优先走原生 Word XML 表格解析
 - `.doc`：优先走 `textutil -> HTML -> 真实表格块`
@@ -64,26 +61,18 @@ python3 -m uvicorn main:app --host 127.0.0.1 --port 8001
 }
 ```
 
-## 当前策略
-
-- 默认是 `OpenAI-only`
-- 没有 `OPENAI_API_KEY` 时，不再静默走本地兜底，而是明确返回错误
-- 只有显式设置 `ALLOW_HEURISTIC_FALLBACK=true` 时，才允许启发式兜底
-
 ## 验证
 
 ```bash
-cd /Users/yifantao/Documents/ZhongAn/word-parser-service
 python3 run_tests.py
 ```
 
 ## 批量审计
 
-直接对 live parser 做整目录审计：
+对一个本地样本目录做整目录审计：
 
 ```bash
-cd /Users/yifantao/Documents/ZhongAn/word-parser-service
-python3 service_batch_audit.py '/Users/yifantao/Documents/ZhongAn/03报告' \
+python3 service_batch_audit.py ../samples \
   --parser-url http://127.0.0.1:8001 \
   --output-dir output/service-audit \
   --include-prototype
@@ -96,5 +85,6 @@ python3 service_batch_audit.py '/Users/yifantao/Documents/ZhongAn/03报告' \
 
 说明：
 
-- `output/` 和 `data/parse-cache/` 都属于运行期生成目录，不是交付源码的一部分。
-- 如需避免命中旧缓存，可清空 `data/parse-cache/` 后重跑。
+- `output/` 和 `data/parse-cache/` 都属于运行期生成目录，不是交付源码的一部分
+- 如需避免命中旧缓存，可清空 `data/parse-cache/` 后重跑
+- 公开仓库只保留了可公开演示的 `samples/` 目录；客户私有模板不再随仓库分发
