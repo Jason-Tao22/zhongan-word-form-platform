@@ -116,6 +116,7 @@ class FieldDef(BaseModel):
     id: str
     label: str
     type: FIELD_TYPE
+    placeholder: Optional[str] = None
     sqlColumn: Optional[str] = None   # None → static 字段，不建列
     storageColumn: Optional[str] = None
     sqlType: Optional[str] = None

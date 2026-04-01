@@ -65,6 +65,7 @@
                 :class="reviewTargetClasses(tokenReviewId(blockIndex, null, null, 0, tokenIndex), 'inline-fill')"
                 type="text"
                 :style="{ width: `${token.widthEm}em` }"
+                :placeholder="getTokenPlaceholder(token)"
                 :value="getTokenValue(token)"
                 @input="setTokenValue(token, $event.target.value)"
                 @focus="emitReviewSelect(tokenReviewId(blockIndex, null, null, 0, tokenIndex))"
@@ -90,6 +91,7 @@
                 v-else-if="block.control.fieldType === 'textarea'"
                 class="auto-textarea"
                 :style="autoControlStyle(block.control)"
+                :placeholder="getAutoControlPlaceholder(block.control)"
                 :value="getDocumentValue(block.control.key)"
                 @input="setDocumentValue(block.control.key, $event.target.value)"
               />
@@ -97,6 +99,7 @@
                 v-else
                 class="auto-input"
                 type="text"
+                :placeholder="getAutoControlPlaceholder(block.control)"
                 :value="getDocumentValue(block.control.key)"
                 @input="setDocumentValue(block.control.key, $event.target.value)"
               >
@@ -175,6 +178,7 @@
                           :class="reviewTargetClasses(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex), 'inline-fill')"
                           type="text"
                           :style="{ width: `${token.widthEm}em` }"
+                          :placeholder="getTokenPlaceholder(token)"
                           :value="getTokenValue(token)"
                           @input="setTokenValue(token, $event.target.value)"
                           @focus="emitReviewSelect(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex))"
@@ -200,6 +204,7 @@
                           v-else-if="paragraph.control.fieldType === 'textarea'"
                           class="auto-textarea"
                           :style="autoControlStyle(paragraph.control)"
+                          :placeholder="getAutoControlPlaceholder(paragraph.control)"
                           :value="getDocumentValue(paragraph.control.key)"
                           @input="setDocumentValue(paragraph.control.key, $event.target.value)"
                         />
@@ -207,6 +212,7 @@
                           v-else
                           class="auto-input"
                           type="text"
+                          :placeholder="getAutoControlPlaceholder(paragraph.control)"
                           :value="getDocumentValue(paragraph.control.key)"
                           @input="setDocumentValue(paragraph.control.key, $event.target.value)"
                         >
@@ -232,6 +238,7 @@
                       v-else-if="cell.control.fieldType === 'textarea'"
                       class="auto-textarea"
                       :style="autoControlStyle(cell.control)"
+                      :placeholder="getAutoControlPlaceholder(cell.control)"
                       :value="getDocumentValue(cell.control.key)"
                       @input="setDocumentValue(cell.control.key, $event.target.value)"
                     />
@@ -239,6 +246,7 @@
                       v-else
                       class="auto-input"
                       type="text"
+                      :placeholder="getAutoControlPlaceholder(cell.control)"
                       :value="getDocumentValue(cell.control.key)"
                       @input="setDocumentValue(cell.control.key, $event.target.value)"
                     >
@@ -840,6 +848,7 @@ function getControlField(control) {
       label: control.label || control.fieldId,
       type: control.fieldType || 'text',
       options: control.options || [],
+      placeholder: control.placeholder || '',
     }
   }
   return getField(subForm, control.fieldId)
@@ -851,7 +860,42 @@ function getAutoControlField(control) {
     label: control.label || control.key,
     type: control.fieldType || 'text',
     options: control.options || [],
+    placeholder: control.placeholder || '',
   }
+}
+
+function resolvePlaceholder(field, fallbackType = 'text') {
+  if (field?.placeholder) return field.placeholder
+  const label = String(field?.label || '').replace(/[：:]+$/g, '').trim()
+  const type = field?.type || fallbackType
+  switch (type) {
+    case 'date':
+      return label ? `请选择${label}` : '请选择日期'
+    case 'select':
+    case 'radio':
+    case 'checkbox_group':
+      return label ? `请选择${label}` : '请选择'
+    case 'textarea':
+      return label ? `请输入${label}` : '请输入内容'
+    case 'number':
+      return label ? `请输入${label}` : '请输入数字'
+    default:
+      return label ? `请输入${label}` : '请输入'
+  }
+}
+
+function getTokenPlaceholder(token) {
+  const binding = getTokenFieldBinding(token)
+  if (binding?.field) {
+    return resolvePlaceholder(binding.field, token.kind === 'inline-choice' ? 'radio' : 'text')
+  }
+  return token.kind === 'inline-choice' ? '请选择' : '填写'
+}
+
+function getAutoControlPlaceholder(control) {
+  if (!control) return ''
+  const field = control.kind === 'schema' ? getControlField(control) : getAutoControlField(control)
+  return resolvePlaceholder(field, control.fieldType || 'text')
 }
 
 function isStructuredAutoControl(control) {

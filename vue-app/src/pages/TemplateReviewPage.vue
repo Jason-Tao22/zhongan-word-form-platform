@@ -220,6 +220,11 @@
                   <strong>{{ item.label }}</strong>
                   <span>{{ item.location }}</span>
                 </div>
+                <div class="control-meta">
+                  <span v-if="item.fieldId">字段ID：{{ item.fieldId }}</span>
+                  <span v-if="item.sqlColumn">SQL列：{{ item.sqlColumn }}</span>
+                  <span v-if="item.placeholder">占位符：{{ item.placeholder }}</span>
+                </div>
 
                 <el-select
                   :model-value="item.type"
@@ -923,6 +928,9 @@ function buildCellControlItem(schema, control, context) {
     supportsOptions: ['radio', 'checkbox_group', 'select'].includes(type),
     supportsMinHeight: type === 'textarea',
     minHeightPx: control.minHeightPx || field?.minHeightPx || 120,
+    fieldId: field?.id || control.fieldId || '',
+    sqlColumn: field?.sqlColumn || field?.storageColumn || '',
+    placeholder: field?.placeholder || control.placeholder || '',
     typeOptions: FIELD_TYPE_OPTIONS,
     path: context,
   }
@@ -944,6 +952,9 @@ function buildParagraphControlItem(schema, control, context) {
     supportsOptions: ['radio', 'checkbox_group', 'select'].includes(type),
     supportsMinHeight: type === 'textarea',
     minHeightPx: control.minHeightPx || field?.minHeightPx || 120,
+    fieldId: field?.id || control.fieldId || '',
+    sqlColumn: field?.sqlColumn || field?.storageColumn || '',
+    placeholder: field?.placeholder || control.placeholder || '',
     typeOptions: FIELD_TYPE_OPTIONS,
     path: context,
   }
@@ -953,6 +964,7 @@ function buildTokenItem(schema, tokens, token, tokenIndex, context) {
   const type = token.kind === 'inline-choice'
     ? (token.choiceType === 'checkbox_group' ? 'checkbox_group' : 'radio')
     : 'text'
+  const field = token.fieldId && token.subFormId ? findField(schema, token.subFormId, token.fieldId) : null
   return {
     id: `token-${context.blockIndex}-${context.rowIndex ?? 'p'}-${context.cellIndex ?? 'p'}-${context.paragraphIndex ?? 0}-${tokenIndex}`,
     scope: 'token',
@@ -963,6 +975,9 @@ function buildTokenItem(schema, tokens, token, tokenIndex, context) {
     supportsOptions: type !== 'text',
     supportsMinHeight: false,
     minHeightPx: null,
+    fieldId: token.fieldId || '',
+    sqlColumn: field?.sqlColumn || field?.storageColumn || '',
+    placeholder: field?.placeholder || (type === 'text' ? '填写' : '请选择'),
     typeOptions: TOKEN_TYPE_OPTIONS,
     path: { ...context, tokenIndex },
   }
@@ -1014,6 +1029,24 @@ function parseOptions(raw) {
     .split(/[\n,，]/)
     .map(item => item.trim())
     .filter(Boolean)
+}
+
+function buildFieldPlaceholder(label, type) {
+  const cleanedLabel = String(label || '').replace(/[：:]+$/g, '').trim()
+  switch (type) {
+    case 'date':
+      return cleanedLabel ? `请选择${cleanedLabel}` : '请选择日期'
+    case 'select':
+    case 'radio':
+    case 'checkbox_group':
+      return cleanedLabel ? `请选择${cleanedLabel}` : '请选择'
+    case 'textarea':
+      return cleanedLabel ? `请输入${cleanedLabel}` : '请输入内容'
+    case 'number':
+      return cleanedLabel ? `请输入${cleanedLabel}` : '请输入数字'
+    default:
+      return cleanedLabel ? `请输入${cleanedLabel}` : '请输入'
+  }
 }
 
 function resolveSqlType(type) {
@@ -1084,6 +1117,7 @@ function createManualField(schema, config) {
     id: fieldId,
     label: config.label,
     type: config.type,
+    placeholder: buildFieldPlaceholder(config.label, config.type),
     sqlColumn: fieldId,
     storageColumn: fieldId,
     sqlType: resolveSqlType(config.type),
@@ -1412,6 +1446,24 @@ onBeforeUnmount(() => {
 .control-head span {
   color: #6b7b92;
   font-size: 12px;
+}
+
+.control-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.control-meta span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #edf4ff;
+  color: #35558c;
+  font-size: 11px;
+  line-height: 1;
 }
 
 .control-input {

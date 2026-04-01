@@ -6,7 +6,7 @@
     v-model="innerValue"
     size="small"
     class="cell-input"
-    :placeholder="field.required ? '请输入' : ''"
+    :placeholder="resolvedPlaceholder"
   />
 
   <el-input-number
@@ -15,6 +15,7 @@
     :controls="false"
     size="small"
     class="cell-input"
+    :placeholder="resolvedPlaceholder"
   />
 
   <el-input
@@ -25,6 +26,7 @@
     resize="vertical"
     size="small"
     class="cell-input"
+    :placeholder="resolvedPlaceholder"
   />
 
   <el-date-picker
@@ -34,6 +36,7 @@
     size="small"
     class="cell-input"
     value-format="YYYY-MM-DD"
+    :placeholder="resolvedPlaceholder"
   />
 
   <div
@@ -70,6 +73,7 @@
     size="small"
     class="cell-input"
     clearable
+    :placeholder="resolvedPlaceholder"
   >
     <el-option
       v-for="opt in field.options || []"
@@ -121,6 +125,29 @@ const innerValue = computed({
 const textareaRows = computed(() => {
   const minHeight = Number(props.field?.minHeightPx) || 96
   return Math.max(3, Math.round(minHeight / 36))
+})
+
+const resolvedPlaceholder = computed(() => {
+  if (props.field?.placeholder) {
+    return props.field.placeholder
+  }
+  const label = String(props.field?.label || '').replace(/[：:]+$/g, '').trim()
+  switch (props.field?.type) {
+    case 'date':
+      return label ? `请选择${label}` : '请选择日期'
+    case 'select':
+    case 'radio':
+    case 'checkbox_group':
+      return label ? `请选择${label}` : '请选择'
+    case 'textarea':
+      return label ? `请输入${label}` : '请输入内容'
+    case 'number':
+      return label ? `请输入${label}` : '请输入数字'
+    case 'static':
+      return ''
+    default:
+      return label ? `请输入${label}` : '请输入'
+  }
 })
 
 function clearRadio() {

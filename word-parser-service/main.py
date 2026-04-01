@@ -44,7 +44,7 @@ load_dotenv()
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-5")
 ALLOW_HEURISTIC_FALLBACK = os.environ.get("ALLOW_HEURISTIC_FALLBACK", "").lower() in {"1", "true", "yes", "on"}
-CACHE_VERSION = "2026-03-08-v2-fieldcode-clean"
+CACHE_VERSION = "2026-03-31-v3-placeholders"
 CACHE_DIR = Path(__file__).resolve().parent / "data" / "parse-cache"
 
 

@@ -28,6 +28,7 @@ TYPE_TO_SQL: dict[str, str] = {
 VALID_FIELD_TYPES = set(TYPE_TO_SQL.keys())
 VALID_LAYOUT_TYPES = {"key-value", "data-grid", "checklist", "section-group"}
 GENERIC_IDENTIFIER_RE = re.compile(r"^(?:field|col|column|item|value|input|sub_form|section|part)_?\d*$")
+TRAILING_LABEL_PUNCTUATION_RE = re.compile(r"[：:]+$")
 
 
 def _slugify_identifier(value: str | None, fallback: str) -> str:
@@ -89,6 +90,27 @@ def _ensure_unique(base: str, seen: set[str]) -> str:
         index += 1
     seen.add(candidate)
     return candidate
+
+
+def _clean_placeholder_label(label: str | None) -> str:
+    text = str(label or "").strip()
+    text = TRAILING_LABEL_PUNCTUATION_RE.sub("", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _build_field_placeholder(label: str | None, field_type: str) -> str | None:
+    cleaned_label = _clean_placeholder_label(label)
+    if field_type == "static":
+        return None
+    if field_type in {"radio", "checkbox_group", "select"}:
+        return f"请选择{cleaned_label}" if cleaned_label else "请选择"
+    if field_type == "date":
+        return f"请选择{cleaned_label}" if cleaned_label else "请选择日期"
+    if field_type == "textarea":
+        return f"请输入{cleaned_label}" if cleaned_label else "请输入内容"
+    if field_type == "number":
+        return f"请输入{cleaned_label}" if cleaned_label else "请输入数字"
+    return f"请输入{cleaned_label}" if cleaned_label else "请输入"
 
 
 def _coerce_sub_form(raw_sub_form: object, index: int) -> dict:
@@ -170,6 +192,8 @@ def fill_field_sql(fields: list[dict]) -> list[dict]:
             )
         if not f.get("sqlType"):
             f["sqlType"] = TYPE_TO_SQL.get(f.get("type", "text"))
+        if not f.get("placeholder"):
+            f["placeholder"] = _build_field_placeholder(f.get("label"), f.get("type", "text"))
     return coerced_fields
 
 
