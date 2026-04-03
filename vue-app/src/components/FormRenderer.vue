@@ -686,6 +686,7 @@ function cellStyle(style) {
     result.width = `${style.widthPx}px`
     result.minWidth = `${Math.max(56, style.widthPx)}px`
   }
+  if (style.minHeightPx) result.minHeight = `${style.minHeightPx}px`
   if (style.textAlign) result.textAlign = style.textAlign
   if (style.verticalAlign) result.verticalAlign = style.verticalAlign
   if (style.backgroundColor) result.backgroundColor = style.backgroundColor
@@ -704,6 +705,7 @@ function paragraphStyle(style) {
   if (!style) return undefined
   const result = {}
   if (style.textAlign) result.textAlign = style.textAlign
+  if (style.minHeightPx) result.minHeight = `${style.minHeightPx}px`
   if (style.fontWeight === 'bold') result.fontWeight = 700
   else if (style.fontWeight === 'normal') result.fontWeight = 400
   if (style.fontSizePx) result.fontSize = `${style.fontSizePx}px`

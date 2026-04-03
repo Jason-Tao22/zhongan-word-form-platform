@@ -162,6 +162,32 @@
                   />
                 </div>
 
+                <div v-if="selectedStyleSupportsCellLayout" class="style-field" data-style-field="widthPx">
+                  <span class="style-field-label">列宽</span>
+                  <el-input-number
+                    :model-value="selectedStyle.widthPx ?? undefined"
+                    class="control-input"
+                    :min="40"
+                    :max="1600"
+                    :step="10"
+                    :disabled="!canEditSchema"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'widthPx', $event)"
+                  />
+                </div>
+
+                <div class="style-field" data-style-field="minHeightPx">
+                  <span class="style-field-label">最小高度</span>
+                  <el-input-number
+                    :model-value="selectedStyle.minHeightPx ?? undefined"
+                    class="control-input"
+                    :min="24"
+                    :max="1200"
+                    :step="10"
+                    :disabled="!canEditSchema"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'minHeightPx', $event)"
+                  />
+                </div>
+
                 <div class="style-field" data-style-field="textAlign">
                   <span class="style-field-label">水平对齐</span>
                   <el-select
@@ -515,6 +541,8 @@ const selectedStyle = computed(() => {
   return {
     fontFamily: style.fontFamily || '',
     fontSizePx: style.fontSizePx ?? null,
+    widthPx: style.widthPx ?? null,
+    minHeightPx: style.minHeightPx ?? null,
     textAlign: style.textAlign || '',
     fontWeight: style.fontWeight || '',
     verticalAlign: style.verticalAlign || '',
@@ -1174,6 +1202,16 @@ function updateItemStyle(item, key, value) {
   const container = getStyleContainer(reviewSchema.value, item)
   if (!container) return
   container.style = container.style && typeof container.style === 'object' ? container.style : {}
+  if (key === 'widthPx' || key === 'minHeightPx') {
+    const numeric = Number(value)
+    if (!Number.isFinite(numeric) || numeric <= 0) {
+      delete container.style[key]
+    } else {
+      const bounds = key === 'widthPx' ? [40, 1600] : [24, 1200]
+      container.style[key] = Math.max(bounds[0], Math.min(bounds[1], Math.round(numeric)))
+    }
+    return
+  }
   if (key === 'fontSizePx') {
     const numeric = Number(value)
     if (!Number.isFinite(numeric) || numeric <= 0) {
