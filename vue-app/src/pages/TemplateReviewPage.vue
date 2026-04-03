@@ -188,6 +188,20 @@
                   />
                 </div>
 
+                <div class="style-field" data-style-field="lineHeight">
+                  <span class="style-field-label">行高</span>
+                  <el-input-number
+                    :model-value="selectedStyle.lineHeight ?? undefined"
+                    class="control-input"
+                    :min="1"
+                    :max="3"
+                    :step="0.1"
+                    :precision="1"
+                    :disabled="!canEditSchema"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'lineHeight', $event)"
+                  />
+                </div>
+
                 <div class="style-field" data-style-field="textAlign">
                   <span class="style-field-label">水平对齐</span>
                   <el-select
@@ -244,6 +258,19 @@
                     :disabled="!canEditSchema"
                     placeholder="如：#fff7e6"
                     @update:model-value="updateItemStyle(selectedStyleItem, 'backgroundColor', $event)"
+                  />
+                </div>
+
+                <div v-if="selectedStyleSupportsCellLayout" class="style-field" data-style-field="paddingPx">
+                  <span class="style-field-label">内边距</span>
+                  <el-input-number
+                    :model-value="selectedStyle.paddingPx ?? undefined"
+                    class="control-input"
+                    :min="0"
+                    :max="48"
+                    :step="1"
+                    :disabled="!canEditSchema"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'paddingPx', $event)"
                   />
                 </div>
               </div>
@@ -543,6 +570,8 @@ const selectedStyle = computed(() => {
     fontSizePx: style.fontSizePx ?? null,
     widthPx: style.widthPx ?? null,
     minHeightPx: style.minHeightPx ?? null,
+    paddingPx: style.paddingPx ?? null,
+    lineHeight: style.lineHeight ?? null,
     textAlign: style.textAlign || '',
     fontWeight: style.fontWeight || '',
     verticalAlign: style.verticalAlign || '',
@@ -1202,13 +1231,27 @@ function updateItemStyle(item, key, value) {
   const container = getStyleContainer(reviewSchema.value, item)
   if (!container) return
   container.style = container.style && typeof container.style === 'object' ? container.style : {}
-  if (key === 'widthPx' || key === 'minHeightPx') {
+  if (key === 'widthPx' || key === 'minHeightPx' || key === 'paddingPx') {
+    const numeric = Number(value)
+    const allowsZero = key === 'paddingPx'
+    if (!Number.isFinite(numeric) || (allowsZero ? numeric < 0 : numeric <= 0)) {
+      delete container.style[key]
+    } else {
+      const bounds = key === 'widthPx'
+        ? [40, 1600]
+        : key === 'paddingPx'
+          ? [0, 48]
+          : [24, 1200]
+      container.style[key] = Math.max(bounds[0], Math.min(bounds[1], Math.round(numeric)))
+    }
+    return
+  }
+  if (key === 'lineHeight') {
     const numeric = Number(value)
     if (!Number.isFinite(numeric) || numeric <= 0) {
       delete container.style[key]
     } else {
-      const bounds = key === 'widthPx' ? [40, 1600] : [24, 1200]
-      container.style[key] = Math.max(bounds[0], Math.min(bounds[1], Math.round(numeric)))
+      container.style[key] = Math.max(1, Math.min(3, Math.round(numeric * 10) / 10))
     }
     return
   }

@@ -77,6 +77,10 @@ async function run() {
     await fontSizeInput.fill('26')
     await fontSizeInput.press('Tab')
 
+    const lineHeightInput = page.locator('[data-style-field="lineHeight"] input').first()
+    await lineHeightInput.fill('1.8')
+    await lineHeightInput.press('Tab')
+
     await page.getByRole('button', { name: '保存纠错' }).click()
     await page.locator('.el-message__content').filter({ hasText: '模板纠错已保存' }).first().waitFor({ timeout: 60_000 })
 
@@ -87,6 +91,7 @@ async function run() {
 
     result.fontFamily = await page.locator('[data-style-field="fontFamily"] input').first().inputValue()
     result.fontSizePx = await page.locator('[data-style-field="fontSizePx"] input').first().inputValue()
+    result.lineHeight = await page.locator('[data-style-field="lineHeight"] input').first().inputValue()
     result.renderedStyle = await page.locator(`[data-review-id="${targetId}"]`).first().evaluate((node) => {
       const style = window.getComputedStyle(node)
       return {
@@ -100,6 +105,9 @@ async function run() {
     }
     if (result.fontSizePx !== '26') {
       throw new Error(`Expected saved fontSize 26, got ${result.fontSizePx}`)
+    }
+    if (result.lineHeight !== '1.8') {
+      throw new Error(`Expected saved lineHeight 1.8, got ${result.lineHeight}`)
     }
     if (!String(result.renderedStyle.fontFamily || '').includes('黑体')) {
       throw new Error(`Expected rendered fontFamily to include 黑体, got ${result.renderedStyle.fontFamily}`)

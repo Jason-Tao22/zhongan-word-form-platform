@@ -11,6 +11,8 @@ from pydantic import BaseModel, Field
 class CellStyle(BaseModel):
     widthPx: Optional[int] = None
     minHeightPx: Optional[int] = None
+    paddingPx: Optional[int] = None
+    lineHeight: Optional[float] = None
     textAlign: Optional[Literal["left", "center", "right", "justify"]] = None
     verticalAlign: Optional[Literal["top", "middle", "bottom"]] = None
     backgroundColor: Optional[str] = None
