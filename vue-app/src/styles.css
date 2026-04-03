@@ -15,6 +15,13 @@ body {
   min-width: 320px;
 }
 
+#app,
+.shell-main,
+.page-wrap,
+.page-card {
+  min-width: 0;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -60,6 +67,7 @@ a {
 
 .shell-main {
   padding: 28px;
+  min-width: 0;
 }
 
 .page-wrap {
@@ -73,6 +81,19 @@ a {
   border-radius: 20px;
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
   padding: 22px;
+  min-width: 0;
+}
+
+.table-shell {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.table-shell .el-table {
+  min-width: 100%;
 }
 
 .page-header {

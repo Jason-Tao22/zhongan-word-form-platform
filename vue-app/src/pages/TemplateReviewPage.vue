@@ -1651,6 +1651,7 @@ onBeforeUnmount(() => {
   display: grid;
   gap: 18px;
   align-content: start;
+  min-width: 0;
 }
 
 .preview-card,
@@ -1667,6 +1668,7 @@ onBeforeUnmount(() => {
   padding: 18px;
   max-height: calc(100vh - 220px);
   overflow: auto;
+  min-width: 0;
 }
 
 .prototype-card {

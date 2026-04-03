@@ -107,156 +107,158 @@
             </div>
           </div>
 
-          <table v-else-if="block.kind === 'table'" class="word-table document-table">
-            <tbody>
-              <tr v-for="(row, rowIndex) in block.rows" :key="`t-${blockIndex}-${rowIndex}`">
-                <td
-                  v-for="(cell, cellIndex) in row"
-                  :key="`c-${blockIndex}-${rowIndex}-${cellIndex}`"
-                  :colspan="cell.colspan || 1"
-                  :rowspan="cell.rowspan || 1"
-                  :style="cellStyle(cell.style)"
-                  :data-review-id="cellSlotReviewId(blockIndex, rowIndex, cellIndex)"
-                  :class="reviewTargetClasses(cellSlotReviewId(blockIndex, rowIndex, cellIndex), documentCellClasses(cell))"
-                  @click="emitReviewSelect(cellSlotReviewId(blockIndex, rowIndex, cellIndex))"
-                  @mouseenter="emitReviewHover(cellSlotReviewId(blockIndex, rowIndex, cellIndex))"
-                  @mouseleave="emitReviewHover('')"
-                >
-                  <template v-for="(paragraph, paragraphIndex) in cell.paragraphs || []" :key="`cp-${blockIndex}-${rowIndex}-${cellIndex}-${paragraphIndex}`">
-                    <div
-                      v-if="paragraph.kind === 'blank'"
-                      :data-review-id="paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex)"
-                      :class="reviewTargetClasses(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex), ['document-paragraph-line', 'blank-line'])"
-                      @click.stop="emitReviewSelect(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex))"
-                      @mouseenter="emitReviewHover(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex))"
-                      @mouseleave="emitReviewHover('')"
-                    ></div>
-                    <div
-                      v-else
-                      :data-review-id="paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex)"
-                      :class="reviewTargetClasses(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex), 'document-paragraph-line')"
-                      :style="paragraphStyle(paragraph.style)"
-                      @click.stop="emitReviewSelect(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex))"
-                      @mouseenter="emitReviewHover(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex))"
-                      @mouseleave="emitReviewHover('')"
-                    >
-                      <template v-for="(token, tokenIndex) in paragraph.tokens || []" :key="`ct-${blockIndex}-${rowIndex}-${cellIndex}-${paragraphIndex}-${tokenIndex}`">
-                        <span v-if="token.kind === 'text'">{{ token.text }}</span>
-                        <span
-                          v-else-if="token.kind === 'inline-choice'"
-                          :data-review-id="tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex)"
-                          :class="reviewTargetClasses(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex), 'inline-choice-group')"
-                          @click.stop="emitReviewSelect(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex))"
-                          @focusin="emitReviewSelect(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex))"
-                          @mouseenter="emitReviewHover(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex))"
-                          @mouseleave="emitReviewHover('')"
-                        >
-                          <label
-                            v-for="option in token.options || []"
-                            :key="`${token.key}-${option}`"
-                            class="inline-choice-item"
+          <div v-else-if="block.kind === 'table'" class="table-scroll-shell">
+            <table class="word-table document-table">
+              <tbody>
+                <tr v-for="(row, rowIndex) in block.rows" :key="`t-${blockIndex}-${rowIndex}`">
+                  <td
+                    v-for="(cell, cellIndex) in row"
+                    :key="`c-${blockIndex}-${rowIndex}-${cellIndex}`"
+                    :colspan="cell.colspan || 1"
+                    :rowspan="cell.rowspan || 1"
+                    :style="cellStyle(cell.style)"
+                    :data-review-id="cellSlotReviewId(blockIndex, rowIndex, cellIndex)"
+                    :class="reviewTargetClasses(cellSlotReviewId(blockIndex, rowIndex, cellIndex), documentCellClasses(cell))"
+                    @click="emitReviewSelect(cellSlotReviewId(blockIndex, rowIndex, cellIndex))"
+                    @mouseenter="emitReviewHover(cellSlotReviewId(blockIndex, rowIndex, cellIndex))"
+                    @mouseleave="emitReviewHover('')"
+                  >
+                    <template v-for="(paragraph, paragraphIndex) in cell.paragraphs || []" :key="`cp-${blockIndex}-${rowIndex}-${cellIndex}-${paragraphIndex}`">
+                      <div
+                        v-if="paragraph.kind === 'blank'"
+                        :data-review-id="paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex)"
+                        :class="reviewTargetClasses(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex), ['document-paragraph-line', 'blank-line'])"
+                        @click.stop="emitReviewSelect(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex))"
+                        @mouseenter="emitReviewHover(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex))"
+                        @mouseleave="emitReviewHover('')"
+                      ></div>
+                      <div
+                        v-else
+                        :data-review-id="paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex)"
+                        :class="reviewTargetClasses(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex), 'document-paragraph-line')"
+                        :style="paragraphStyle(paragraph.style)"
+                        @click.stop="emitReviewSelect(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex))"
+                        @mouseenter="emitReviewHover(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex))"
+                        @mouseleave="emitReviewHover('')"
+                      >
+                        <template v-for="(token, tokenIndex) in paragraph.tokens || []" :key="`ct-${blockIndex}-${rowIndex}-${cellIndex}-${paragraphIndex}-${tokenIndex}`">
+                          <span v-if="token.kind === 'text'">{{ token.text }}</span>
+                          <span
+                            v-else-if="token.kind === 'inline-choice'"
+                            :data-review-id="tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex)"
+                            :class="reviewTargetClasses(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex), 'inline-choice-group')"
+                            @click.stop="emitReviewSelect(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex))"
+                            @focusin="emitReviewSelect(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex))"
+                            @mouseenter="emitReviewHover(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex))"
+                            @mouseleave="emitReviewHover('')"
                           >
-                            <input
-                              :type="token.choiceType === 'checkbox_group' ? 'checkbox' : 'radio'"
-                              :name="token.choiceType === 'checkbox_group' ? undefined : token.key"
-                              :value="option"
-                              :checked="isInlineChoiceSelected(token, option)"
-                              @click="handleInlineChoiceClick(token, option, $event)"
+                            <label
+                              v-for="option in token.options || []"
+                              :key="`${token.key}-${option}`"
+                              class="inline-choice-item"
                             >
-                            <span>{{ option }}</span>
-                          </label>
-                          <button
-                            v-if="canClearInlineChoice(token)"
-                            type="button"
-                            class="choice-clear"
-                            @click="clearInlineChoice(token)"
+                              <input
+                                :type="token.choiceType === 'checkbox_group' ? 'checkbox' : 'radio'"
+                                :name="token.choiceType === 'checkbox_group' ? undefined : token.key"
+                                :value="option"
+                                :checked="isInlineChoiceSelected(token, option)"
+                                @click="handleInlineChoiceClick(token, option, $event)"
+                              >
+                              <span>{{ option }}</span>
+                            </label>
+                            <button
+                              v-if="canClearInlineChoice(token)"
+                              type="button"
+                              class="choice-clear"
+                              @click="clearInlineChoice(token)"
+                            >
+                              清空
+                            </button>
+                          </span>
+                          <input
+                            v-else
+                            :data-review-id="tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex)"
+                            :class="reviewTargetClasses(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex), 'inline-fill')"
+                            type="text"
+                            :style="{ width: `${token.widthEm}em` }"
+                            :placeholder="getTokenPlaceholder(token)"
+                            :value="getTokenValue(token)"
+                            @input="setTokenValue(token, $event.target.value)"
+                            @focus="emitReviewSelect(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex))"
+                            @click.stop="emitReviewSelect(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex))"
+                            @mouseenter="emitReviewHover(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex))"
+                            @mouseleave="emitReviewHover('')"
                           >
-                            清空
-                          </button>
-                        </span>
-                        <input
-                          v-else
-                          :data-review-id="tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex)"
-                          :class="reviewTargetClasses(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex), 'inline-fill')"
-                          type="text"
-                          :style="{ width: `${token.widthEm}em` }"
-                          :placeholder="getTokenPlaceholder(token)"
-                          :value="getTokenValue(token)"
-                          @input="setTokenValue(token, $event.target.value)"
-                          @focus="emitReviewSelect(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex))"
-                          @click.stop="emitReviewSelect(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex))"
-                          @mouseenter="emitReviewHover(tokenReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex, tokenIndex))"
-                          @mouseleave="emitReviewHover('')"
-                        >
-                      </template>
-                      <div v-if="paragraph.control" class="paragraph-control-wrap">
-                        <FieldInput
-                          v-if="paragraph.control.kind === 'schema'"
-                          :field="getControlField(paragraph.control)"
-                          :model-value="getControlValue(paragraph.control)"
-                          @update:model-value="setControlValue(paragraph.control, $event)"
-                        />
-                        <FieldInput
-                          v-else-if="isStructuredAutoControl(paragraph.control)"
-                          :field="getAutoControlField(paragraph.control)"
-                          :model-value="getDocumentValue(paragraph.control.key)"
-                          @update:model-value="setDocumentValue(paragraph.control.key, $event)"
-                        />
-                        <textarea
-                          v-else-if="paragraph.control.fieldType === 'textarea'"
-                          class="auto-textarea"
-                          :style="autoControlStyle(paragraph.control)"
-                          :placeholder="getAutoControlPlaceholder(paragraph.control)"
-                          :value="getDocumentValue(paragraph.control.key)"
-                          @input="setDocumentValue(paragraph.control.key, $event.target.value)"
-                        />
-                        <input
-                          v-else
-                          class="auto-input"
-                          type="text"
-                          :placeholder="getAutoControlPlaceholder(paragraph.control)"
-                          :value="getDocumentValue(paragraph.control.key)"
-                          @input="setDocumentValue(paragraph.control.key, $event.target.value)"
-                        >
+                        </template>
+                        <div v-if="paragraph.control" class="paragraph-control-wrap">
+                          <FieldInput
+                            v-if="paragraph.control.kind === 'schema'"
+                            :field="getControlField(paragraph.control)"
+                            :model-value="getControlValue(paragraph.control)"
+                            @update:model-value="setControlValue(paragraph.control, $event)"
+                          />
+                          <FieldInput
+                            v-else-if="isStructuredAutoControl(paragraph.control)"
+                            :field="getAutoControlField(paragraph.control)"
+                            :model-value="getDocumentValue(paragraph.control.key)"
+                            @update:model-value="setDocumentValue(paragraph.control.key, $event)"
+                          />
+                          <textarea
+                            v-else-if="paragraph.control.fieldType === 'textarea'"
+                            class="auto-textarea"
+                            :style="autoControlStyle(paragraph.control)"
+                            :placeholder="getAutoControlPlaceholder(paragraph.control)"
+                            :value="getDocumentValue(paragraph.control.key)"
+                            @input="setDocumentValue(paragraph.control.key, $event.target.value)"
+                          />
+                          <input
+                            v-else
+                            class="auto-input"
+                            type="text"
+                            :placeholder="getAutoControlPlaceholder(paragraph.control)"
+                            :value="getDocumentValue(paragraph.control.key)"
+                            @input="setDocumentValue(paragraph.control.key, $event.target.value)"
+                          >
+                        </div>
                       </div>
-                    </div>
-                  </template>
+                    </template>
 
-                  <div v-if="cell.control" class="auto-control-wrap">
-                    <template v-if="getControlField(cell.control).type === 'static'"></template>
-                    <FieldInput
-                      v-else-if="cell.control.kind === 'schema'"
-                      :field="getControlField(cell.control)"
-                      :model-value="getControlValue(cell.control)"
-                      @update:model-value="setControlValue(cell.control, $event)"
-                    />
-                    <FieldInput
-                      v-else-if="isStructuredAutoControl(cell.control)"
-                      :field="getAutoControlField(cell.control)"
-                      :model-value="getDocumentValue(cell.control.key)"
-                      @update:model-value="setDocumentValue(cell.control.key, $event)"
-                    />
-                    <textarea
-                      v-else-if="cell.control.fieldType === 'textarea'"
-                      class="auto-textarea"
-                      :style="autoControlStyle(cell.control)"
-                      :placeholder="getAutoControlPlaceholder(cell.control)"
-                      :value="getDocumentValue(cell.control.key)"
-                      @input="setDocumentValue(cell.control.key, $event.target.value)"
-                    />
-                    <input
-                      v-else
-                      class="auto-input"
-                      type="text"
-                      :placeholder="getAutoControlPlaceholder(cell.control)"
-                      :value="getDocumentValue(cell.control.key)"
-                      @input="setDocumentValue(cell.control.key, $event.target.value)"
-                    >
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                    <div v-if="cell.control" class="auto-control-wrap">
+                      <template v-if="getControlField(cell.control).type === 'static'"></template>
+                      <FieldInput
+                        v-else-if="cell.control.kind === 'schema'"
+                        :field="getControlField(cell.control)"
+                        :model-value="getControlValue(cell.control)"
+                        @update:model-value="setControlValue(cell.control, $event)"
+                      />
+                      <FieldInput
+                        v-else-if="isStructuredAutoControl(cell.control)"
+                        :field="getAutoControlField(cell.control)"
+                        :model-value="getDocumentValue(cell.control.key)"
+                        @update:model-value="setDocumentValue(cell.control.key, $event)"
+                      />
+                      <textarea
+                        v-else-if="cell.control.fieldType === 'textarea'"
+                        class="auto-textarea"
+                        :style="autoControlStyle(cell.control)"
+                        :placeholder="getAutoControlPlaceholder(cell.control)"
+                        :value="getDocumentValue(cell.control.key)"
+                        @input="setDocumentValue(cell.control.key, $event.target.value)"
+                      />
+                      <input
+                        v-else
+                        class="auto-input"
+                        type="text"
+                        :placeholder="getAutoControlPlaceholder(cell.control)"
+                        :value="getDocumentValue(cell.control.key)"
+                        @input="setDocumentValue(cell.control.key, $event.target.value)"
+                      >
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </template>
       </section>
     </template>
@@ -276,249 +278,259 @@
           </div>
         </header>
 
-        <table v-if="subForm.layout.type === 'key-value'" class="word-table">
-          <tbody>
-            <tr v-for="(row, ri) in subForm.layout.rows" :key="ri">
-              <template v-for="(cell, ci) in row" :key="`${ri}-${ci}`">
-                <td
-                  v-if="cell.kind === 'label'"
-                  class="td-label"
-                  :colspan="cell.colspan || 1"
-                  :rowspan="cell.rowspan || 1"
-                  :style="cellStyle(cell.style)"
-                >
-                  {{ cell.text }}
-                </td>
-                <td
-                  v-else-if="cell.kind === 'input'"
-                  class="td-input"
-                  :colspan="cell.colspan || 1"
-                  :rowspan="cell.rowspan || 1"
-                  :style="cellStyle(cell.style)"
-                >
-                  <FieldInput
-                    :field="getField(subForm, cell.fieldId)"
-                    v-model="formData[subForm.id][cell.fieldId]"
-                  />
-                </td>
-                <td
-                  v-else
-                  class="td-static"
-                  :colspan="cell.colspan || 1"
-                  :rowspan="cell.rowspan || 1"
-                  :style="cellStyle(cell.style)"
-                >
-                  {{ cell.text }}
-                </td>
-              </template>
-            </tr>
-          </tbody>
-        </table>
-
-        <template v-else-if="subForm.layout.type === 'data-grid'">
-          <table
-            v-if="subForm.layout.prefixFields && subForm.layout.prefixFields.length"
-            class="word-table prefix-table"
-          >
+        <div v-if="subForm.layout.type === 'key-value'" class="table-scroll-shell">
+          <table class="word-table">
             <tbody>
-              <tr
-                v-for="(row, rowIndex) in getPrefixRows(subForm)"
-                :key="`prefix-${rowIndex}`"
-              >
-                <template v-for="field in row" :key="field.id">
-                  <td class="td-label">{{ field.label }}</td>
-                  <td class="td-input">
+              <tr v-for="(row, ri) in subForm.layout.rows" :key="ri">
+                <template v-for="(cell, ci) in row" :key="`${ri}-${ci}`">
+                  <td
+                    v-if="cell.kind === 'label'"
+                    class="td-label"
+                    :colspan="cell.colspan || 1"
+                    :rowspan="cell.rowspan || 1"
+                    :style="cellStyle(cell.style)"
+                  >
+                    {{ cell.text }}
+                  </td>
+                  <td
+                    v-else-if="cell.kind === 'input'"
+                    class="td-input"
+                    :colspan="cell.colspan || 1"
+                    :rowspan="cell.rowspan || 1"
+                    :style="cellStyle(cell.style)"
+                  >
                     <FieldInput
-                      :field="field"
-                      v-model="formData[subForm.id]._prefix[field.id]"
+                      :field="getField(subForm, cell.fieldId)"
+                      v-model="formData[subForm.id][cell.fieldId]"
                     />
+                  </td>
+                  <td
+                    v-else
+                    class="td-static"
+                    :colspan="cell.colspan || 1"
+                    :rowspan="cell.rowspan || 1"
+                    :style="cellStyle(cell.style)"
+                  >
+                    {{ cell.text }}
                   </td>
                 </template>
               </tr>
             </tbody>
           </table>
+        </div>
 
-          <table class="word-table">
-            <thead>
-              <tr v-for="(headerRow, hi) in subForm.layout.headers" :key="`header-${hi}`">
-                <th
-                  v-for="(hCell, hci) in headerRow"
-                  :key="`header-${hi}-${hci}`"
-                  class="th-header"
-                  :colspan="hCell.colspan || 1"
-                  :rowspan="hCell.rowspan || 1"
-                  :style="cellStyle(hCell.style)"
+        <template v-else-if="subForm.layout.type === 'data-grid'">
+          <div
+            v-if="subForm.layout.prefixFields && subForm.layout.prefixFields.length"
+            class="table-scroll-shell"
+          >
+            <table class="word-table prefix-table">
+              <tbody>
+                <tr
+                  v-for="(row, rowIndex) in getPrefixRows(subForm)"
+                  :key="`prefix-${rowIndex}`"
                 >
-                  {{ hCell.text }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(dataRow, ri) in formData[subForm.id]._rows"
-                :key="`row-${ri}`"
-              >
-                <td
-                  v-for="fieldId in gridColumns(subForm)"
-                  :key="`${ri}-${fieldId}`"
-                  class="td-input grid-cell"
+                  <template v-for="field in row" :key="field.id">
+                    <td class="td-label">{{ field.label }}</td>
+                    <td class="td-input">
+                      <FieldInput
+                        :field="field"
+                        v-model="formData[subForm.id]._prefix[field.id]"
+                      />
+                    </td>
+                  </template>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-scroll-shell">
+            <table class="word-table">
+              <thead>
+                <tr v-for="(headerRow, hi) in subForm.layout.headers" :key="`header-${hi}`">
+                  <th
+                    v-for="(hCell, hci) in headerRow"
+                    :key="`header-${hi}-${hci}`"
+                    class="th-header"
+                    :colspan="hCell.colspan || 1"
+                    :rowspan="hCell.rowspan || 1"
+                    :style="cellStyle(hCell.style)"
+                  >
+                    {{ hCell.text }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(dataRow, ri) in formData[subForm.id]._rows"
+                  :key="`row-${ri}`"
                 >
-                  <FieldInput
-                    :field="getField(subForm, fieldId)"
-                    v-model="dataRow[fieldId]"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  <td
+                    v-for="fieldId in gridColumns(subForm)"
+                    :key="`${ri}-${fieldId}`"
+                    class="td-input grid-cell"
+                  >
+                    <FieldInput
+                      :field="getField(subForm, fieldId)"
+                      v-model="dataRow[fieldId]"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div class="grid-actions">
             <el-button size="small" @click="addRow(subForm)">新增一行</el-button>
             <el-button size="small" @click="removeLastRow(subForm)">删除最后一行</el-button>
           </div>
         </template>
 
-        <table v-else-if="subForm.layout.type === 'checklist'" class="word-table">
-          <thead>
-            <tr>
-              <template v-if="hasChecklistSubItems(subForm)">
-                <th class="th-header">{{ checklistHeader(subForm, 0) }}</th>
-                <th class="th-header">{{ checklistHeader(subForm, 1) }}</th>
-                <th class="th-header">子项</th>
-                <th class="th-header">{{ checklistHeader(subForm, 2) }}</th>
-                <th class="th-header">{{ checklistHeader(subForm, 3) }}</th>
-              </template>
-              <template v-else>
-                <th
-                  v-for="(col, colIndex) in subForm.layout.columns"
-                  :key="`check-col-${colIndex}`"
-                  class="th-header"
-                >
-                  {{ col }}
-                </th>
-              </template>
-            </tr>
-          </thead>
-          <tbody>
-            <template
-              v-for="(item, itemIndex) in subForm.layout.items"
-              :key="`${itemIndex}-${item.fieldId || item.label}`"
-            >
-              <tr v-if="!item.subItems">
-                <td class="td-label seq-col">{{ item.seq }}</td>
-                <td
-                  class="td-label align-left"
-                  :colspan="hasChecklistSubItems(subForm) ? 2 : 1"
-                >
-                  {{ item.label }}
-                </td>
-                <td class="td-input">
-                  <FieldInput
-                    :field="getField(subForm, item.fieldId)"
-                    v-model="formData[subForm.id][item.fieldId]"
-                  />
-                </td>
-                <td class="td-input">
-                  <FieldInput
-                    v-if="item.remarkFieldId"
-                    :field="getField(subForm, item.remarkFieldId)"
-                    v-model="formData[subForm.id][item.remarkFieldId]"
-                  />
-                </td>
-              </tr>
-
-              <template v-else>
-                <tr
-                  v-for="(sub, si) in item.subItems"
-                  :key="`${itemIndex}-${si}-${sub.fieldId || sub.label}`"
-                >
-                  <td
-                    v-if="si === 0"
-                    class="td-label seq-col"
-                    :rowspan="item.subItems.length"
-                  >
-                    {{ item.seq }}
-                  </td>
-                  <td
-                    v-if="si === 0"
-                    class="td-label align-left"
-                    :rowspan="item.subItems.length"
-                  >
-                    {{ item.label }}
-                  </td>
-                  <td class="td-label align-left sub-label">
-                    {{ sub.label }}
-                  </td>
-                  <td class="td-input">
-                    <FieldInput
-                      :field="getField(subForm, sub.fieldId)"
-                      v-model="formData[subForm.id][sub.fieldId]"
-                    />
-                  </td>
-                  <td class="td-input">
-                    <FieldInput
-                      v-if="sub.remarkFieldId"
-                      :field="getField(subForm, sub.remarkFieldId)"
-                      v-model="formData[subForm.id][sub.remarkFieldId]"
-                    />
-                  </td>
-                </tr>
-              </template>
-            </template>
-          </tbody>
-        </table>
-
-        <table v-else-if="subForm.layout.type === 'section-group'" class="word-table">
-          <tbody>
-            <template
-              v-for="(section, sectionIndex) in subForm.layout.sections"
-              :key="`${sectionIndex}-${section.title}`"
-            >
+        <div v-else-if="subForm.layout.type === 'checklist'" class="table-scroll-shell">
+          <table class="word-table">
+            <thead>
               <tr>
-                <td
-                  class="td-section-title"
-                  :colspan="getSectionColspan(section)"
-                  :style="cellStyle(section.titleStyle)"
-                >
-                  {{ section.title }}
-                </td>
+                <template v-if="hasChecklistSubItems(subForm)">
+                  <th class="th-header">{{ checklistHeader(subForm, 0) }}</th>
+                  <th class="th-header">{{ checklistHeader(subForm, 1) }}</th>
+                  <th class="th-header">子项</th>
+                  <th class="th-header">{{ checklistHeader(subForm, 2) }}</th>
+                  <th class="th-header">{{ checklistHeader(subForm, 3) }}</th>
+                </template>
+                <template v-else>
+                  <th
+                    v-for="(col, colIndex) in subForm.layout.columns"
+                    :key="`check-col-${colIndex}`"
+                    class="th-header"
+                  >
+                    {{ col }}
+                  </th>
+                </template>
               </tr>
-              <tr
-                v-for="(row, ri) in section.rows"
-                :key="`${sectionIndex}-${ri}`"
+            </thead>
+            <tbody>
+              <template
+                v-for="(item, itemIndex) in subForm.layout.items"
+                :key="`${itemIndex}-${item.fieldId || item.label}`"
               >
-                <template v-for="item in row" :key="item.fieldId">
+                <tr v-if="!item.subItems">
+                  <td class="td-label seq-col">{{ item.seq }}</td>
                   <td
-                    v-if="isStaticField(subForm, item.fieldId)"
-                    class="td-static td-static-block"
-                    :colspan="(item.labelColspan || 1) + (item.colspan || 1)"
-                    :style="cellStyle(item.inputStyle || item.labelStyle)"
+                    class="td-label align-left"
+                    :colspan="hasChecklistSubItems(subForm) ? 2 : 1"
                   >
                     {{ item.label }}
                   </td>
-                  <td
-                    v-else
-                    class="td-label"
-                    :colspan="item.labelColspan || 1"
-                    :style="cellStyle(item.labelStyle)"
-                  >
-                    {{ item.label }}
-                  </td>
-                  <td
-                    v-if="!isStaticField(subForm, item.fieldId)"
-                    class="td-input"
-                    :colspan="item.colspan || 1"
-                    :style="cellStyle(item.inputStyle)"
-                  >
+                  <td class="td-input">
                     <FieldInput
                       :field="getField(subForm, item.fieldId)"
                       v-model="formData[subForm.id][item.fieldId]"
                     />
                   </td>
+                  <td class="td-input">
+                    <FieldInput
+                      v-if="item.remarkFieldId"
+                      :field="getField(subForm, item.remarkFieldId)"
+                      v-model="formData[subForm.id][item.remarkFieldId]"
+                    />
+                  </td>
+                </tr>
+
+                <template v-else>
+                  <tr
+                    v-for="(sub, si) in item.subItems"
+                    :key="`${itemIndex}-${si}-${sub.fieldId || sub.label}`"
+                  >
+                    <td
+                      v-if="si === 0"
+                      class="td-label seq-col"
+                      :rowspan="item.subItems.length"
+                    >
+                      {{ item.seq }}
+                    </td>
+                    <td
+                      v-if="si === 0"
+                      class="td-label align-left"
+                      :rowspan="item.subItems.length"
+                    >
+                      {{ item.label }}
+                    </td>
+                    <td class="td-label align-left sub-label">
+                      {{ sub.label }}
+                    </td>
+                    <td class="td-input">
+                      <FieldInput
+                        :field="getField(subForm, sub.fieldId)"
+                        v-model="formData[subForm.id][sub.fieldId]"
+                      />
+                    </td>
+                    <td class="td-input">
+                      <FieldInput
+                        v-if="sub.remarkFieldId"
+                        :field="getField(subForm, sub.remarkFieldId)"
+                        v-model="formData[subForm.id][sub.remarkFieldId]"
+                      />
+                    </td>
+                  </tr>
                 </template>
-              </tr>
-            </template>
-          </tbody>
-        </table>
+              </template>
+            </tbody>
+          </table>
+        </div>
+
+        <div v-else-if="subForm.layout.type === 'section-group'" class="table-scroll-shell">
+          <table class="word-table">
+            <tbody>
+              <template
+                v-for="(section, sectionIndex) in subForm.layout.sections"
+                :key="`${sectionIndex}-${section.title}`"
+              >
+                <tr>
+                  <td
+                    class="td-section-title"
+                    :colspan="getSectionColspan(section)"
+                    :style="cellStyle(section.titleStyle)"
+                  >
+                    {{ section.title }}
+                  </td>
+                </tr>
+                <tr
+                  v-for="(row, ri) in section.rows"
+                  :key="`${sectionIndex}-${ri}`"
+                >
+                  <template v-for="item in row" :key="item.fieldId">
+                    <td
+                      v-if="isStaticField(subForm, item.fieldId)"
+                      class="td-static td-static-block"
+                      :colspan="(item.labelColspan || 1) + (item.colspan || 1)"
+                      :style="cellStyle(item.inputStyle || item.labelStyle)"
+                    >
+                      {{ item.label }}
+                    </td>
+                    <td
+                      v-else
+                      class="td-label"
+                      :colspan="item.labelColspan || 1"
+                      :style="cellStyle(item.labelStyle)"
+                    >
+                      {{ item.label }}
+                    </td>
+                    <td
+                      v-if="!isStaticField(subForm, item.fieldId)"
+                      class="td-input"
+                      :colspan="item.colspan || 1"
+                      :style="cellStyle(item.inputStyle)"
+                    >
+                      <FieldInput
+                        :field="getField(subForm, item.fieldId)"
+                        v-model="formData[subForm.id][item.fieldId]"
+                      />
+                    </td>
+                  </template>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
       </section>
     </template>
 
@@ -988,6 +1000,7 @@ function handleSaveDraft() {
   display: grid;
   gap: 20px;
   color: #1f2937;
+  min-width: 0;
 }
 
 .renderer-hero,
@@ -1041,6 +1054,16 @@ function handleSaveDraft() {
 .document-shell {
   border-radius: 16px;
   padding: 18px 20px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.table-scroll-shell {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .document-paragraph {
@@ -1173,6 +1196,7 @@ function handleSaveDraft() {
 
 .word-table {
   width: 100%;
+  min-width: max-content;
   border-collapse: collapse;
   table-layout: fixed;
   background: #ffffff;

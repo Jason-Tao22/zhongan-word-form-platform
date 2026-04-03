@@ -39,7 +39,8 @@
 
     <div v-if="loading" class="page-card state-card">加载模板列表...</div>
     <div v-else class="page-card">
-      <el-table :data="templates" border>
+      <div class="table-shell">
+        <el-table :data="templates" border>
         <el-table-column prop="templateName" label="模板名称" min-width="220" />
         <el-table-column prop="sourceFile" label="源文件" min-width="220" />
         <el-table-column prop="subFormCount" label="页面块数" width="100" />
@@ -94,7 +95,8 @@
             </div>
           </template>
         </el-table-column>
-      </el-table>
+        </el-table>
+      </div>
     </div>
   </div>
 </template>
