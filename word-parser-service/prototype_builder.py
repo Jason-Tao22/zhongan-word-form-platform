@@ -567,6 +567,12 @@ def _render_document_paragraph(paragraph, ai_hints: dict[str, dict[str, dict[str
         style_parts.append(f'font-size:{paragraph.font_size_px}px')
     if getattr(paragraph, "font_family", None):
         style_parts.append(f'font-family:"{escape(paragraph.font_family)}", serif')
+    if getattr(paragraph, "line_height", None):
+        style_parts.append(f'line-height:{paragraph.line_height}')
+    if getattr(paragraph, "margin_top_px", None) is not None:
+        style_parts.append(f'margin-top:{paragraph.margin_top_px}px')
+    if getattr(paragraph, "margin_bottom_px", None) is not None:
+        style_parts.append(f'margin-bottom:{paragraph.margin_bottom_px}px')
     style_attr = f' style="{";".join(style_parts)}"' if style_parts else ""
     return f'<p class="{" ".join(classes)}"{style_attr}>{html}</p>'
 
@@ -609,7 +615,10 @@ def _render_cell_html(
     if not cell.text.strip():
         class_names.append("is-empty")
 
+    paragraph_details = getattr(cell, "paragraph_details", None) or []
     paragraphs = cell.paragraphs or ([cell.text] if cell.text else [])
+    if paragraph_details and not paragraphs:
+        paragraphs = [paragraph.text for paragraph in paragraph_details]
     rendered_paragraphs: list[str] = []
     inline_fill_count = 0
     paragraph_hints = ai_hints.get("paragraphs", {})
@@ -628,9 +637,17 @@ def _render_cell_html(
                 paragraph_binding_state,
             )
             inline_fill_count += count
-            rendered_paragraphs.append(f'<div class="docx-paragraph">{html}</div>')
+            style_attr = ""
+            if pi < len(paragraph_details):
+                paragraph_style = _render_paragraph_style_attr(paragraph_details[pi])
+                style_attr = f' style="{paragraph_style}"' if paragraph_style else ""
+            rendered_paragraphs.append(f'<div class="docx-paragraph"{style_attr}>{html}</div>')
         else:
-            rendered_paragraphs.append('<div class="docx-paragraph blank-line"></div>')
+            style_attr = ""
+            if pi < len(paragraph_details):
+                paragraph_style = _render_paragraph_style_attr(paragraph_details[pi])
+                style_attr = f' style="{paragraph_style}"' if paragraph_style else ""
+            rendered_paragraphs.append(f'<div class="docx-paragraph blank-line"{style_attr}></div>')
     text_blocks = "".join(rendered_paragraphs)
 
     control_block = _render_binding(binding) if binding else ""
@@ -774,6 +791,9 @@ def _build_document_paragraph_block(paragraph, ai_hints: dict[str, dict[str, dic
                 "fontSizePx": getattr(paragraph, "font_size_px", None),
                 "fontFamily": getattr(paragraph, "font_family", None),
                 "fontWeight": "bold" if getattr(paragraph, "is_bold", False) else None,
+                "lineHeight": getattr(paragraph, "line_height", None),
+                "marginTopPx": getattr(paragraph, "margin_top_px", None),
+                "marginBottomPx": getattr(paragraph, "margin_bottom_px", None),
             }.items() if value is not None
         },
         "tokens": tokens,
@@ -814,7 +834,10 @@ def _build_document_cell_block(
     ai_hints: dict[str, dict[str, dict[str, Any]]],
     inline_binding_state: InlineFieldBindingState | None = None,
 ) -> dict[str, Any]:
+    paragraph_details = getattr(cell, "paragraph_details", None) or []
     paragraphs = cell.paragraphs or ([cell.text] if cell.text else [])
+    if paragraph_details and not paragraphs:
+        paragraphs = [paragraph.text for paragraph in paragraph_details]
     rendered_paragraphs: list[dict[str, Any]] = []
     inline_fill_count = 0
     paragraph_hints = ai_hints.get("paragraphs", {})
@@ -835,10 +858,14 @@ def _build_document_cell_block(
             inline_fill_count += count
             rendered_paragraphs.append({
                 "kind": "text",
+                "style": _build_paragraph_style_payload(paragraph_details[pi]) if pi < len(paragraph_details) else None,
                 "tokens": tokens,
             })
         else:
-            rendered_paragraphs.append({"kind": "blank"})
+            rendered_paragraphs.append({
+                "kind": "blank",
+                "style": _build_paragraph_style_payload(paragraph_details[pi]) if pi < len(paragraph_details) else None,
+            })
 
     control = _build_document_control(binding) if binding else None
     cell_hint = ai_hints.get("cells", {}).get(f"table::{table.index}::cell::{row_index}::{col_index}")
@@ -914,6 +941,41 @@ def _build_cell_style_payload(cell) -> dict[str, Any]:
         "fontFamily": getattr(cell, "font_family", None),
     }
     return {key: value for key, value in style.items() if value is not None}
+
+
+def _build_paragraph_style_payload(paragraph) -> dict[str, Any] | None:
+    if paragraph is None:
+        return None
+    style = {
+        "textAlign": map_align(getattr(paragraph, "align", None)) if getattr(paragraph, "align", None) else None,
+        "fontWeight": "bold" if getattr(paragraph, "is_bold", False) else None,
+        "fontSizePx": getattr(paragraph, "font_size_px", None),
+        "fontFamily": getattr(paragraph, "font_family", None),
+        "lineHeight": getattr(paragraph, "line_height", None),
+        "marginTopPx": getattr(paragraph, "margin_top_px", None),
+        "marginBottomPx": getattr(paragraph, "margin_bottom_px", None),
+    }
+    compact = {key: value for key, value in style.items() if value is not None}
+    return compact or None
+
+
+def _render_paragraph_style_attr(paragraph) -> str:
+    style_parts: list[str] = []
+    if getattr(paragraph, "align", None):
+        style_parts.append(f'text-align:{map_align(paragraph.align)}')
+    if getattr(paragraph, "is_bold", False):
+        style_parts.append('font-weight:700')
+    if getattr(paragraph, "font_size_px", None):
+        style_parts.append(f'font-size:{paragraph.font_size_px}px')
+    if getattr(paragraph, "font_family", None):
+        style_parts.append(f'font-family:"{escape(paragraph.font_family)}", serif')
+    if getattr(paragraph, "line_height", None):
+        style_parts.append(f'line-height:{paragraph.line_height}')
+    if getattr(paragraph, "margin_top_px", None) is not None:
+        style_parts.append(f'margin-top:{paragraph.margin_top_px}px')
+    if getattr(paragraph, "margin_bottom_px", None) is not None:
+        style_parts.append(f'margin-bottom:{paragraph.margin_bottom_px}px')
+    return ";".join(style_parts)
 
 
 def _estimate_multiline_height_px(cell, paragraphs: list[str]) -> int:

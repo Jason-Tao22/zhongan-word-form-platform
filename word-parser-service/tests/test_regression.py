@@ -89,12 +89,49 @@ class RegressionPipelineTest(unittest.TestCase):
             is_bold=True,
             font_size_px=24,
             font_family="KaiTi",
+            line_height=1.8,
+            margin_top_px=12,
+            margin_bottom_px=18,
         )
         document_blocks = build_document_blocks([], [], blocks=[{"kind": "paragraph", "paragraph": paragraph}])
         block = document_blocks[0]
         self.assertEqual(block["style"]["fontSizePx"], 24)
         self.assertEqual(block["style"]["fontFamily"], "KaiTi")
         self.assertEqual(block["style"]["fontWeight"], "bold")
+        self.assertEqual(block["style"]["lineHeight"], 1.8)
+        self.assertEqual(block["style"]["marginTopPx"], 12)
+        self.assertEqual(block["style"]["marginBottomPx"], 18)
+
+    def test_document_blocks_carry_cell_paragraph_spacing_styles(self) -> None:
+        table = ParsedTable(
+            index=0,
+            rows=[
+                [
+                    ParsedCell(
+                        text="说明",
+                        row=0,
+                        col=0,
+                        paragraphs=["说明段落"],
+                        paragraph_details=[
+                            ParsedParagraph(
+                                text="说明段落",
+                                index=0,
+                                font_size_px=16,
+                                line_height=1.6,
+                                margin_top_px=8,
+                                margin_bottom_px=10,
+                            )
+                        ],
+                    )
+                ]
+            ],
+        )
+        document_blocks = build_document_blocks([table], [], blocks=[{"kind": "table", "table": table}])
+        paragraph = document_blocks[0]["rows"][0][0]["paragraphs"][0]
+        self.assertEqual(paragraph["style"]["fontSizePx"], 16)
+        self.assertEqual(paragraph["style"]["lineHeight"], 1.6)
+        self.assertEqual(paragraph["style"]["marginTopPx"], 8)
+        self.assertEqual(paragraph["style"]["marginBottomPx"], 10)
 
     def test_parse_docx_blocks_reads_default_typography_from_styles(self) -> None:
         blocks = parse_docx_blocks(PUBLIC_DEMO_DOCX.read_bytes())
@@ -609,6 +646,19 @@ class RegressionPipelineTest(unittest.TestCase):
         cell = blocks[0]["table"].rows[0][0]
         self.assertEqual(cell.border_top, "2px solid #000000")
         self.assertEqual(cell.border_bottom, "1px dashed #999999")
+
+    def test_parse_legacy_doc_html_blocks_captures_paragraph_spacing(self) -> None:
+        html_text = (
+            "<html><body>"
+            "<p style='font-size:18pt;line-height:1.8;margin-top:12px;margin-bottom:6px'>标题</p>"
+            "</body></html>"
+        )
+        blocks = parse_legacy_doc_html_blocks(html_text)
+        paragraph = blocks[0]["paragraph"]
+        self.assertEqual(paragraph.font_size_px, 24)
+        self.assertEqual(paragraph.line_height, 1.8)
+        self.assertEqual(paragraph.margin_top_px, 12)
+        self.assertEqual(paragraph.margin_bottom_px, 6)
 
     def test_post_process_normalizes_checklist_columns(self) -> None:
         raw_sub_form = {

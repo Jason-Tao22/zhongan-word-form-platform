@@ -13,6 +13,8 @@ class CellStyle(BaseModel):
     minHeightPx: Optional[int] = None
     paddingPx: Optional[int] = None
     lineHeight: Optional[float] = None
+    marginTopPx: Optional[int] = None
+    marginBottomPx: Optional[int] = None
     textAlign: Optional[Literal["left", "center", "right", "justify"]] = None
     verticalAlign: Optional[Literal["top", "middle", "bottom"]] = None
     backgroundColor: Optional[str] = None

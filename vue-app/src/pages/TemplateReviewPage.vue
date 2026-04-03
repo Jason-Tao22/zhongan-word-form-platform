@@ -202,6 +202,32 @@
                   />
                 </div>
 
+                <div class="style-field" data-style-field="marginTopPx">
+                  <span class="style-field-label">段前距</span>
+                  <el-input-number
+                    :model-value="selectedStyle.marginTopPx ?? undefined"
+                    class="control-input"
+                    :min="0"
+                    :max="120"
+                    :step="2"
+                    :disabled="!canEditSchema"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'marginTopPx', $event)"
+                  />
+                </div>
+
+                <div class="style-field" data-style-field="marginBottomPx">
+                  <span class="style-field-label">段后距</span>
+                  <el-input-number
+                    :model-value="selectedStyle.marginBottomPx ?? undefined"
+                    class="control-input"
+                    :min="0"
+                    :max="120"
+                    :step="2"
+                    :disabled="!canEditSchema"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'marginBottomPx', $event)"
+                  />
+                </div>
+
                 <div class="style-field" data-style-field="textAlign">
                   <span class="style-field-label">水平对齐</span>
                   <el-select
@@ -583,6 +609,8 @@ const selectedStyle = computed(() => {
     minHeightPx: style.minHeightPx ?? null,
     paddingPx: style.paddingPx ?? null,
     lineHeight: style.lineHeight ?? null,
+    marginTopPx: style.marginTopPx ?? null,
+    marginBottomPx: style.marginBottomPx ?? null,
     borderBox: resolveUniformBorder(style),
     textAlign: style.textAlign || '',
     fontWeight: style.fontWeight || '',
@@ -1252,9 +1280,9 @@ function updateItemStyle(item, key, value) {
   const container = getStyleContainer(reviewSchema.value, item)
   if (!container) return
   container.style = container.style && typeof container.style === 'object' ? container.style : {}
-  if (key === 'widthPx' || key === 'minHeightPx' || key === 'paddingPx') {
+  if (key === 'widthPx' || key === 'minHeightPx' || key === 'paddingPx' || key === 'marginTopPx' || key === 'marginBottomPx') {
     const numeric = Number(value)
-    const allowsZero = key === 'paddingPx'
+    const allowsZero = ['paddingPx', 'marginTopPx', 'marginBottomPx'].includes(key)
     if (!Number.isFinite(numeric) || (allowsZero ? numeric < 0 : numeric <= 0)) {
       delete container.style[key]
     } else {
@@ -1262,6 +1290,8 @@ function updateItemStyle(item, key, value) {
         ? [40, 1600]
         : key === 'paddingPx'
           ? [0, 48]
+          : key === 'marginTopPx' || key === 'marginBottomPx'
+            ? [0, 120]
           : [24, 1200]
       container.style[key] = Math.max(bounds[0], Math.min(bounds[1], Math.round(numeric)))
     }

@@ -69,13 +69,19 @@ def parse_legacy_doc_html_blocks(html_text: str) -> list[dict]:
         if tag == "p":
             text = _get_inline_text(child)
             if text.strip():
+                style = _resolve_style(child, class_styles)
                 blocks.append({
                     "kind": "paragraph",
                     "paragraph": ParsedParagraph(
                         text=text.strip(),
                         index=paragraph_index,
-                        align=_extract_align(child),
+                        align=_extract_align(child, style),
                         is_bold=_is_bold_node(child),
+                        font_size_px=_css_px(style.get("font-size")),
+                        font_family=_css_font_family(style.get("font-family")),
+                        line_height=_css_line_height(style.get("line-height")),
+                        margin_top_px=_css_px(style.get("margin-top")),
+                        margin_bottom_px=_css_px(style.get("margin-bottom")),
                     ),
                 })
             paragraph_index += 1
@@ -120,6 +126,7 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
                     border_left=meta["border_left"],
                     is_bold=meta["is_bold"],
                     paragraphs=meta["paragraphs"],
+                    paragraph_details=meta["paragraph_details"],
                 ))
                 rowspan_tracker[logical_col] = (remaining - 1, meta)
                 if rowspan_tracker[logical_col][0] == 0:
@@ -128,7 +135,8 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
 
             colspan = _safe_int(cell_elem.get("colspan"), 1)
             rowspan = _safe_int(cell_elem.get("rowspan"), 1)
-            paragraphs = _extract_cell_paragraphs(cell_elem)
+            paragraph_details = _extract_cell_paragraph_details(cell_elem, class_styles)
+            paragraphs = [paragraph.text for paragraph in paragraph_details] if paragraph_details else _extract_cell_paragraphs(cell_elem)
             text = "".join(paragraph.strip() for paragraph in paragraphs if paragraph.strip())
             style = _resolve_style(cell_elem, class_styles)
             width_twips = _width_px_to_twips(style.get("min-width") or style.get("width"))
@@ -154,6 +162,7 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
                         "border_left": borders["border_left"],
                         "is_bold": is_bold,
                         "paragraphs": paragraphs,
+                        "paragraph_details": paragraph_details,
                     },
                 )
 
@@ -173,6 +182,7 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
                 border_left=borders["border_left"],
                 is_bold=is_bold,
                 paragraphs=paragraphs,
+                paragraph_details=paragraph_details,
             ))
             logical_col += colspan
 
@@ -195,6 +205,7 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
                 border_left=meta["border_left"],
                 is_bold=meta["is_bold"],
                 paragraphs=meta["paragraphs"],
+                paragraph_details=meta["paragraph_details"],
             ))
             rowspan_tracker[logical_col] = (remaining - 1, meta)
             if rowspan_tracker[logical_col][0] == 0:
@@ -212,6 +223,42 @@ def _extract_cell_paragraphs(cell_elem) -> list[str]:
         return paragraphs
     fallback = _get_inline_text(cell_elem)
     return [fallback] if fallback else []
+
+
+def _extract_cell_paragraph_details(cell_elem, class_styles: dict[str, dict[str, str]]) -> list[ParsedParagraph]:
+    paragraph_nodes = cell_elem.xpath("./p")
+    if paragraph_nodes:
+        details: list[ParsedParagraph] = []
+        for index, paragraph in enumerate(paragraph_nodes):
+            style = _resolve_style(paragraph, class_styles)
+            details.append(ParsedParagraph(
+                text=_get_inline_text(paragraph),
+                index=index,
+                align=_extract_align(paragraph, style),
+                is_bold=_is_bold_node(paragraph),
+                font_size_px=_css_px(style.get("font-size")),
+                font_family=_css_font_family(style.get("font-family")),
+                line_height=_css_line_height(style.get("line-height")),
+                margin_top_px=_css_px(style.get("margin-top")),
+                margin_bottom_px=_css_px(style.get("margin-bottom")),
+            ))
+        return details
+
+    fallback = _get_inline_text(cell_elem)
+    if not fallback:
+        return []
+    style = _resolve_style(cell_elem, class_styles)
+    return [ParsedParagraph(
+        text=fallback,
+        index=0,
+        align=_extract_align(cell_elem, style),
+        is_bold=_is_bold_node(cell_elem),
+        font_size_px=_css_px(style.get("font-size")),
+        font_family=_css_font_family(style.get("font-family")),
+        line_height=_css_line_height(style.get("line-height")),
+        margin_top_px=_css_px(style.get("margin-top")),
+        margin_bottom_px=_css_px(style.get("margin-bottom")),
+    )]
 
 
 def _get_inline_text(node) -> str:
@@ -296,6 +343,39 @@ def _color_hex(value: str | None) -> str | None:
     if match:
         return match.group(1).upper()
     return None
+
+
+def _css_px(value: str | None) -> int | None:
+    if not value:
+        return None
+    match = re.search(r"([0-9]+(?:\.[0-9]+)?)(px|pt)", value.lower())
+    if not match:
+        return None
+    numeric = float(match.group(1))
+    unit = match.group(2)
+    return max(0, round(numeric if unit == "px" else numeric * 96 / 72))
+
+
+def _css_line_height(value: str | None) -> float | None:
+    if not value:
+        return None
+    stripped = value.strip().lower()
+    if stripped == "normal":
+        return None
+    unitless = re.fullmatch(r"([0-9]+(?:\.[0-9]+)?)", stripped)
+    if unitless:
+        return round(float(unitless.group(1)), 2)
+    px_value = _css_px(stripped)
+    if px_value is None:
+        return None
+    return max(1.0, round(px_value / 16, 2))
+
+
+def _css_font_family(value: str | None) -> str | None:
+    if not value:
+        return None
+    first = value.split(",", 1)[0].strip().strip("'\"")
+    return first or None
 
 
 def _normalize_border_css(value: str | None) -> str | None:

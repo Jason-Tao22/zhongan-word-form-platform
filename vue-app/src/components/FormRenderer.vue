@@ -708,6 +708,8 @@ function paragraphStyle(style) {
   if (style.textAlign) result.textAlign = style.textAlign
   if (style.minHeightPx) result.minHeight = `${style.minHeightPx}px`
   if (style.lineHeight) result.lineHeight = String(style.lineHeight)
+  if (style.marginTopPx !== undefined && style.marginTopPx !== null) result.marginTop = `${style.marginTopPx}px`
+  if (style.marginBottomPx !== undefined && style.marginBottomPx !== null) result.marginBottom = `${style.marginBottomPx}px`
   if (style.fontWeight === 'bold') result.fontWeight = 700
   else if (style.fontWeight === 'normal') result.fontWeight = 400
   if (style.fontSizePx) result.fontSize = `${style.fontSizePx}px`

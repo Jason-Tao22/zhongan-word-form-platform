@@ -35,6 +35,7 @@ class ParsedCell:
     font_size_px: int | None = None
     font_family: str | None = None
     paragraphs: list[str] = field(default_factory=list)
+    paragraph_details: list["ParsedParagraph"] = field(default_factory=list)
 
 
 @dataclass
@@ -45,6 +46,9 @@ class ParsedParagraph:
     is_bold: bool = False
     font_size_px: int | None = None
     font_family: str | None = None
+    line_height: float | None = None
+    margin_top_px: int | None = None
+    margin_bottom_px: int | None = None
 
 
 @dataclass
@@ -90,6 +94,12 @@ def _get_paragraph_texts(tc_elem) -> list[str]:
     if any(text.strip() for text in paragraphs):
         return paragraphs
     return []
+
+
+def _twips_to_px(value: int | None) -> int | None:
+    if value is None:
+        return None
+    return round(value / 15)
 
 
 def _get_grid_span(tc_elem) -> int:
@@ -275,6 +285,76 @@ def _get_paragraph_alignment(p_elem) -> str | None:
     if jc is None:
         return None
     return jc.get(W("val")) or jc.get("val")
+
+
+def _get_paragraph_spacing(p_elem) -> tuple[int | None, int | None, float | None]:
+    p_pr = p_elem.find(W("pPr"))
+    if p_pr is None:
+        return None, None, None
+    spacing = p_pr.find(W("spacing"))
+    if spacing is None:
+        return None, None, None
+
+    before_raw = spacing.get(W("before")) or spacing.get("before")
+    after_raw = spacing.get(W("after")) or spacing.get("after")
+    line_raw = spacing.get(W("line")) or spacing.get("line")
+    line_rule = (spacing.get(W("lineRule")) or spacing.get("lineRule") or "auto").lower()
+
+    def parse_twips(raw: str | None) -> int | None:
+        if not raw:
+            return None
+        try:
+            return _twips_to_px(int(raw))
+        except ValueError:
+            return None
+
+    margin_top_px = parse_twips(before_raw)
+    margin_bottom_px = parse_twips(after_raw)
+
+    line_height = None
+    if line_raw:
+        try:
+            line_value = int(line_raw)
+            if line_rule == "auto":
+                line_height = max(1.0, round(line_value / 240, 2))
+            else:
+                # Approximate exact/atLeast line spacing as a CSS unitless line-height.
+                line_height = max(1.0, round((line_value / 20) / 12, 2))
+        except ValueError:
+            line_height = None
+
+    return margin_top_px, margin_bottom_px, line_height
+
+
+def _get_cell_paragraph_details(
+    tc_elem,
+    *,
+    default_font_size_px: int | None = None,
+    default_font_family: str | None = None,
+    theme_root=None,
+) -> list[ParsedParagraph]:
+    paragraphs: list[ParsedParagraph] = []
+    for index, p in enumerate(tc_elem.findall(W("p"))):
+        text = _get_paragraph_text(p, strip=False)
+        font_size_px, font_family = _get_text_run_display_style(
+            p,
+            default_font_size_px=default_font_size_px,
+            default_font_family=default_font_family,
+            theme_root=theme_root,
+        )
+        margin_top_px, margin_bottom_px, line_height = _get_paragraph_spacing(p)
+        paragraphs.append(ParsedParagraph(
+            text=text,
+            index=index,
+            align=_get_paragraph_alignment(p),
+            is_bold=_is_paragraph_bold(p),
+            font_size_px=font_size_px,
+            font_family=font_family,
+            line_height=line_height,
+            margin_top_px=margin_top_px,
+            margin_bottom_px=margin_bottom_px,
+        ))
+    return paragraphs
 
 
 def _resolve_theme_typeface(theme_root, family: str) -> str | None:
@@ -494,6 +574,7 @@ def _parse_table_element(
                     font_size_px=cell_meta["font_size_px"],
                     font_family=cell_meta["font_family"],
                     paragraphs=cell_meta["paragraphs"],
+                    paragraph_details=cell_meta["paragraph_details"],
                 ))
                 vmerge_tracker[logical_col] = (rem - 1, cell_meta)
                 if vmerge_tracker[logical_col][0] == 0:
@@ -503,7 +584,13 @@ def _parse_table_element(
             colspan = _get_grid_span(tc)
             vmerge = _get_v_merge(tc)
             text = _get_text(tc)
-            paragraphs = _get_paragraph_texts(tc)
+            paragraph_details = _get_cell_paragraph_details(
+                tc,
+                default_font_size_px=default_font_size_px,
+                default_font_family=default_font_family,
+                theme_root=theme_root,
+            )
+            paragraphs = [paragraph.text for paragraph in paragraph_details] if paragraph_details else _get_paragraph_texts(tc)
             width_twips = _get_cell_width(tc)
             align = _get_cell_alignment(tc)
             v_align = _get_cell_v_align(tc)
@@ -562,6 +649,7 @@ def _parse_table_element(
                         "font_size_px": font_size_px,
                         "font_family": font_family,
                         "paragraphs": paragraphs,
+                        "paragraph_details": paragraph_details,
                     },
                 )
                 row_cells.append(ParsedCell(
@@ -579,6 +667,7 @@ def _parse_table_element(
                     font_size_px=font_size_px,
                     font_family=font_family,
                     paragraphs=paragraphs,
+                    paragraph_details=paragraph_details,
                 ))
             elif vmerge == "continue":
                 # 占位，已由 tracker 处理
@@ -609,6 +698,7 @@ def _parse_table_element(
                     font_size_px=font_size_px,
                     font_family=font_family,
                     paragraphs=paragraphs,
+                    paragraph_details=paragraph_details,
                 ))
 
             logical_col += colspan
@@ -645,6 +735,7 @@ def parse_docx_blocks(file_bytes: bytes) -> list[dict]:
                     default_font_family=default_font_family,
                     theme_root=theme_root,
                 )
+                margin_top_px, margin_bottom_px, line_height = _get_paragraph_spacing(child)
                 blocks.append({
                     "kind": "paragraph",
                     "paragraph": ParsedParagraph(
@@ -654,6 +745,9 @@ def parse_docx_blocks(file_bytes: bytes) -> list[dict]:
                         is_bold=_is_paragraph_bold(child),
                         font_size_px=font_size_px,
                         font_family=font_family,
+                        line_height=line_height,
+                        margin_top_px=margin_top_px,
+                        margin_bottom_px=margin_bottom_px,
                     ),
                 })
             paragraph_index += 1
