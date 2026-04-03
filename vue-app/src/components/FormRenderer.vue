@@ -135,6 +135,7 @@
                       v-else
                       :data-review-id="paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex)"
                       :class="reviewTargetClasses(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex), 'document-paragraph-line')"
+                      :style="paragraphStyle(paragraph.style)"
                       @click.stop="emitReviewSelect(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex))"
                       @mouseenter="emitReviewHover(paragraphSlotReviewId(blockIndex, rowIndex, cellIndex, paragraphIndex))"
                       @mouseleave="emitReviewHover('')"
@@ -689,6 +690,7 @@ function cellStyle(style) {
   if (style.verticalAlign) result.verticalAlign = style.verticalAlign
   if (style.backgroundColor) result.backgroundColor = style.backgroundColor
   if (style.fontWeight === 'bold') result.fontWeight = 700
+  else if (style.fontWeight === 'normal') result.fontWeight = 400
   if (style.fontSizePx) result.fontSize = `${style.fontSizePx}px`
   if (style.fontFamily) result.fontFamily = `"${style.fontFamily}", serif`
   return result
@@ -699,6 +701,7 @@ function paragraphStyle(style) {
   const result = {}
   if (style.textAlign) result.textAlign = style.textAlign
   if (style.fontWeight === 'bold') result.fontWeight = 700
+  else if (style.fontWeight === 'normal') result.fontWeight = 400
   if (style.fontSizePx) result.fontSize = `${style.fontSizePx}px`
   if (style.fontFamily) result.fontFamily = `"${style.fontFamily}", serif`
   return result

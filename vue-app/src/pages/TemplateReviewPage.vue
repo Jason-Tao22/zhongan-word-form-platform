@@ -132,6 +132,55 @@
                 <el-button text @click="focusControlEditor(selectedControl.id)">聚焦右侧编辑</el-button>
               </div>
             </div>
+            <div v-if="selectedControlSupportsStyle" class="style-adjust-panel">
+              <div class="manual-panel-title">样式微调</div>
+              <p class="panel-note">
+                这里改的是当前控件所在区域的视觉样式，保存后左侧正式渲染预览会立刻同步。
+              </p>
+              <div class="style-grid">
+                <el-input
+                  :model-value="selectedControl.fontFamily || ''"
+                  class="control-input"
+                  :disabled="!canEditSchema"
+                  placeholder="字体，如：宋体 / 黑体 / 仿宋"
+                  @update:model-value="updateControlStyle(selectedControl, 'fontFamily', $event)"
+                />
+
+                <el-input-number
+                  :model-value="selectedControl.fontSizePx ?? undefined"
+                  class="control-input"
+                  :min="10"
+                  :max="48"
+                  :step="1"
+                  :disabled="!canEditSchema"
+                  @update:model-value="updateControlStyle(selectedControl, 'fontSizePx', $event)"
+                />
+
+                <el-select
+                  :model-value="selectedControl.textAlign || ''"
+                  class="control-input"
+                  :disabled="!canEditSchema"
+                  placeholder="文字对齐"
+                  @update:model-value="updateControlStyle(selectedControl, 'textAlign', $event)"
+                >
+                  <el-option
+                    v-for="option in ALIGN_OPTIONS"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                  />
+                </el-select>
+
+                <el-switch
+                  :model-value="selectedControl.fontWeight === 'bold'"
+                  :disabled="!canEditSchema"
+                  inline-prompt
+                  active-text="加粗"
+                  inactive-text="常规"
+                  @update:model-value="updateControlStyle(selectedControl, 'fontWeight', $event ? 'bold' : 'normal')"
+                />
+              </div>
+            </div>
             <div v-else-if="selectedTarget" class="active-control-banner">
               <div>
                 <strong>当前定位：</strong>{{ selectedTarget.label }}
@@ -357,6 +406,12 @@ const TOKEN_TYPE_OPTIONS = [
   { value: 'radio', label: '行内单选' },
   { value: 'checkbox_group', label: '行内多选' },
 ]
+const ALIGN_OPTIONS = [
+  { value: 'left', label: '左对齐' },
+  { value: 'center', label: '居中' },
+  { value: 'right', label: '右对齐' },
+  { value: 'justify', label: '两端对齐' },
+]
 const manualControlTypeOptions = FIELD_TYPE_OPTIONS.filter(option => option.value !== 'static')
 
 const canEditSchema = computed(() => ['pending_review', 'failed'].includes(template.value?.status))
@@ -407,6 +462,7 @@ const displayedDdl = computed(() => {
 const editableControls = computed(() => collectEditableControls(reviewSchema.value))
 const selectedControl = computed(() => editableControls.value.find(item => item.id === activeControlId.value) || null)
 const selectedTarget = computed(() => resolveReviewTarget(reviewSchema.value, activeControlId.value))
+const selectedControlSupportsStyle = computed(() => ['cell-control', 'paragraph-control'].includes(selectedControl.value?.scope))
 const canCreateManualControl = computed(() => Boolean(
   canEditSchema.value
   && selectedTarget.value
@@ -916,6 +972,7 @@ function buildCellControlItem(schema, control, context) {
   const field = control.kind === 'schema'
     ? findField(schema, control.subFormId, control.fieldId)
     : null
+  const style = getStyleForItem(schema, { scope: 'cell-control', path: context })
   const type = field?.type || control.fieldType || 'text'
   const options = field?.options || control.options || []
   return {
@@ -931,6 +988,10 @@ function buildCellControlItem(schema, control, context) {
     fieldId: field?.id || control.fieldId || '',
     sqlColumn: field?.sqlColumn || field?.storageColumn || '',
     placeholder: field?.placeholder || control.placeholder || '',
+    fontFamily: style?.fontFamily || '',
+    fontSizePx: style?.fontSizePx ?? null,
+    textAlign: style?.textAlign || '',
+    fontWeight: style?.fontWeight || '',
     typeOptions: FIELD_TYPE_OPTIONS,
     path: context,
   }
@@ -940,6 +1001,7 @@ function buildParagraphControlItem(schema, control, context) {
   const field = control.kind === 'schema'
     ? findField(schema, control.subFormId, control.fieldId)
     : null
+  const style = getStyleForItem(schema, { scope: 'paragraph-control', path: context })
   const type = field?.type || control.fieldType || 'text'
   const options = field?.options || control.options || []
   return {
@@ -955,6 +1017,10 @@ function buildParagraphControlItem(schema, control, context) {
     fieldId: field?.id || control.fieldId || '',
     sqlColumn: field?.sqlColumn || field?.storageColumn || '',
     placeholder: field?.placeholder || control.placeholder || '',
+    fontFamily: style?.fontFamily || '',
+    fontSizePx: style?.fontSizePx ?? null,
+    textAlign: style?.textAlign || '',
+    fontWeight: style?.fontWeight || '',
     typeOptions: FIELD_TYPE_OPTIONS,
     path: context,
   }
@@ -1022,6 +1088,55 @@ function getToken(schema, item) {
     return block.tokens?.[item.path.tokenIndex] || null
   }
   return block.rows?.[item.path.rowIndex]?.[item.path.cellIndex]?.paragraphs?.[item.path.paragraphIndex]?.tokens?.[item.path.tokenIndex] || null
+}
+
+function getStyleContainer(schema, item) {
+  if (!schema || !item) return null
+  if (item.scope === 'cell-control') {
+    return schema.documentBlocks?.[item.path.blockIndex]?.rows?.[item.path.rowIndex]?.[item.path.cellIndex] || null
+  }
+  if (item.scope === 'paragraph-control') {
+    if (item.path.rowIndex === null || item.path.rowIndex === undefined) {
+      return schema.documentBlocks?.[item.path.blockIndex] || null
+    }
+    return schema.documentBlocks?.[item.path.blockIndex]?.rows?.[item.path.rowIndex]?.[item.path.cellIndex]?.paragraphs?.[item.path.paragraphIndex] || null
+  }
+  return null
+}
+
+function getStyleForItem(schema, item) {
+  return getStyleContainer(schema, item)?.style || null
+}
+
+function updateControlStyle(item, key, value) {
+  if (!reviewSchema.value || !selectedControlSupportsStyle.value) return
+  const container = getStyleContainer(reviewSchema.value, item)
+  if (!container) return
+  container.style = container.style && typeof container.style === 'object' ? container.style : {}
+  if (key === 'fontSizePx') {
+    const numeric = Number(value)
+    if (!Number.isFinite(numeric) || numeric <= 0) {
+      delete container.style[key]
+    } else {
+      container.style[key] = Math.max(10, Math.min(48, Math.round(numeric)))
+    }
+    return
+  }
+  if (key === 'fontFamily') {
+    const trimmed = String(value || '').trim()
+    if (!trimmed) delete container.style[key]
+    else container.style[key] = trimmed
+    return
+  }
+  if (key === 'textAlign') {
+    if (!value) delete container.style[key]
+    else container.style[key] = value
+    return
+  }
+  if (key === 'fontWeight') {
+    if (!value) delete container.style[key]
+    else container.style[key] = value
+  }
 }
 
 function parseOptions(raw) {
@@ -1398,6 +1513,23 @@ onBeforeUnmount(() => {
   flex-wrap: wrap;
 }
 
+.style-adjust-panel {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  margin: 0 0 12px;
+  border-radius: 14px;
+  background: #f8fbff;
+  border: 1px solid #d5e2fb;
+}
+
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  align-items: center;
+}
+
 .control-list {
   display: grid;
   gap: 12px;
@@ -1508,6 +1640,10 @@ onBeforeUnmount(() => {
 
   .active-control-banner {
     flex-direction: column;
+  }
+
+  .style-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>
