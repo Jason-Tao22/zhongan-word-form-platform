@@ -14,6 +14,8 @@ class CellStyle(BaseModel):
     verticalAlign: Optional[Literal["top", "middle", "bottom"]] = None
     backgroundColor: Optional[str] = None
     fontWeight: Optional[Literal["normal", "bold"]] = None
+    fontSizePx: Optional[int] = None
+    fontFamily: Optional[str] = None
 
 class LabelCell(BaseModel):
     kind: Literal["label"]

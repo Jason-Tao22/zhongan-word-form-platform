@@ -239,6 +239,8 @@ def _cell_style(cell: ParsedCell) -> dict | None:
         "verticalAlign": _map_v_align(cell.v_align),
         "backgroundColor": f"#{cell.shading}" if cell.shading else None,
         "fontWeight": "bold" if cell.is_bold else None,
+        "fontSizePx": cell.font_size_px,
+        "fontFamily": cell.font_family,
     }
     compact = {k: v for k, v in style.items() if v is not None}
     return compact or None

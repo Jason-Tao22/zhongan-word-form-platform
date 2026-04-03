@@ -11,6 +11,8 @@ from lxml import etree
 
 NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 W  = lambda tag: f"{{{NS}}}{tag}"
+A_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
+A = lambda tag: f"{{{A_NS}}}{tag}"
 
 
 @dataclass
@@ -26,6 +28,8 @@ class ParsedCell:
     v_align: str | None = None
     shading: str | None = None
     is_bold: bool = False
+    font_size_px: int | None = None
+    font_family: str | None = None
     paragraphs: list[str] = field(default_factory=list)
 
 
@@ -35,6 +39,8 @@ class ParsedParagraph:
     index: int
     align: str | None = None
     is_bold: bool = False
+    font_size_px: int | None = None
+    font_family: str | None = None
 
 
 @dataclass
@@ -173,6 +179,146 @@ def _get_paragraph_alignment(p_elem) -> str | None:
     return jc.get(W("val")) or jc.get("val")
 
 
+def _resolve_theme_typeface(theme_root, family: str) -> str | None:
+    font_scheme = theme_root.find(f".//{A('fontScheme')}")
+    if font_scheme is None:
+        return None
+    if family.startswith("minor"):
+        scheme = font_scheme.find(A("minorFont"))
+    elif family.startswith("major"):
+        scheme = font_scheme.find(A("majorFont"))
+    else:
+        return None
+    if scheme is None:
+        return None
+
+    if family.endswith("EastAsia"):
+        east_asia = scheme.find(A("ea"))
+        east_asia_face = east_asia.get("typeface") if east_asia is not None else ""
+        if east_asia_face:
+            return east_asia_face
+        hans = next((font.get("typeface") for font in scheme.findall(A("font")) if font.get("script") == "Hans"), None)
+        if hans:
+            return hans
+    elif family.endswith("Bidi"):
+        cs = scheme.find(A("cs"))
+        cs_face = cs.get("typeface") if cs is not None else ""
+        if cs_face:
+            return cs_face
+
+    latin = scheme.find(A("latin"))
+    latin_face = latin.get("typeface") if latin is not None else ""
+    return latin_face or None
+
+
+def _resolve_rpr_font_family(r_pr, theme_root=None) -> str | None:
+    if r_pr is None:
+        return None
+    fonts = r_pr.find(W("rFonts"))
+    if fonts is None:
+        return None
+    direct = (
+        fonts.get(W("eastAsia"))
+        or fonts.get("eastAsia")
+        or fonts.get(W("ascii"))
+        or fonts.get("ascii")
+        or fonts.get(W("hAnsi"))
+        or fonts.get("hAnsi")
+        or fonts.get(W("cs"))
+        or fonts.get("cs")
+    )
+    if direct:
+        return direct
+    theme_key = (
+        fonts.get(W("eastAsiaTheme"))
+        or fonts.get("eastAsiaTheme")
+        or fonts.get(W("asciiTheme"))
+        or fonts.get("asciiTheme")
+        or fonts.get(W("hAnsiTheme"))
+        or fonts.get("hAnsiTheme")
+        or fonts.get(W("cstheme"))
+        or fonts.get("cstheme")
+    )
+    if not theme_key or theme_root is None:
+        return None
+    return _resolve_theme_typeface(theme_root, theme_key)
+
+
+def _resolve_rpr_font_size_px(r_pr) -> int | None:
+    if r_pr is None:
+        return None
+    sz = r_pr.find(W("sz"))
+    if sz is None:
+        sz = r_pr.find(W("szCs"))
+    if sz is None:
+        return None
+    raw = sz.get(W("val")) or sz.get("val")
+    if not raw:
+        return None
+    try:
+        half_points = int(raw)
+    except ValueError:
+        return None
+    return max(10, round(half_points * 2 / 3))
+
+
+def _get_default_run_style(styles_root, theme_root=None) -> tuple[int | None, str | None]:
+    if styles_root is None:
+        return None, None
+    r_pr = styles_root.find(f".//{W('docDefaults')}/{W('rPrDefault')}/{W('rPr')}")
+    if r_pr is None:
+        return None, None
+    return _resolve_rpr_font_size_px(r_pr), _resolve_rpr_font_family(r_pr, theme_root)
+
+
+def _get_run_rpr(run):
+    return run.find(W("rPr"))
+
+
+def _get_run_font_family(run, theme_root=None) -> str | None:
+    r_pr = _get_run_rpr(run)
+    return _resolve_rpr_font_family(r_pr, theme_root)
+
+
+def _get_run_font_size_px(run) -> int | None:
+    r_pr = _get_run_rpr(run)
+    return _resolve_rpr_font_size_px(r_pr)
+
+
+def _weighted_choice(weights: dict[str | int, int]) -> str | int | None:
+    if not weights:
+        return None
+    return max(weights.items(), key=lambda item: item[1])[0]
+
+
+def _get_text_run_display_style(
+    elem,
+    default_font_size_px: int | None = None,
+    default_font_family: str | None = None,
+    theme_root=None,
+) -> tuple[int | None, str | None]:
+    family_weights: dict[str, int] = {}
+    size_weights: dict[int, int] = {}
+
+    for run in elem.findall(f".//{W('r')}"):
+        text = "".join((t.text or "") for t in run.findall(W("t"))).strip()
+        if not text:
+            continue
+        weight = max(1, len(text))
+        font_family = _get_run_font_family(run, theme_root)
+        font_size_px = _get_run_font_size_px(run)
+        if font_family:
+            family_weights[font_family] = family_weights.get(font_family, 0) + weight
+        if font_size_px:
+            size_weights[font_size_px] = size_weights.get(font_size_px, 0) + weight
+
+    chosen_size = _weighted_choice(size_weights)
+    chosen_family = _weighted_choice(family_weights)
+    resolved_size = chosen_size if isinstance(chosen_size, int) else default_font_size_px
+    resolved_family = chosen_family if isinstance(chosen_family, str) else default_font_family
+    return resolved_size, resolved_family
+
+
 def _is_cell_bold(tc_elem) -> bool:
     has_text = False
     for run in tc_elem.findall(f".//{W('r')}"):
@@ -211,7 +357,14 @@ def _is_paragraph_bold(p_elem) -> bool:
     return has_text
 
 
-def _parse_table_element(tbl, idx: int) -> ParsedTable:
+def _parse_table_element(
+    tbl,
+    idx: int,
+    *,
+    default_font_size_px: int | None = None,
+    default_font_family: str | None = None,
+    theme_root=None,
+) -> ParsedTable:
     parsed = ParsedTable(index=idx)
     raw_rows = tbl.findall(W("tr"))
 
@@ -234,6 +387,8 @@ def _parse_table_element(tbl, idx: int) -> ParsedTable:
                     v_align=cell_meta["v_align"],
                     shading=cell_meta["shading"],
                     is_bold=cell_meta["is_bold"],
+                    font_size_px=cell_meta["font_size_px"],
+                    font_family=cell_meta["font_family"],
                     paragraphs=cell_meta["paragraphs"],
                 ))
                 vmerge_tracker[logical_col] = (rem - 1, cell_meta)
@@ -250,6 +405,12 @@ def _parse_table_element(tbl, idx: int) -> ParsedTable:
             v_align = _get_cell_v_align(tc)
             shading = _get_cell_shading(tc)
             is_bold = _is_cell_bold(tc)
+            font_size_px, font_family = _get_text_run_display_style(
+                tc,
+                default_font_size_px=default_font_size_px,
+                default_font_family=default_font_family,
+                theme_root=theme_root,
+            )
 
             if vmerge == "restart":
                 # 找出这次合并跨多少行
@@ -279,6 +440,8 @@ def _parse_table_element(tbl, idx: int) -> ParsedTable:
                         "v_align": v_align,
                         "shading": shading,
                         "is_bold": is_bold,
+                        "font_size_px": font_size_px,
+                        "font_family": font_family,
                         "paragraphs": paragraphs,
                     },
                 )
@@ -290,6 +453,8 @@ def _parse_table_element(tbl, idx: int) -> ParsedTable:
                     v_align=v_align,
                     shading=shading,
                     is_bold=is_bold,
+                    font_size_px=font_size_px,
+                    font_family=font_family,
                     paragraphs=paragraphs,
                 ))
             elif vmerge == "continue":
@@ -304,6 +469,8 @@ def _parse_table_element(tbl, idx: int) -> ParsedTable:
                     v_align=v_align,
                     shading=shading,
                     is_bold=is_bold,
+                    font_size_px=font_size_px,
+                    font_family=font_family,
                     paragraphs=paragraphs,
                 ))
 
@@ -317,8 +484,13 @@ def _parse_table_element(tbl, idx: int) -> ParsedTable:
 def parse_docx_blocks(file_bytes: bytes) -> list[dict]:
     with zipfile.ZipFile(file_bytes if hasattr(file_bytes, "read") else __import__("io").BytesIO(file_bytes)) as z:
         xml = z.read("word/document.xml")
+        styles_xml = z.read("word/styles.xml") if "word/styles.xml" in z.namelist() else None
+        theme_xml = z.read("word/theme/theme1.xml") if "word/theme/theme1.xml" in z.namelist() else None
 
     root = etree.fromstring(xml)
+    styles_root = etree.fromstring(styles_xml) if styles_xml else None
+    theme_root = etree.fromstring(theme_xml) if theme_xml else None
+    default_font_size_px, default_font_family = _get_default_run_style(styles_root, theme_root)
     body = root.find(W("body"))
     if body is None:
         return []
@@ -330,6 +502,12 @@ def parse_docx_blocks(file_bytes: bytes) -> list[dict]:
         if child.tag == W("p"):
             text = _get_paragraph_text(child)
             if text:
+                font_size_px, font_family = _get_text_run_display_style(
+                    child,
+                    default_font_size_px=default_font_size_px,
+                    default_font_family=default_font_family,
+                    theme_root=theme_root,
+                )
                 blocks.append({
                     "kind": "paragraph",
                     "paragraph": ParsedParagraph(
@@ -337,13 +515,21 @@ def parse_docx_blocks(file_bytes: bytes) -> list[dict]:
                         index=paragraph_index,
                         align=_get_paragraph_alignment(child),
                         is_bold=_is_paragraph_bold(child),
+                        font_size_px=font_size_px,
+                        font_family=font_family,
                     ),
                 })
             paragraph_index += 1
         elif child.tag == W("tbl"):
             blocks.append({
                 "kind": "table",
-                "table": _parse_table_element(child, table_index),
+                "table": _parse_table_element(
+                    child,
+                    table_index,
+                    default_font_size_px=default_font_size_px,
+                    default_font_family=default_font_family,
+                    theme_root=theme_root,
+                ),
             })
             table_index += 1
     return blocks

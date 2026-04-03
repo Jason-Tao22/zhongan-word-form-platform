@@ -21,11 +21,12 @@ from prototype_builder import (
 from quality_assessor import assess_quality
 from storage_plan import apply_storage_plan, count_storage_tables
 from legacy_strategy import choose_legacy_representation
-from word_parser import ParsedCell, ParsedTable, tables_to_prompt_text
+from word_parser import ParsedCell, ParsedParagraph, ParsedTable, parse_docx_blocks, tables_to_prompt_text
 
 
 WORKSPACE_ROOT = Path(__file__).resolve().parents[2]
 RAW_OUTPUT_JSON = WORKSPACE_ROOT / "test_output.json"
+PUBLIC_DEMO_DOCX = WORKSPACE_ROOT / "samples" / "public-demo-template.docx"
 
 
 class RegressionPipelineTest(unittest.TestCase):
@@ -59,6 +60,8 @@ class RegressionPipelineTest(unittest.TestCase):
                         align="center",
                         shading="D9D9D9",
                         is_bold=True,
+                        font_size_px=18,
+                        font_family="SimSun",
                         paragraphs=["标题"],
                     )
                 ]
@@ -70,7 +73,30 @@ class RegressionPipelineTest(unittest.TestCase):
         self.assertGreater(cell["style"]["widthPx"], 0)
         self.assertEqual(cell["style"]["textAlign"], "center")
         self.assertEqual(cell["style"]["backgroundColor"], "#D9D9D9")
+        self.assertEqual(cell["style"]["fontSizePx"], 18)
+        self.assertEqual(cell["style"]["fontFamily"], "SimSun")
         self.assertTrue(cell["isEmphasis"])
+
+    def test_document_blocks_carry_paragraph_font_styles(self) -> None:
+        paragraph = ParsedParagraph(
+            text="检验意见通知书",
+            index=0,
+            align="center",
+            is_bold=True,
+            font_size_px=24,
+            font_family="KaiTi",
+        )
+        document_blocks = build_document_blocks([], [], blocks=[{"kind": "paragraph", "paragraph": paragraph}])
+        block = document_blocks[0]
+        self.assertEqual(block["style"]["fontSizePx"], 24)
+        self.assertEqual(block["style"]["fontFamily"], "KaiTi")
+        self.assertEqual(block["style"]["fontWeight"], "bold")
+
+    def test_parse_docx_blocks_reads_default_typography_from_styles(self) -> None:
+        blocks = parse_docx_blocks(PUBLIC_DEMO_DOCX.read_bytes())
+        paragraph = next(block["paragraph"] for block in blocks if block["kind"] == "paragraph")
+        self.assertIsNotNone(paragraph.font_size_px)
+        self.assertGreater(paragraph.font_size_px, 0)
 
     def test_section_group_fallback_layout_exists(self) -> None:
         sketch_form = next(

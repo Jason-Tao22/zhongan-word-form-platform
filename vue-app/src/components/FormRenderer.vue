@@ -21,6 +21,7 @@
             v-if="block.kind === 'paragraph'"
             :data-review-id="paragraphSlotReviewId(blockIndex, null, null, 0)"
             :class="reviewTargetClasses(paragraphSlotReviewId(blockIndex, null, null, 0), paragraphClasses(block))"
+            :style="paragraphStyle(block.style)"
             @click="emitReviewSelect(paragraphSlotReviewId(blockIndex, null, null, 0))"
             @mouseenter="emitReviewHover(paragraphSlotReviewId(blockIndex, null, null, 0))"
             @mouseleave="emitReviewHover('')"
@@ -688,6 +689,18 @@ function cellStyle(style) {
   if (style.verticalAlign) result.verticalAlign = style.verticalAlign
   if (style.backgroundColor) result.backgroundColor = style.backgroundColor
   if (style.fontWeight === 'bold') result.fontWeight = 700
+  if (style.fontSizePx) result.fontSize = `${style.fontSizePx}px`
+  if (style.fontFamily) result.fontFamily = `"${style.fontFamily}", serif`
+  return result
+}
+
+function paragraphStyle(style) {
+  if (!style) return undefined
+  const result = {}
+  if (style.textAlign) result.textAlign = style.textAlign
+  if (style.fontWeight === 'bold') result.fontWeight = 700
+  if (style.fontSizePx) result.fontSize = `${style.fontSizePx}px`
+  if (style.fontFamily) result.fontFamily = `"${style.fontFamily}", serif`
   return result
 }
 

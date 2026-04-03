@@ -562,7 +562,13 @@ def _render_document_paragraph(paragraph, ai_hints: dict[str, dict[str, dict[str
         f"doc::paragraph::{paragraph.index}",
         ai_hints.get("paragraphs", {}).get(f"doc::paragraph::{paragraph.index}"),
     )
-    return f'<p class="{" ".join(classes)}">{html}</p>'
+    style_parts: list[str] = []
+    if getattr(paragraph, "font_size_px", None):
+        style_parts.append(f'font-size:{paragraph.font_size_px}px')
+    if getattr(paragraph, "font_family", None):
+        style_parts.append(f'font-family:"{escape(paragraph.font_family)}", serif')
+    style_attr = f' style="{";".join(style_parts)}"' if style_parts else ""
+    return f'<p class="{" ".join(classes)}"{style_attr}>{html}</p>'
 
 
 def _render_cell_html(
@@ -584,6 +590,10 @@ def _render_cell_html(
         styles.append(f"background:#{cell.shading}")
     if cell.is_bold:
         styles.append("font-weight:700")
+    if getattr(cell, "font_size_px", None):
+        styles.append(f"font-size:{cell.font_size_px}px")
+    if getattr(cell, "font_family", None):
+        styles.append(f'font-family:"{escape(cell.font_family)}", serif')
 
     class_names = ["docx-cell"]
     if cell.is_bold or cell.shading:
@@ -751,6 +761,13 @@ def _build_document_paragraph_block(paragraph, ai_hints: dict[str, dict[str, dic
         "text": paragraph.text,
         "align": map_align(getattr(paragraph, "align", None)),
         "isBold": bool(getattr(paragraph, "is_bold", False)),
+        "style": {
+            key: value for key, value in {
+                "fontSizePx": getattr(paragraph, "font_size_px", None),
+                "fontFamily": getattr(paragraph, "font_family", None),
+                "fontWeight": "bold" if getattr(paragraph, "is_bold", False) else None,
+            }.items() if value is not None
+        },
         "tokens": tokens,
     }
 
@@ -881,6 +898,8 @@ def _build_cell_style_payload(cell) -> dict[str, Any]:
         "verticalAlign": map_valign(cell.v_align),
         "backgroundColor": f"#{cell.shading}" if cell.shading else None,
         "fontWeight": "bold" if cell.is_bold else None,
+        "fontSizePx": getattr(cell, "font_size_px", None),
+        "fontFamily": getattr(cell, "font_family", None),
     }
     return {key: value for key, value in style.items() if value is not None}
 
