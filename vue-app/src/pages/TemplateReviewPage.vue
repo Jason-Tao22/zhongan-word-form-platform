@@ -261,6 +261,17 @@
                   />
                 </div>
 
+                <div v-if="selectedStyleSupportsCellLayout" class="style-field" data-style-field="borderBox">
+                  <span class="style-field-label">统一边框</span>
+                  <el-input
+                    :model-value="selectedStyle.borderBox || ''"
+                    class="control-input"
+                    :disabled="!canEditSchema"
+                    placeholder="如：1px solid #000000"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'borderBox', $event)"
+                  />
+                </div>
+
                 <div v-if="selectedStyleSupportsCellLayout" class="style-field" data-style-field="paddingPx">
                   <span class="style-field-label">内边距</span>
                   <el-input-number
@@ -572,6 +583,7 @@ const selectedStyle = computed(() => {
     minHeightPx: style.minHeightPx ?? null,
     paddingPx: style.paddingPx ?? null,
     lineHeight: style.lineHeight ?? null,
+    borderBox: resolveUniformBorder(style),
     textAlign: style.textAlign || '',
     fontWeight: style.fontWeight || '',
     verticalAlign: style.verticalAlign || '',
@@ -1226,6 +1238,15 @@ function getStyleForItem(schema, item) {
   return getStyleContainer(schema, item)?.style || null
 }
 
+function resolveUniformBorder(style) {
+  if (!style) return ''
+  const borders = [style.borderTop, style.borderRight, style.borderBottom, style.borderLeft]
+    .map(value => String(value || '').trim())
+    .filter(Boolean)
+  if (!borders.length) return ''
+  return borders.every(value => value === borders[0]) ? borders[0] : ''
+}
+
 function updateItemStyle(item, key, value) {
   if (!reviewSchema.value || !item) return
   const container = getStyleContainer(reviewSchema.value, item)
@@ -1284,6 +1305,14 @@ function updateItemStyle(item, key, value) {
     const trimmed = String(value || '').trim()
     if (!trimmed) delete container.style[key]
     else container.style[key] = trimmed
+    return
+  }
+  if (key === 'borderBox') {
+    const trimmed = String(value || '').trim()
+    for (const borderKey of ['borderTop', 'borderRight', 'borderBottom', 'borderLeft']) {
+      if (!trimmed) delete container.style[borderKey]
+      else container.style[borderKey] = trimmed
+    }
     return
   }
   if (key === 'fontWeight') {
