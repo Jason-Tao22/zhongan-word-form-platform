@@ -51,6 +51,9 @@ class ParsedParagraph:
     line_height: float | None = None
     margin_top_px: int | None = None
     margin_bottom_px: int | None = None
+    margin_left_px: int | None = None
+    margin_right_px: int | None = None
+    text_indent_px: int | None = None
 
 
 @dataclass
@@ -387,6 +390,30 @@ def _get_paragraph_spacing(p_elem) -> tuple[int | None, int | None, float | None
     return margin_top_px, margin_bottom_px, line_height
 
 
+def _get_paragraph_indent(p_elem) -> tuple[int | None, int | None, int | None]:
+    p_pr = p_elem.find(W("pPr"))
+    if p_pr is None:
+        return None, None, None
+    ind = p_pr.find(W("ind"))
+    if ind is None:
+        return None, None, None
+
+    def parse_twips(value: str | None) -> int | None:
+        if not value:
+            return None
+        try:
+            return _twips_to_px(int(value))
+        except ValueError:
+            return None
+
+    left_px = parse_twips(ind.get(W("left")) or ind.get("left") or ind.get(W("start")) or ind.get("start"))
+    right_px = parse_twips(ind.get(W("right")) or ind.get("right") or ind.get(W("end")) or ind.get("end"))
+    first_line_px = parse_twips(ind.get(W("firstLine")) or ind.get("firstLine"))
+    hanging_px = parse_twips(ind.get(W("hanging")) or ind.get("hanging"))
+    text_indent_px = first_line_px if first_line_px is not None else (-hanging_px if hanging_px is not None else None)
+    return left_px, right_px, text_indent_px
+
+
 def _get_cell_paragraph_details(
     tc_elem,
     *,
@@ -404,6 +431,7 @@ def _get_cell_paragraph_details(
             theme_root=theme_root,
         )
         margin_top_px, margin_bottom_px, line_height = _get_paragraph_spacing(p)
+        margin_left_px, margin_right_px, text_indent_px = _get_paragraph_indent(p)
         paragraphs.append(ParsedParagraph(
             text=text,
             index=index,
@@ -414,6 +442,9 @@ def _get_cell_paragraph_details(
             line_height=line_height,
             margin_top_px=margin_top_px,
             margin_bottom_px=margin_bottom_px,
+            margin_left_px=margin_left_px,
+            margin_right_px=margin_right_px,
+            text_indent_px=text_indent_px,
         ))
     return paragraphs
 
@@ -808,6 +839,7 @@ def parse_docx_blocks(file_bytes: bytes) -> list[dict]:
                     theme_root=theme_root,
                 )
                 margin_top_px, margin_bottom_px, line_height = _get_paragraph_spacing(child)
+                margin_left_px, margin_right_px, text_indent_px = _get_paragraph_indent(child)
                 blocks.append({
                     "kind": "paragraph",
                     "paragraph": ParsedParagraph(
@@ -820,6 +852,9 @@ def parse_docx_blocks(file_bytes: bytes) -> list[dict]:
                         line_height=line_height,
                         margin_top_px=margin_top_px,
                         margin_bottom_px=margin_bottom_px,
+                        margin_left_px=margin_left_px,
+                        margin_right_px=margin_right_px,
+                        text_indent_px=text_indent_px,
                     ),
                 })
             paragraph_index += 1

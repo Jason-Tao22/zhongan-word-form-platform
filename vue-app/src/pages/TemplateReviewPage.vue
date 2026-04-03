@@ -228,6 +228,57 @@
                   />
                 </div>
 
+                <div
+                  v-if="selectedStyleSupportsParagraphIndent"
+                  class="style-field"
+                  data-style-field="marginLeftPx"
+                >
+                  <span class="style-field-label">左缩进</span>
+                  <el-input-number
+                    :model-value="selectedStyle.marginLeftPx ?? undefined"
+                    class="control-input"
+                    :min="0"
+                    :max="240"
+                    :step="2"
+                    :disabled="!canEditSchema"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'marginLeftPx', $event)"
+                  />
+                </div>
+
+                <div
+                  v-if="selectedStyleSupportsParagraphIndent"
+                  class="style-field"
+                  data-style-field="marginRightPx"
+                >
+                  <span class="style-field-label">右缩进</span>
+                  <el-input-number
+                    :model-value="selectedStyle.marginRightPx ?? undefined"
+                    class="control-input"
+                    :min="0"
+                    :max="240"
+                    :step="2"
+                    :disabled="!canEditSchema"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'marginRightPx', $event)"
+                  />
+                </div>
+
+                <div
+                  v-if="selectedStyleSupportsParagraphIndent"
+                  class="style-field"
+                  data-style-field="textIndentPx"
+                >
+                  <span class="style-field-label">首行缩进</span>
+                  <el-input-number
+                    :model-value="selectedStyle.textIndentPx ?? undefined"
+                    class="control-input"
+                    :min="-120"
+                    :max="240"
+                    :step="2"
+                    :disabled="!canEditSchema"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'textIndentPx', $event)"
+                  />
+                </div>
+
                 <div class="style-field" data-style-field="textAlign">
                   <span class="style-field-label">水平对齐</span>
                   <el-select
@@ -600,6 +651,7 @@ const selectedControl = computed(() => editableControls.value.find(item => item.
 const selectedTarget = computed(() => resolveReviewTarget(reviewSchema.value, activeControlId.value))
 const selectedStyleItem = computed(() => selectedControl.value || selectedTarget.value || null)
 const selectedStyleSupportsCellLayout = computed(() => ['cell-control', 'cell-slot'].includes(selectedStyleItem.value?.scope))
+const selectedStyleSupportsParagraphIndent = computed(() => ['paragraph-control', 'paragraph-slot'].includes(selectedStyleItem.value?.scope))
 const selectedStyle = computed(() => {
   const style = getStyleForItem(reviewSchema.value, selectedStyleItem.value) || {}
   return {
@@ -611,6 +663,9 @@ const selectedStyle = computed(() => {
     lineHeight: style.lineHeight ?? null,
     marginTopPx: style.marginTopPx ?? null,
     marginBottomPx: style.marginBottomPx ?? null,
+    marginLeftPx: style.marginLeftPx ?? null,
+    marginRightPx: style.marginRightPx ?? null,
+    textIndentPx: style.textIndentPx ?? null,
     borderBox: resolveUniformBorder(style),
     textAlign: style.textAlign || '',
     fontWeight: style.fontWeight || '',
@@ -1280,10 +1335,20 @@ function updateItemStyle(item, key, value) {
   const container = getStyleContainer(reviewSchema.value, item)
   if (!container) return
   container.style = container.style && typeof container.style === 'object' ? container.style : {}
-  if (key === 'widthPx' || key === 'minHeightPx' || key === 'paddingPx' || key === 'marginTopPx' || key === 'marginBottomPx') {
+  if (
+    key === 'widthPx'
+    || key === 'minHeightPx'
+    || key === 'paddingPx'
+    || key === 'marginTopPx'
+    || key === 'marginBottomPx'
+    || key === 'marginLeftPx'
+    || key === 'marginRightPx'
+    || key === 'textIndentPx'
+  ) {
     const numeric = Number(value)
-    const allowsZero = ['paddingPx', 'marginTopPx', 'marginBottomPx'].includes(key)
-    if (!Number.isFinite(numeric) || (allowsZero ? numeric < 0 : numeric <= 0)) {
+    const allowsNegative = key === 'textIndentPx'
+    const allowsZero = ['paddingPx', 'marginTopPx', 'marginBottomPx', 'marginLeftPx', 'marginRightPx'].includes(key)
+    if (!Number.isFinite(numeric) || (allowsNegative ? false : (allowsZero ? numeric < 0 : numeric <= 0))) {
       delete container.style[key]
     } else {
       const bounds = key === 'widthPx'
@@ -1292,6 +1357,10 @@ function updateItemStyle(item, key, value) {
           ? [0, 48]
           : key === 'marginTopPx' || key === 'marginBottomPx'
             ? [0, 120]
+            : key === 'marginLeftPx' || key === 'marginRightPx'
+              ? [0, 240]
+              : key === 'textIndentPx'
+                ? [-120, 240]
           : [24, 1200]
       container.style[key] = Math.max(bounds[0], Math.min(bounds[1], Math.round(numeric)))
     }

@@ -573,6 +573,12 @@ def _render_document_paragraph(paragraph, ai_hints: dict[str, dict[str, dict[str
         style_parts.append(f'margin-top:{paragraph.margin_top_px}px')
     if getattr(paragraph, "margin_bottom_px", None) is not None:
         style_parts.append(f'margin-bottom:{paragraph.margin_bottom_px}px')
+    if getattr(paragraph, "margin_left_px", None) is not None:
+        style_parts.append(f'margin-left:{paragraph.margin_left_px}px')
+    if getattr(paragraph, "margin_right_px", None) is not None:
+        style_parts.append(f'margin-right:{paragraph.margin_right_px}px')
+    if getattr(paragraph, "text_indent_px", None) is not None:
+        style_parts.append(f'text-indent:{paragraph.text_indent_px}px')
     style_attr = f' style="{";".join(style_parts)}"' if style_parts else ""
     return f'<p class="{" ".join(classes)}"{style_attr}>{html}</p>'
 
@@ -798,6 +804,9 @@ def _build_document_paragraph_block(paragraph, ai_hints: dict[str, dict[str, dic
                 "lineHeight": getattr(paragraph, "line_height", None),
                 "marginTopPx": getattr(paragraph, "margin_top_px", None),
                 "marginBottomPx": getattr(paragraph, "margin_bottom_px", None),
+                "marginLeftPx": getattr(paragraph, "margin_left_px", None),
+                "marginRightPx": getattr(paragraph, "margin_right_px", None),
+                "textIndentPx": getattr(paragraph, "text_indent_px", None),
             }.items() if value is not None
         },
         "tokens": tokens,
@@ -960,6 +969,9 @@ def _build_paragraph_style_payload(paragraph) -> dict[str, Any] | None:
         "lineHeight": getattr(paragraph, "line_height", None),
         "marginTopPx": getattr(paragraph, "margin_top_px", None),
         "marginBottomPx": getattr(paragraph, "margin_bottom_px", None),
+        "marginLeftPx": getattr(paragraph, "margin_left_px", None),
+        "marginRightPx": getattr(paragraph, "margin_right_px", None),
+        "textIndentPx": getattr(paragraph, "text_indent_px", None),
     }
     compact = {key: value for key, value in style.items() if value is not None}
     return compact or None
@@ -981,6 +993,12 @@ def _render_paragraph_style_attr(paragraph) -> str:
         style_parts.append(f'margin-top:{paragraph.margin_top_px}px')
     if getattr(paragraph, "margin_bottom_px", None) is not None:
         style_parts.append(f'margin-bottom:{paragraph.margin_bottom_px}px')
+    if getattr(paragraph, "margin_left_px", None) is not None:
+        style_parts.append(f'margin-left:{paragraph.margin_left_px}px')
+    if getattr(paragraph, "margin_right_px", None) is not None:
+        style_parts.append(f'margin-right:{paragraph.margin_right_px}px')
+    if getattr(paragraph, "text_indent_px", None) is not None:
+        style_parts.append(f'text-indent:{paragraph.text_indent_px}px')
     return ";".join(style_parts)
 
 

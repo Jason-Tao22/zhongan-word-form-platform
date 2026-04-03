@@ -82,6 +82,9 @@ def parse_legacy_doc_html_blocks(html_text: str) -> list[dict]:
                         line_height=_css_line_height(style.get("line-height")),
                         margin_top_px=_css_px(style.get("margin-top")),
                         margin_bottom_px=_css_px(style.get("margin-bottom")),
+                        margin_left_px=_css_px(style.get("margin-left")),
+                        margin_right_px=_css_px(style.get("margin-right")),
+                        text_indent_px=_css_px(style.get("text-indent")),
                     ),
                 })
             paragraph_index += 1
@@ -251,6 +254,9 @@ def _extract_cell_paragraph_details(cell_elem, class_styles: dict[str, dict[str,
                 line_height=_css_line_height(style.get("line-height")),
                 margin_top_px=_css_px(style.get("margin-top")),
                 margin_bottom_px=_css_px(style.get("margin-bottom")),
+                margin_left_px=_css_px(style.get("margin-left")),
+                margin_right_px=_css_px(style.get("margin-right")),
+                text_indent_px=_css_px(style.get("text-indent")),
             ))
         return details
 
@@ -268,6 +274,9 @@ def _extract_cell_paragraph_details(cell_elem, class_styles: dict[str, dict[str,
         line_height=_css_line_height(style.get("line-height")),
         margin_top_px=_css_px(style.get("margin-top")),
         margin_bottom_px=_css_px(style.get("margin-bottom")),
+        margin_left_px=_css_px(style.get("margin-left")),
+        margin_right_px=_css_px(style.get("margin-right")),
+        text_indent_px=_css_px(style.get("text-indent")),
     )]
 
 

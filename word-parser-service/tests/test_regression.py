@@ -96,6 +96,9 @@ class RegressionPipelineTest(unittest.TestCase):
             line_height=1.8,
             margin_top_px=12,
             margin_bottom_px=18,
+            margin_left_px=16,
+            margin_right_px=12,
+            text_indent_px=24,
         )
         document_blocks = build_document_blocks([], [], blocks=[{"kind": "paragraph", "paragraph": paragraph}])
         block = document_blocks[0]
@@ -105,6 +108,9 @@ class RegressionPipelineTest(unittest.TestCase):
         self.assertEqual(block["style"]["lineHeight"], 1.8)
         self.assertEqual(block["style"]["marginTopPx"], 12)
         self.assertEqual(block["style"]["marginBottomPx"], 18)
+        self.assertEqual(block["style"]["marginLeftPx"], 16)
+        self.assertEqual(block["style"]["marginRightPx"], 12)
+        self.assertEqual(block["style"]["textIndentPx"], 24)
 
     def test_document_blocks_carry_cell_paragraph_spacing_styles(self) -> None:
         table = ParsedTable(
@@ -124,6 +130,9 @@ class RegressionPipelineTest(unittest.TestCase):
                                 line_height=1.6,
                                 margin_top_px=8,
                                 margin_bottom_px=10,
+                                margin_left_px=14,
+                                margin_right_px=6,
+                                text_indent_px=20,
                             )
                         ],
                     )
@@ -136,6 +145,9 @@ class RegressionPipelineTest(unittest.TestCase):
         self.assertEqual(paragraph["style"]["lineHeight"], 1.6)
         self.assertEqual(paragraph["style"]["marginTopPx"], 8)
         self.assertEqual(paragraph["style"]["marginBottomPx"], 10)
+        self.assertEqual(paragraph["style"]["marginLeftPx"], 14)
+        self.assertEqual(paragraph["style"]["marginRightPx"], 6)
+        self.assertEqual(paragraph["style"]["textIndentPx"], 20)
 
     def test_parse_docx_blocks_reads_default_typography_from_styles(self) -> None:
         blocks = parse_docx_blocks(PUBLIC_DEMO_DOCX.read_bytes())
@@ -665,7 +677,7 @@ class RegressionPipelineTest(unittest.TestCase):
     def test_parse_legacy_doc_html_blocks_captures_paragraph_spacing(self) -> None:
         html_text = (
             "<html><body>"
-            "<p style='font-size:18pt;line-height:1.8;margin-top:12px;margin-bottom:6px'>标题</p>"
+            "<p style='font-size:18pt;line-height:1.8;margin-top:12px;margin-bottom:6px;margin-left:16px;margin-right:8px;text-indent:24px'>标题</p>"
             "</body></html>"
         )
         blocks = parse_legacy_doc_html_blocks(html_text)
@@ -674,6 +686,9 @@ class RegressionPipelineTest(unittest.TestCase):
         self.assertEqual(paragraph.line_height, 1.8)
         self.assertEqual(paragraph.margin_top_px, 12)
         self.assertEqual(paragraph.margin_bottom_px, 6)
+        self.assertEqual(paragraph.margin_left_px, 16)
+        self.assertEqual(paragraph.margin_right_px, 8)
+        self.assertEqual(paragraph.text_indent_px, 24)
 
     def test_post_process_normalizes_checklist_columns(self) -> None:
         raw_sub_form = {
