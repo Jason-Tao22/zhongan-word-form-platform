@@ -27,6 +27,10 @@ class ParsedCell:
     align: str | None = None
     v_align: str | None = None
     shading: str | None = None
+    border_top: str | None = None
+    border_right: str | None = None
+    border_bottom: str | None = None
+    border_left: str | None = None
     is_bold: bool = False
     font_size_px: int | None = None
     font_family: str | None = None
@@ -153,6 +157,100 @@ def _get_cell_shading(tc_elem) -> str | None:
     if fill in {None, "", "auto"}:
         return None
     return fill
+
+
+def _map_word_border_style(value: str | None) -> str | None:
+    normalized = (value or "").lower()
+    if normalized in {"", "nil", "none"}:
+        return "none" if normalized else None
+    if normalized in {"single", "thick", "thin"}:
+        return "solid"
+    if normalized in {"double", "triple"}:
+        return "double"
+    if normalized in {"dashed", "dashsmallgap", "dashdotstroked", "dashdot", "dashdotdot"}:
+        return "dashed"
+    if normalized in {"dotted", "dotdash", "dotdotdash"}:
+        return "dotted"
+    return "solid"
+
+
+def _word_border_to_css(border_elem) -> str | None:
+    if border_elem is None:
+        return None
+    border_style = _map_word_border_style(border_elem.get(W("val")) or border_elem.get("val"))
+    if border_style is None:
+        return None
+    if border_style == "none":
+        return "none"
+
+    color = border_elem.get(W("color")) or border_elem.get("color") or "000000"
+    if color.lower() == "auto":
+        color = "000000"
+
+    width_px = 1
+    size_raw = border_elem.get(W("sz")) or border_elem.get("sz")
+    if size_raw:
+        try:
+            width_px = max(1, round(int(size_raw) / 6))
+        except ValueError:
+            width_px = 1
+
+    return f"{width_px}px {border_style} #{color.upper()}"
+
+
+def _get_border_values(border_parent_elem) -> dict[str, str]:
+    if border_parent_elem is None:
+        return {}
+
+    values: dict[str, str] = {}
+    for side in ("top", "right", "bottom", "left", "insideH", "insideV"):
+        border = border_parent_elem.find(W(side))
+        css = _word_border_to_css(border)
+        if css is not None:
+            values[side] = css
+    return values
+
+
+def _get_table_border_defaults(tbl_elem) -> dict[str, str]:
+    tbl_pr = tbl_elem.find(W("tblPr"))
+    if tbl_pr is None:
+        return {}
+    return _get_border_values(tbl_pr.find(W("tblBorders")))
+
+
+def _get_cell_border_values(tc_elem) -> dict[str, str]:
+    tc_pr = tc_elem.find(W("tcPr"))
+    if tc_pr is None:
+        return {}
+    return _get_border_values(tc_pr.find(W("tcBorders")))
+
+
+def _resolve_effective_cell_borders(
+    tc_elem,
+    table_borders: dict[str, str],
+    *,
+    row_index: int,
+    row_count: int,
+    logical_col: int,
+    col_count: int,
+    colspan: int,
+    rowspan: int,
+) -> dict[str, str | None]:
+    cell_borders = _get_cell_border_values(tc_elem)
+    last_row = row_index + rowspan >= row_count
+    last_col = logical_col + colspan >= col_count
+
+    def pick(side: str, fallback_key: str) -> str | None:
+        if side in cell_borders:
+            return cell_borders[side]
+        return table_borders.get(fallback_key)
+
+    return {
+        "border_top": pick("top", "top" if row_index == 0 else "insideH"),
+        "border_right": pick("right", "right" if last_col else "insideV"),
+        "border_bottom": pick("bottom", "bottom" if last_row else "insideH"),
+        "border_left": pick("left", "left" if logical_col == 0 else "insideV"),
+    }
 
 
 def _get_cell_alignment(tc_elem) -> str | None:
@@ -367,6 +465,8 @@ def _parse_table_element(
 ) -> ParsedTable:
     parsed = ParsedTable(index=idx)
     raw_rows = tbl.findall(W("tr"))
+    table_border_defaults = _get_table_border_defaults(tbl)
+    table_col_count = max((sum(_get_grid_span(tc) for tc in tr.findall(W("tc"))) for tr in raw_rows), default=0)
 
     # 用于追踪跨行合并：grid_col -> (remaining_rows, colspan, text)
     vmerge_tracker: dict[int, tuple[int, dict]] = {}
@@ -386,6 +486,10 @@ def _parse_table_element(
                     align=cell_meta["align"],
                     v_align=cell_meta["v_align"],
                     shading=cell_meta["shading"],
+                    border_top=cell_meta["border_top"],
+                    border_right=cell_meta["border_right"],
+                    border_bottom=cell_meta["border_bottom"],
+                    border_left=cell_meta["border_left"],
                     is_bold=cell_meta["is_bold"],
                     font_size_px=cell_meta["font_size_px"],
                     font_family=cell_meta["font_family"],
@@ -430,6 +534,17 @@ def _parse_table_element(
                     if _get_v_merge(future_cells[0]) != "continue":
                         break
 
+                borders = _resolve_effective_cell_borders(
+                    tc,
+                    table_border_defaults,
+                    row_index=ri,
+                    row_count=len(raw_rows),
+                    logical_col=logical_col,
+                    col_count=table_col_count,
+                    colspan=colspan,
+                    rowspan=rowspan,
+                )
+
                 vmerge_tracker[logical_col] = (
                     rowspan - 1,
                     {
@@ -439,6 +554,10 @@ def _parse_table_element(
                         "align": align,
                         "v_align": v_align,
                         "shading": shading,
+                        "border_top": borders["border_top"],
+                        "border_right": borders["border_right"],
+                        "border_bottom": borders["border_bottom"],
+                        "border_left": borders["border_left"],
                         "is_bold": is_bold,
                         "font_size_px": font_size_px,
                         "font_family": font_family,
@@ -452,6 +571,10 @@ def _parse_table_element(
                     align=align,
                     v_align=v_align,
                     shading=shading,
+                    border_top=borders["border_top"],
+                    border_right=borders["border_right"],
+                    border_bottom=borders["border_bottom"],
+                    border_left=borders["border_left"],
                     is_bold=is_bold,
                     font_size_px=font_size_px,
                     font_family=font_family,
@@ -461,6 +584,16 @@ def _parse_table_element(
                 # 占位，已由 tracker 处理
                 pass
             else:
+                borders = _resolve_effective_cell_borders(
+                    tc,
+                    table_border_defaults,
+                    row_index=ri,
+                    row_count=len(raw_rows),
+                    logical_col=logical_col,
+                    col_count=table_col_count,
+                    colspan=colspan,
+                    rowspan=1,
+                )
                 row_cells.append(ParsedCell(
                     text=text, row=ri, col=logical_col,
                     rowspan=1, colspan=colspan,
@@ -468,6 +601,10 @@ def _parse_table_element(
                     align=align,
                     v_align=v_align,
                     shading=shading,
+                    border_top=borders["border_top"],
+                    border_right=borders["border_right"],
+                    border_bottom=borders["border_bottom"],
+                    border_left=borders["border_left"],
                     is_bold=is_bold,
                     font_size_px=font_size_px,
                     font_family=font_family,

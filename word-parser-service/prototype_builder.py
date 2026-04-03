@@ -588,6 +588,14 @@ def _render_cell_html(
     styles.append(f"vertical-align:{map_valign(cell.v_align)}")
     if cell.shading:
         styles.append(f"background:#{cell.shading}")
+    if getattr(cell, "border_top", None):
+        styles.append(f"border-top:{cell.border_top}")
+    if getattr(cell, "border_right", None):
+        styles.append(f"border-right:{cell.border_right}")
+    if getattr(cell, "border_bottom", None):
+        styles.append(f"border-bottom:{cell.border_bottom}")
+    if getattr(cell, "border_left", None):
+        styles.append(f"border-left:{cell.border_left}")
     if cell.is_bold:
         styles.append("font-weight:700")
     if getattr(cell, "font_size_px", None):
@@ -897,6 +905,10 @@ def _build_cell_style_payload(cell) -> dict[str, Any]:
         "textAlign": map_align(cell.align),
         "verticalAlign": map_valign(cell.v_align),
         "backgroundColor": f"#{cell.shading}" if cell.shading else None,
+        "borderTop": getattr(cell, "border_top", None),
+        "borderRight": getattr(cell, "border_right", None),
+        "borderBottom": getattr(cell, "border_bottom", None),
+        "borderLeft": getattr(cell, "border_left", None),
         "fontWeight": "bold" if cell.is_bold else None,
         "fontSizePx": getattr(cell, "font_size_px", None),
         "fontFamily": getattr(cell, "font_family", None),

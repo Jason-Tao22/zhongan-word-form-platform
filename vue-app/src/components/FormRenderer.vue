@@ -689,6 +689,10 @@ function cellStyle(style) {
   if (style.textAlign) result.textAlign = style.textAlign
   if (style.verticalAlign) result.verticalAlign = style.verticalAlign
   if (style.backgroundColor) result.backgroundColor = style.backgroundColor
+  if (style.borderTop) result.borderTop = style.borderTop
+  if (style.borderRight) result.borderRight = style.borderRight
+  if (style.borderBottom) result.borderBottom = style.borderBottom
+  if (style.borderLeft) result.borderLeft = style.borderLeft
   if (style.fontWeight === 'bold') result.fontWeight = 700
   else if (style.fontWeight === 'normal') result.fontWeight = 400
   if (style.fontSizePx) result.fontSize = `${style.fontSizePx}px`

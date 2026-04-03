@@ -114,6 +114,10 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
                     align=meta["align"],
                     v_align=meta["v_align"],
                     shading=meta["shading"],
+                    border_top=meta["border_top"],
+                    border_right=meta["border_right"],
+                    border_bottom=meta["border_bottom"],
+                    border_left=meta["border_left"],
                     is_bold=meta["is_bold"],
                     paragraphs=meta["paragraphs"],
                 ))
@@ -131,6 +135,7 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
             align = _extract_align(cell_elem, style)
             v_align = cell_elem.get("valign")
             shading = _color_hex(style.get("background-color"))
+            borders = _extract_border_styles(style)
             is_bold = _is_bold_node(cell_elem)
 
             if rowspan > 1:
@@ -143,6 +148,10 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
                         "align": align,
                         "v_align": v_align,
                         "shading": shading,
+                        "border_top": borders["border_top"],
+                        "border_right": borders["border_right"],
+                        "border_bottom": borders["border_bottom"],
+                        "border_left": borders["border_left"],
                         "is_bold": is_bold,
                         "paragraphs": paragraphs,
                     },
@@ -158,6 +167,10 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
                 align=align,
                 v_align=v_align,
                 shading=shading,
+                border_top=borders["border_top"],
+                border_right=borders["border_right"],
+                border_bottom=borders["border_bottom"],
+                border_left=borders["border_left"],
                 is_bold=is_bold,
                 paragraphs=paragraphs,
             ))
@@ -176,6 +189,10 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
                 align=meta["align"],
                 v_align=meta["v_align"],
                 shading=meta["shading"],
+                border_top=meta["border_top"],
+                border_right=meta["border_right"],
+                border_bottom=meta["border_bottom"],
+                border_left=meta["border_left"],
                 is_bold=meta["is_bold"],
                 paragraphs=meta["paragraphs"],
             ))
@@ -279,3 +296,36 @@ def _color_hex(value: str | None) -> str | None:
     if match:
         return match.group(1).upper()
     return None
+
+
+def _normalize_border_css(value: str | None) -> str | None:
+    if not value:
+        return None
+    lowered = value.lower()
+    if lowered.strip() in {"none", "0", "0px"}:
+        return "none"
+
+    style = next((item for item in ("double", "dashed", "dotted", "solid") if item in lowered), None) or "solid"
+
+    width_px = 1
+    width_match = re.search(r"([0-9]+(?:\.[0-9]+)?)(px|pt)", lowered)
+    if width_match:
+        numeric = float(width_match.group(1))
+        unit = width_match.group(2)
+        width_px = max(1, round(numeric if unit == "px" else numeric * 96 / 72))
+
+    color = _color_hex(value)
+    if color is None and "windowtext" in lowered:
+        color = "000000"
+
+    return f"{width_px}px {style} #{color or '000000'}"
+
+
+def _extract_border_styles(style: dict[str, str]) -> dict[str, str | None]:
+    all_border = _normalize_border_css(style.get("border"))
+    return {
+        "border_top": _normalize_border_css(style.get("border-top")) or all_border,
+        "border_right": _normalize_border_css(style.get("border-right")) or all_border,
+        "border_bottom": _normalize_border_css(style.get("border-bottom")) or all_border,
+        "border_left": _normalize_border_css(style.get("border-left")) or all_border,
+    }

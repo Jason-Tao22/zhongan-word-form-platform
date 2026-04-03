@@ -13,6 +13,10 @@ class CellStyle(BaseModel):
     textAlign: Optional[Literal["left", "center", "right", "justify"]] = None
     verticalAlign: Optional[Literal["top", "middle", "bottom"]] = None
     backgroundColor: Optional[str] = None
+    borderTop: Optional[str] = None
+    borderRight: Optional[str] = None
+    borderBottom: Optional[str] = None
+    borderLeft: Optional[str] = None
     fontWeight: Optional[Literal["normal", "bold"]] = None
     fontSizePx: Optional[int] = None
     fontFamily: Optional[str] = None

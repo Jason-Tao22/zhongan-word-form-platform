@@ -59,6 +59,8 @@ class RegressionPipelineTest(unittest.TestCase):
                         width_twips=3600,
                         align="center",
                         shading="D9D9D9",
+                        border_top="2px solid #000000",
+                        border_bottom="1px dashed #999999",
                         is_bold=True,
                         font_size_px=18,
                         font_family="SimSun",
@@ -73,6 +75,8 @@ class RegressionPipelineTest(unittest.TestCase):
         self.assertGreater(cell["style"]["widthPx"], 0)
         self.assertEqual(cell["style"]["textAlign"], "center")
         self.assertEqual(cell["style"]["backgroundColor"], "#D9D9D9")
+        self.assertEqual(cell["style"]["borderTop"], "2px solid #000000")
+        self.assertEqual(cell["style"]["borderBottom"], "1px dashed #999999")
         self.assertEqual(cell["style"]["fontSizePx"], 18)
         self.assertEqual(cell["style"]["fontFamily"], "SimSun")
         self.assertTrue(cell["isEmphasis"])
@@ -594,6 +598,17 @@ class RegressionPipelineTest(unittest.TestCase):
         blocks = parse_legacy_doc_html_blocks(html_text)
         self.assertEqual(blocks[0]["paragraph"].text, "报告编号：")
         self.assertEqual(blocks[1]["paragraph"].text, "第 3 页 共 73 页")
+
+    def test_parse_legacy_doc_html_blocks_preserves_cell_borders(self) -> None:
+        html_text = (
+            "<html><body>"
+            "<table><tr><td style='border-top:1.5pt solid windowtext;border-bottom:1px dashed #999999'>字段</td></tr></table>"
+            "</body></html>"
+        )
+        blocks = parse_legacy_doc_html_blocks(html_text)
+        cell = blocks[0]["table"].rows[0][0]
+        self.assertEqual(cell.border_top, "2px solid #000000")
+        self.assertEqual(cell.border_bottom, "1px dashed #999999")
 
     def test_post_process_normalizes_checklist_columns(self) -> None:
         raw_sub_form = {
