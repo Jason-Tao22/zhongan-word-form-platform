@@ -132,53 +132,94 @@
                 <el-button text @click="focusControlEditor(selectedControl.id)">聚焦右侧编辑</el-button>
               </div>
             </div>
-            <div v-if="selectedControlSupportsStyle" class="style-adjust-panel">
+            <div v-if="selectedStyleItem" class="style-adjust-panel">
               <div class="manual-panel-title">样式微调</div>
               <p class="panel-note">
-                这里改的是当前控件所在区域的视觉样式，保存后左侧正式渲染预览会立刻同步。
+                这里改的是当前选中区域的视觉样式。无论是自动识别出来的控件，还是静态标题、段落、单元格，保存后左侧正式渲染预览都会立刻同步。
               </p>
               <div class="style-grid">
-                <el-input
-                  :model-value="selectedControl.fontFamily || ''"
-                  class="control-input"
-                  :disabled="!canEditSchema"
-                  placeholder="字体，如：宋体 / 黑体 / 仿宋"
-                  @update:model-value="updateControlStyle(selectedControl, 'fontFamily', $event)"
-                />
-
-                <el-input-number
-                  :model-value="selectedControl.fontSizePx ?? undefined"
-                  class="control-input"
-                  :min="10"
-                  :max="48"
-                  :step="1"
-                  :disabled="!canEditSchema"
-                  @update:model-value="updateControlStyle(selectedControl, 'fontSizePx', $event)"
-                />
-
-                <el-select
-                  :model-value="selectedControl.textAlign || ''"
-                  class="control-input"
-                  :disabled="!canEditSchema"
-                  placeholder="文字对齐"
-                  @update:model-value="updateControlStyle(selectedControl, 'textAlign', $event)"
-                >
-                  <el-option
-                    v-for="option in ALIGN_OPTIONS"
-                    :key="option.value"
-                    :label="option.label"
-                    :value="option.value"
+                <div class="style-field" data-style-field="fontFamily">
+                  <span class="style-field-label">字体</span>
+                  <el-input
+                    :model-value="selectedStyle.fontFamily"
+                    class="control-input"
+                    :disabled="!canEditSchema"
+                    placeholder="如：宋体 / 黑体 / 仿宋"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'fontFamily', $event)"
                   />
-                </el-select>
+                </div>
 
-                <el-switch
-                  :model-value="selectedControl.fontWeight === 'bold'"
-                  :disabled="!canEditSchema"
-                  inline-prompt
-                  active-text="加粗"
-                  inactive-text="常规"
-                  @update:model-value="updateControlStyle(selectedControl, 'fontWeight', $event ? 'bold' : 'normal')"
-                />
+                <div class="style-field" data-style-field="fontSizePx">
+                  <span class="style-field-label">字号</span>
+                  <el-input-number
+                    :model-value="selectedStyle.fontSizePx ?? undefined"
+                    class="control-input"
+                    :min="10"
+                    :max="48"
+                    :step="1"
+                    :disabled="!canEditSchema"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'fontSizePx', $event)"
+                  />
+                </div>
+
+                <div class="style-field" data-style-field="textAlign">
+                  <span class="style-field-label">水平对齐</span>
+                  <el-select
+                    :model-value="selectedStyle.textAlign || ''"
+                    class="control-input"
+                    :disabled="!canEditSchema"
+                    placeholder="文字对齐"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'textAlign', $event)"
+                  >
+                    <el-option
+                      v-for="option in ALIGN_OPTIONS"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value"
+                    />
+                  </el-select>
+                </div>
+
+                <div class="style-field style-field-switch" data-style-field="fontWeight">
+                  <span class="style-field-label">字重</span>
+                  <el-switch
+                    :model-value="selectedStyle.fontWeight === 'bold'"
+                    :disabled="!canEditSchema"
+                    inline-prompt
+                    active-text="加粗"
+                    inactive-text="常规"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'fontWeight', $event ? 'bold' : 'normal')"
+                  />
+                </div>
+
+                <div v-if="selectedStyleSupportsCellLayout" class="style-field" data-style-field="verticalAlign">
+                  <span class="style-field-label">垂直对齐</span>
+                  <el-select
+                    :model-value="selectedStyle.verticalAlign || ''"
+                    class="control-input"
+                    :disabled="!canEditSchema"
+                    placeholder="垂直对齐"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'verticalAlign', $event)"
+                  >
+                    <el-option
+                      v-for="option in VERTICAL_ALIGN_OPTIONS"
+                      :key="option.value"
+                      :label="option.label"
+                      :value="option.value"
+                    />
+                  </el-select>
+                </div>
+
+                <div v-if="selectedStyleSupportsCellLayout" class="style-field" data-style-field="backgroundColor">
+                  <span class="style-field-label">底色</span>
+                  <el-input
+                    :model-value="selectedStyle.backgroundColor || ''"
+                    class="control-input"
+                    :disabled="!canEditSchema"
+                    placeholder="如：#fff7e6"
+                    @update:model-value="updateItemStyle(selectedStyleItem, 'backgroundColor', $event)"
+                  />
+                </div>
               </div>
             </div>
             <div v-else-if="selectedTarget" class="active-control-banner">
@@ -412,6 +453,11 @@ const ALIGN_OPTIONS = [
   { value: 'right', label: '右对齐' },
   { value: 'justify', label: '两端对齐' },
 ]
+const VERTICAL_ALIGN_OPTIONS = [
+  { value: 'top', label: '顶部' },
+  { value: 'middle', label: '居中' },
+  { value: 'bottom', label: '底部' },
+]
 const manualControlTypeOptions = FIELD_TYPE_OPTIONS.filter(option => option.value !== 'static')
 
 const canEditSchema = computed(() => ['pending_review', 'failed'].includes(template.value?.status))
@@ -462,7 +508,19 @@ const displayedDdl = computed(() => {
 const editableControls = computed(() => collectEditableControls(reviewSchema.value))
 const selectedControl = computed(() => editableControls.value.find(item => item.id === activeControlId.value) || null)
 const selectedTarget = computed(() => resolveReviewTarget(reviewSchema.value, activeControlId.value))
-const selectedControlSupportsStyle = computed(() => ['cell-control', 'paragraph-control'].includes(selectedControl.value?.scope))
+const selectedStyleItem = computed(() => selectedControl.value || selectedTarget.value || null)
+const selectedStyleSupportsCellLayout = computed(() => ['cell-control', 'cell-slot'].includes(selectedStyleItem.value?.scope))
+const selectedStyle = computed(() => {
+  const style = getStyleForItem(reviewSchema.value, selectedStyleItem.value) || {}
+  return {
+    fontFamily: style.fontFamily || '',
+    fontSizePx: style.fontSizePx ?? null,
+    textAlign: style.textAlign || '',
+    fontWeight: style.fontWeight || '',
+    verticalAlign: style.verticalAlign || '',
+    backgroundColor: style.backgroundColor || '',
+  }
+})
 const canCreateManualControl = computed(() => Boolean(
   canEditSchema.value
   && selectedTarget.value
@@ -820,6 +878,7 @@ function resolveReviewTarget(schema, id) {
       blockIndex,
       rowIndex,
       cellIndex,
+      path: { blockIndex, rowIndex, cellIndex },
       label: suggestedLabel,
       suggestedLabel,
       preferredType,
@@ -851,6 +910,7 @@ function resolveReviewTarget(schema, id) {
       rowIndex: null,
       cellIndex: null,
       paragraphIndex,
+      path: { blockIndex, rowIndex: null, cellIndex: null, paragraphIndex },
       label: suggestedLabel,
       suggestedLabel,
       preferredType,
@@ -888,6 +948,7 @@ function resolveReviewTarget(schema, id) {
     rowIndex,
     cellIndex,
     paragraphIndex,
+    path: { blockIndex, rowIndex, cellIndex, paragraphIndex },
     label: suggestedLabel,
     suggestedLabel,
     preferredType,
@@ -1092,10 +1153,10 @@ function getToken(schema, item) {
 
 function getStyleContainer(schema, item) {
   if (!schema || !item) return null
-  if (item.scope === 'cell-control') {
+  if (item.scope === 'cell-control' || item.scope === 'cell-slot') {
     return schema.documentBlocks?.[item.path.blockIndex]?.rows?.[item.path.rowIndex]?.[item.path.cellIndex] || null
   }
-  if (item.scope === 'paragraph-control') {
+  if (item.scope === 'paragraph-control' || item.scope === 'paragraph-slot') {
     if (item.path.rowIndex === null || item.path.rowIndex === undefined) {
       return schema.documentBlocks?.[item.path.blockIndex] || null
     }
@@ -1108,8 +1169,8 @@ function getStyleForItem(schema, item) {
   return getStyleContainer(schema, item)?.style || null
 }
 
-function updateControlStyle(item, key, value) {
-  if (!reviewSchema.value || !selectedControlSupportsStyle.value) return
+function updateItemStyle(item, key, value) {
+  if (!reviewSchema.value || !item) return
   const container = getStyleContainer(reviewSchema.value, item)
   if (!container) return
   container.style = container.style && typeof container.style === 'object' ? container.style : {}
@@ -1131,6 +1192,17 @@ function updateControlStyle(item, key, value) {
   if (key === 'textAlign') {
     if (!value) delete container.style[key]
     else container.style[key] = value
+    return
+  }
+  if (key === 'verticalAlign') {
+    if (!value) delete container.style[key]
+    else container.style[key] = value
+    return
+  }
+  if (key === 'backgroundColor') {
+    const trimmed = String(value || '').trim()
+    if (!trimmed) delete container.style[key]
+    else container.style[key] = trimmed
     return
   }
   if (key === 'fontWeight') {
@@ -1528,6 +1600,21 @@ onBeforeUnmount(() => {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   align-items: center;
+}
+
+.style-field {
+  display: grid;
+  gap: 6px;
+}
+
+.style-field-label {
+  color: #4f6078;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.style-field-switch {
+  align-content: end;
 }
 
 .control-list {
