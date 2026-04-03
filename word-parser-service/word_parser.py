@@ -24,6 +24,8 @@ class ParsedCell:
     colspan: int = 1
     is_merged_continuation: bool = False  # vMerge 续行，跳过
     width_twips: int | None = None
+    min_height_px: int | None = None
+    padding_px: int | None = None
     align: str | None = None
     v_align: str | None = None
     shading: str | None = None
@@ -144,6 +146,65 @@ def _get_cell_width(tc_elem) -> int | None:
         return int(value)
     except ValueError:
         return None
+
+
+def _get_row_min_height_px(tr_elem) -> int | None:
+    tr_pr = tr_elem.find(W("trPr"))
+    if tr_pr is None:
+        return None
+    tr_height = tr_pr.find(W("trHeight"))
+    if tr_height is None:
+        return None
+    raw = tr_height.get(W("val")) or tr_height.get("val")
+    if not raw:
+        return None
+    try:
+        return _twips_to_px(int(raw))
+    except ValueError:
+        return None
+
+
+def _extract_margin_values(margin_parent_elem) -> dict[str, int]:
+    if margin_parent_elem is None:
+        return {}
+    values: dict[str, int] = {}
+    for side in ("top", "right", "bottom", "left"):
+        margin = margin_parent_elem.find(W(side))
+        if margin is None:
+            continue
+        raw = margin.get(W("w")) or margin.get("w")
+        if not raw:
+            continue
+        try:
+            values[side] = int(raw)
+        except ValueError:
+            continue
+    return values
+
+
+def _get_table_cell_margin_defaults(tbl_elem) -> dict[str, int]:
+    tbl_pr = tbl_elem.find(W("tblPr"))
+    if tbl_pr is None:
+        return {}
+    return _extract_margin_values(tbl_pr.find(W("tblCellMar")))
+
+
+def _get_cell_margin_values(tc_elem) -> dict[str, int]:
+    tc_pr = tc_elem.find(W("tcPr"))
+    if tc_pr is None:
+        return {}
+    return _extract_margin_values(tc_pr.find(W("tcMar")))
+
+
+def _resolve_effective_cell_padding_px(tc_elem, table_margins: dict[str, int]) -> int | None:
+    margins = {**table_margins, **_get_cell_margin_values(tc_elem)}
+    if not margins:
+        return None
+    values_px = [_twips_to_px(value) for value in margins.values() if value is not None]
+    values_px = [value for value in values_px if value is not None]
+    if not values_px:
+        return None
+    return max(0, round(sum(values_px) / len(values_px)))
 
 
 def _get_cell_v_align(tc_elem) -> str | None:
@@ -546,6 +607,7 @@ def _parse_table_element(
     parsed = ParsedTable(index=idx)
     raw_rows = tbl.findall(W("tr"))
     table_border_defaults = _get_table_border_defaults(tbl)
+    table_cell_margin_defaults = _get_table_cell_margin_defaults(tbl)
     table_col_count = max((sum(_get_grid_span(tc) for tc in tr.findall(W("tc"))) for tr in raw_rows), default=0)
 
     # 用于追踪跨行合并：grid_col -> (remaining_rows, colspan, text)
@@ -554,6 +616,7 @@ def _parse_table_element(
     for ri, tr in enumerate(raw_rows):
         row_cells: list[ParsedCell] = []
         logical_col = 0
+        row_min_height_px = _get_row_min_height_px(tr)
 
         for tc in tr.findall(W("tc")):
             # 跳过被 vMerge 占用的逻辑列
@@ -563,6 +626,8 @@ def _parse_table_element(
                     text=cell_meta["text"], row=ri, col=logical_col,
                     rowspan=1, colspan=cell_meta["colspan"], is_merged_continuation=True,
                     width_twips=cell_meta["width_twips"],
+                    min_height_px=cell_meta["min_height_px"],
+                    padding_px=cell_meta["padding_px"],
                     align=cell_meta["align"],
                     v_align=cell_meta["v_align"],
                     shading=cell_meta["shading"],
@@ -592,6 +657,7 @@ def _parse_table_element(
             )
             paragraphs = [paragraph.text for paragraph in paragraph_details] if paragraph_details else _get_paragraph_texts(tc)
             width_twips = _get_cell_width(tc)
+            padding_px = _resolve_effective_cell_padding_px(tc, table_cell_margin_defaults)
             align = _get_cell_alignment(tc)
             v_align = _get_cell_v_align(tc)
             shading = _get_cell_shading(tc)
@@ -638,6 +704,8 @@ def _parse_table_element(
                         "text": text,
                         "colspan": colspan,
                         "width_twips": width_twips,
+                        "min_height_px": row_min_height_px,
+                        "padding_px": padding_px,
                         "align": align,
                         "v_align": v_align,
                         "shading": shading,
@@ -656,6 +724,8 @@ def _parse_table_element(
                     text=text, row=ri, col=logical_col,
                     rowspan=rowspan, colspan=colspan,
                     width_twips=width_twips,
+                    min_height_px=row_min_height_px,
+                    padding_px=padding_px,
                     align=align,
                     v_align=v_align,
                     shading=shading,
@@ -687,6 +757,8 @@ def _parse_table_element(
                     text=text, row=ri, col=logical_col,
                     rowspan=1, colspan=colspan,
                     width_twips=width_twips,
+                    min_height_px=row_min_height_px,
+                    padding_px=padding_px,
                     align=align,
                     v_align=v_align,
                     shading=shading,

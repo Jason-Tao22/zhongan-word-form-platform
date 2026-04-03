@@ -590,6 +590,10 @@ def _render_cell_html(
     width_px = twips_to_px(cell.width_twips)
     if width_px:
         styles.append(f"min-width:{width_px}px")
+    if getattr(cell, "min_height_px", None):
+        styles.append(f"min-height:{cell.min_height_px}px")
+    if getattr(cell, "padding_px", None) is not None:
+        styles.append(f"padding:{cell.padding_px}px")
     styles.append(f"text-align:{map_align(cell.align)}")
     styles.append(f"vertical-align:{map_valign(cell.v_align)}")
     if cell.shading:
@@ -929,6 +933,8 @@ def _build_auto_control_payload(
 def _build_cell_style_payload(cell) -> dict[str, Any]:
     style = {
         "widthPx": twips_to_px(cell.width_twips),
+        "minHeightPx": getattr(cell, "min_height_px", None),
+        "paddingPx": getattr(cell, "padding_px", None),
         "textAlign": map_align(cell.align),
         "verticalAlign": map_valign(cell.v_align),
         "backgroundColor": f"#{cell.shading}" if cell.shading else None,

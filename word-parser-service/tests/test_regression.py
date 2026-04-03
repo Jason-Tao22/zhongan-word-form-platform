@@ -57,6 +57,8 @@ class RegressionPipelineTest(unittest.TestCase):
                         row=0,
                         col=0,
                         width_twips=3600,
+                        min_height_px=48,
+                        padding_px=10,
                         align="center",
                         shading="D9D9D9",
                         border_top="2px solid #000000",
@@ -73,6 +75,8 @@ class RegressionPipelineTest(unittest.TestCase):
         cell = document_blocks[0]["rows"][0][0]
         self.assertIn("style", cell)
         self.assertGreater(cell["style"]["widthPx"], 0)
+        self.assertEqual(cell["style"]["minHeightPx"], 48)
+        self.assertEqual(cell["style"]["paddingPx"], 10)
         self.assertEqual(cell["style"]["textAlign"], "center")
         self.assertEqual(cell["style"]["backgroundColor"], "#D9D9D9")
         self.assertEqual(cell["style"]["borderTop"], "2px solid #000000")
@@ -646,6 +650,17 @@ class RegressionPipelineTest(unittest.TestCase):
         cell = blocks[0]["table"].rows[0][0]
         self.assertEqual(cell.border_top, "2px solid #000000")
         self.assertEqual(cell.border_bottom, "1px dashed #999999")
+
+    def test_parse_legacy_doc_html_blocks_captures_cell_padding_and_height(self) -> None:
+        html_text = (
+            "<html><body>"
+            "<table><tr><td style='padding:12px 8px;min-height:36px'>字段</td></tr></table>"
+            "</body></html>"
+        )
+        blocks = parse_legacy_doc_html_blocks(html_text)
+        cell = blocks[0]["table"].rows[0][0]
+        self.assertEqual(cell.padding_px, 10)
+        self.assertEqual(cell.min_height_px, 36)
 
     def test_parse_legacy_doc_html_blocks_captures_paragraph_spacing(self) -> None:
         html_text = (

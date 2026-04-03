@@ -235,6 +235,8 @@ def _map_v_align(value: str | None) -> str | None:
 def _cell_style(cell: ParsedCell) -> dict | None:
     style = {
         "widthPx": max(24, round(cell.width_twips / 15)) if cell.width_twips else None,
+        "minHeightPx": cell.min_height_px,
+        "paddingPx": cell.padding_px,
         "textAlign": _map_align(cell.align),
         "verticalAlign": _map_v_align(cell.v_align),
         "backgroundColor": f"#{cell.shading}" if cell.shading else None,

@@ -117,6 +117,8 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
                     colspan=meta["colspan"],
                     is_merged_continuation=True,
                     width_twips=meta["width_twips"],
+                    min_height_px=meta["min_height_px"],
+                    padding_px=meta["padding_px"],
                     align=meta["align"],
                     v_align=meta["v_align"],
                     shading=meta["shading"],
@@ -140,6 +142,8 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
             text = "".join(paragraph.strip() for paragraph in paragraphs if paragraph.strip())
             style = _resolve_style(cell_elem, class_styles)
             width_twips = _width_px_to_twips(style.get("min-width") or style.get("width"))
+            min_height_px = _css_px(style.get("min-height") or style.get("height"))
+            padding_px = _css_padding_px(style)
             align = _extract_align(cell_elem, style)
             v_align = cell_elem.get("valign")
             shading = _color_hex(style.get("background-color"))
@@ -153,6 +157,8 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
                         "text": text,
                         "colspan": colspan,
                         "width_twips": width_twips,
+                        "min_height_px": min_height_px,
+                        "padding_px": padding_px,
                         "align": align,
                         "v_align": v_align,
                         "shading": shading,
@@ -173,6 +179,8 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
                 rowspan=rowspan,
                 colspan=colspan,
                 width_twips=width_twips,
+                min_height_px=min_height_px,
+                padding_px=padding_px,
                 align=align,
                 v_align=v_align,
                 shading=shading,
@@ -196,6 +204,8 @@ def _parse_html_table(table_elem, index: int, class_styles: dict[str, dict[str, 
                 colspan=meta["colspan"],
                 is_merged_continuation=True,
                 width_twips=meta["width_twips"],
+                min_height_px=meta["min_height_px"],
+                padding_px=meta["padding_px"],
                 align=meta["align"],
                 v_align=meta["v_align"],
                 shading=meta["shading"],
@@ -376,6 +386,24 @@ def _css_font_family(value: str | None) -> str | None:
         return None
     first = value.split(",", 1)[0].strip().strip("'\"")
     return first or None
+
+
+def _css_padding_px(style: dict[str, str]) -> int | None:
+    values: list[int] = []
+    shorthand = style.get("padding")
+    if shorthand:
+        parts = [part for part in shorthand.split() if part]
+        for part in parts:
+            px = _css_px(part)
+            if px is not None:
+                values.append(px)
+    for key in ("padding-top", "padding-right", "padding-bottom", "padding-left"):
+        px = _css_px(style.get(key))
+        if px is not None:
+            values.append(px)
+    if not values:
+        return None
+    return max(0, round(sum(values) / len(values)))
 
 
 def _normalize_border_css(value: str | None) -> str | None:
